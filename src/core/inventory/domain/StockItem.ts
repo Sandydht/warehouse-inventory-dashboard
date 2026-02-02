@@ -7,6 +7,6 @@ export interface StockItem {
   quantity: number;
   supplier: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: string | null;
   deletedAt: string | null;
 }

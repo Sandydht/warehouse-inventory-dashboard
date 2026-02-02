@@ -1,4 +1,4 @@
-import type { RequestType, RequestStatus } from "./enum";
+import type { RequestType, RequestStatus } from "./type";
 import type { StockItem } from "./StockItem";
 
 export interface StockRequest {
