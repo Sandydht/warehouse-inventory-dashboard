@@ -2,6 +2,7 @@ import { describe, it, vi, expect } from "vitest";
 import AuthRepository from "../AuthRepository";
 import type MethodAssertion from "../../../application/utils/MethodAssertion";
 import { AUTH_REPOSITORY_ERRORS } from "../constants";
+import UserLogin from "../entity/UserLogin";
 
 describe("AuthRepository", () => {
   it("should throw error when invoke abstract behavior", async () => {
@@ -12,15 +13,14 @@ describe("AuthRepository", () => {
 
     mockMethodAssertion.assertImplemented(
       authRepository,
-      "verifyAvailableUserByEmailAndPassword",
+      "loginAccount",
       AUTH_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
 
     expect(authRepository).toBeInstanceOf(AuthRepository);
     await expect(
-      authRepository.verifyAvailableUserByEmailAndPassword(
-        "example1@email.com",
-        "password123",
+      authRepository.loginAccount(
+        new UserLogin("example@email.com", "password123"),
       ),
     ).rejects.toThrowError(AUTH_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
   });

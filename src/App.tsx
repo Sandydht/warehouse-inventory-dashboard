@@ -1,9 +1,7 @@
+import AppRoutes from "./presentation/routes";
+
 function App() {
-  return (
-    <>
-      <p>Warehouse Inventory Dashboard</p>
-    </>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

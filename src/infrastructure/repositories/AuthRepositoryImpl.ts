@@ -1,16 +1,16 @@
 import AuthRepository from "../../domain/auth/AuthRepository";
-import UserDummyData from "../datasources/user.json";
+import NewAuth from "../../domain/auth/entity/NewAuth";
+import type UserLogin from "../../domain/auth/entity/UserLogin";
+import { loginAccountDummyApi } from "../datasources/api/auth.api";
+import type { UserLoginResponseDto } from "../dto/response/UserLoginResponseDto";
+import { toNewAuthDomain, toUserLoginRequestDto } from "../mappers/authMapper";
 
 class AuthRepositoryImpl extends AuthRepository {
-  async verifyAvailableUserByEmailAndPassword(
-    email: string,
-    password: string,
-  ): Promise<string> {
-    const findUser = UserDummyData.find(
-      (user) => user.email == email && user.password == password,
+  async loginAccount(payload: UserLogin): Promise<NewAuth> {
+    const result: UserLoginResponseDto = await loginAccountDummyApi(
+      toUserLoginRequestDto(payload),
     );
-    if (!findUser) throw new Error("Invalid credentials");
-    return findUser.id;
+    return toNewAuthDomain(result);
   }
 }
 

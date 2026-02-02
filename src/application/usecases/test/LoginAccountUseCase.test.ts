@@ -6,6 +6,7 @@ import type AuthRepository from "../../../domain/auth/AuthRepository";
 import { AUTH_REPOSITORY_ERRORS } from "../../../domain/auth/constants";
 import type SecureStorage from "../../utils/SecureStorage";
 import { SECURE_STORAGE_ERRORS } from "../../utils/constants";
+import NewAuth from "../../../domain/auth/entity/NewAuth";
 
 describe("Login account use case", () => {
   it("should orchestrating the login account action correctly", async () => {
@@ -14,9 +15,9 @@ describe("Login account use case", () => {
     };
 
     const mockAuthRepository: AuthRepository = {
-      verifyAvailableUserByEmailAndPassword: vi
+      loginAccount: vi
         .fn()
-        .mockResolvedValue("user-001"),
+        .mockResolvedValue(new NewAuth("access-token", "refresh-token")),
     };
 
     const mockSecureStorage: SecureStorage = {
@@ -29,13 +30,13 @@ describe("Login account use case", () => {
       mockSecureStorage,
     );
 
-    await loginAccountUseCase.execute(
+    const result: NewAuth = await loginAccountUseCase.execute(
       new UserLogin("example1@email.com", "password123"),
     );
 
     expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(
       mockAuthRepository,
-      "verifyAvailableUserByEmailAndPassword",
+      "loginAccount",
       AUTH_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
     expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(
@@ -43,12 +44,18 @@ describe("Login account use case", () => {
       "setSecureItem",
       SECURE_STORAGE_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
-    expect(
-      mockAuthRepository.verifyAvailableUserByEmailAndPassword,
-    ).toHaveBeenCalledWith("example1@email.com", "password123");
+    expect(mockAuthRepository.loginAccount).toHaveBeenCalledWith(
+      new UserLogin("example1@email.com", "password123"),
+    );
     expect(mockSecureStorage.setSecureItem).toHaveBeenCalledWith(
       "accessToken",
-      "user-001",
+      "access-token",
     );
+    expect(mockSecureStorage.setSecureItem).toHaveBeenCalledWith(
+      "refreshToken",
+      "refresh-token",
+    );
+    expect(result.getAccessToken()).toBe("access-token");
+    expect(result.getRefreshToken()).toBe("refresh-token");
   });
 });

@@ -1,5 +1,6 @@
 import type AuthRepository from "../../domain/auth/AuthRepository";
 import { AUTH_REPOSITORY_ERRORS } from "../../domain/auth/constants";
+import NewAuth from "../../domain/auth/entity/NewAuth";
 import type UserLogin from "../../domain/auth/entity/UserLogin";
 import { SECURE_STORAGE_ERRORS } from "../utils/constants";
 import type MethodAssertion from "../utils/MethodAssertion";
@@ -20,10 +21,10 @@ class LoginAccountUseCase {
     this.secureStorage = secureStorage;
   }
 
-  async execute(payload: UserLogin): Promise<void> {
+  async execute(payload: UserLogin): Promise<NewAuth> {
     this.methodAssertion.assertImplemented(
       this.authRepository,
-      "verifyAvailableUserByEmailAndPassword",
+      "loginAccount",
       AUTH_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
     this.methodAssertion.assertImplemented(
@@ -32,12 +33,12 @@ class LoginAccountUseCase {
       SECURE_STORAGE_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
 
-    const userId: string =
-      await this.authRepository.verifyAvailableUserByEmailAndPassword(
-        payload.getEmail(),
-        payload.getPassword(),
-      );
-    this.secureStorage.setSecureItem("accessToken", userId);
+    const result: NewAuth = await this.authRepository.loginAccount(payload);
+
+    this.secureStorage.setSecureItem("accessToken", result.getAccessToken());
+    this.secureStorage.setSecureItem("refreshToken", result.getRefreshToken());
+
+    return result;
   }
 }
 
