@@ -3,7 +3,7 @@ import { AUTH_REPOSITORY_ERRORS } from "../../domain/auth/constants";
 import type UserLogin from "../../domain/auth/entity/UserLogin";
 import { SECURE_STORAGE_ERRORS } from "../utils/constants";
 import type MethodAssertion from "../utils/MethodAssertion";
-import type SecureStorage from "../utils/SecuredStorage";
+import type SecureStorage from "../utils/SecureStorage";
 
 class LoginAccountUseCase {
   private readonly methodAssertion: MethodAssertion;

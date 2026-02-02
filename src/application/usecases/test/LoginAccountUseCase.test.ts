@@ -4,7 +4,7 @@ import type MethodAssertion from "../../utils/MethodAssertion";
 import UserLogin from "../../../domain/auth/entity/UserLogin";
 import type AuthRepository from "../../../domain/auth/AuthRepository";
 import { AUTH_REPOSITORY_ERRORS } from "../../../domain/auth/constants";
-import type SecureStorage from "../../utils/SecuredStorage";
+import type SecureStorage from "../../utils/SecureStorage";
 import { SECURE_STORAGE_ERRORS } from "../../utils/constants";
 
 describe("Login account use case", () => {

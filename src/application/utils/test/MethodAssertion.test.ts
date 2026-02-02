@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import MethodAssertion from "../MethodAssertion";
-import SecureStorage from "../SecuredStorage";
+import SecureStorage from "../SecureStorage";
 import { METHOD_ASSERTION_ERRORS } from "../constants";
 
 describe("MethodAssertion", () => {

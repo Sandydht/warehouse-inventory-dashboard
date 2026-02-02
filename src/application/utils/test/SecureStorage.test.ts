@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import SecureStorage from "../SecuredStorage";
+import SecureStorage from "../SecureStorage";
 import MethodAssertion from "../MethodAssertion";
 import { SECURE_STORAGE_ERRORS } from "../constants";
 
