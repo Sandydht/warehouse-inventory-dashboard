@@ -10,12 +10,18 @@
     "preview": "vite preview",
     "prettier:format": "npx prettier . --write",
     "prettier:check": "npx prettier . --check",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "2.11.2",
     "@tailwindcss/vite": "4.1.18",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-redux": "9.2.0",
+    "react-router-dom": "6.30.3",
     "tailwindcss": "4.1.18"
   },
   "devDependencies": {
@@ -33,7 +39,8 @@
     "prettier": "3.8.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.4",
-    "vite": "7.2.4"
+    "vite": "7.2.4",
+    "vitest": "4.0.18"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
