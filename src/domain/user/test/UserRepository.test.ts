@@ -12,13 +12,13 @@ describe("UserRepository", () => {
 
     mockMethodAssertion.assertImplemented(
       userRepository,
-      "getUserById",
+      "getUserProfile",
       USER_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
 
     expect(userRepository).toBeInstanceOf(UserRepository);
-    await expect(userRepository.getUserById("user-001")).rejects.toThrowError(
-      USER_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
-    );
+    await expect(
+      userRepository.getUserProfile("user-001"),
+    ).rejects.toThrowError(USER_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
   });
 });

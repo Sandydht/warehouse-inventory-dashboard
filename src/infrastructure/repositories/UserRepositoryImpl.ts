@@ -4,7 +4,7 @@ import UserRepository from "../../domain/user/UserRepository";
 import UserDummyData from "../datasources/json/user.json";
 
 class UserRepositoryImpl extends UserRepository {
-  async getUserById(id: string): Promise<User> {
+  async getUserProfile(id: string): Promise<User> {
     const findUser = UserDummyData.find((user) => id == user.id);
     if (!findUser) throw new Error("User not found");
 

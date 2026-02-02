@@ -55,7 +55,6 @@ describe("Login account use case", () => {
       "refreshToken",
       "refresh-token",
     );
-    expect(result.getAccessToken()).toBe("access-token");
-    expect(result.getRefreshToken()).toBe("refresh-token");
+    expect(result).toStrictEqual(new NewAuth("access-token", "refresh-token"));
   });
 });

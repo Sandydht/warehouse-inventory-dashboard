@@ -5,21 +5,21 @@ import User from "../../../domain/user/entity/User";
 describe("UserRepositoryImpl", () => {
   const userRepositoryImpl: UserRepositoryImpl = new UserRepositoryImpl();
 
-  describe("getUserById function", () => {
+  describe("getUserProfile function", () => {
     it("should throw an error when ID does not exist", async () => {
       await expect(
-        userRepositoryImpl.getUserById("notfoundif"),
+        userRepositoryImpl.getUserProfile("notfoundif"),
       ).rejects.toThrowError("User not found");
     });
 
     it("should throw an error when ID is empty string", async () => {
-      await expect(userRepositoryImpl.getUserById("")).rejects.toThrowError(
+      await expect(userRepositoryImpl.getUserProfile("")).rejects.toThrowError(
         "User not found",
       );
     });
 
     it("should return a User instance when valid ID is provided", async () => {
-      const result: User = await userRepositoryImpl.getUserById("user-001");
+      const result: User = await userRepositoryImpl.getUserProfile("user-001");
 
       expect(result).toBeInstanceOf(User);
       expect(result.getId()).toBe("user-001");
