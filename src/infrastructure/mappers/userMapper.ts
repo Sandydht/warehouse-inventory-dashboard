@@ -14,3 +14,16 @@ export const toUserDomain = (dto: UserProfileResponseDto): User => {
     dto.deletedAt,
   );
 };
+
+export const toUserProfileResponseDto = (
+  domain: User,
+): UserProfileResponseDto => ({
+  id: domain.getId(),
+  email: domain.getEmail(),
+  phoneNumber: domain.getPhoneNumber(),
+  fullName: domain.getFullName(),
+  role: domain.getRole(),
+  createdAt: domain.getCreatedAt(),
+  updatedAt: domain.getUpdatedAt(),
+  deletedAt: domain.getDeletedAt(),
+});

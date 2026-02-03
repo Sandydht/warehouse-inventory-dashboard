@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { METHOD_ASSERTION_ERRORS } from "./constants";
 
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 class MethodAssertion {
   public assertImplemented<T extends object, K extends keyof T>(
     _target: T,

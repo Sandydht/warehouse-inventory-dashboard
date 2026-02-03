@@ -1,0 +1,24 @@
+[
+  {
+    "id": "user-001",
+    "email": "example1@email.com",
+    "phoneNumber": "081234567890",
+    "fullName": "Example User One",
+    "password": "password123",
+    "role": "OFFICEER",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-20T12:00:00Z",
+    "deletedAt": null
+  },
+  {
+    "id": "user-002",
+    "email": "example2@email.com",
+    "phoneNumber": "081234567891",
+    "fullName": "Example User Two",
+    "password": "password456",
+    "role": "STAFF",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-20T12:00:00Z",
+    "deletedAt": null
+  }
+]
