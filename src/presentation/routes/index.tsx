@@ -7,6 +7,7 @@ import InventoryList from "../pages/InventoryListPage";
 import MyTaskPage from "../pages/MyTaskPage";
 import RoleGuard from "./RoleGuard";
 import UnauthorizedPage from "../pages/UnauthorizedPage";
+import AddProductInventoryListPage from "../pages/AddProductInventoryListPage";
 
 function AppRoutes() {
   return (
@@ -28,6 +29,13 @@ function AppRoutes() {
 
           <Route element={<RoleGuard allowedRoles={["OFFICER", "STAFF"]} />}>
             <Route path="/inventory-list" element={<InventoryList />} />
+          </Route>
+
+          <Route element={<RoleGuard allowedRoles={["STAFF"]} />}>
+            <Route
+              path="/inventory-list/add-product"
+              element={<AddProductInventoryListPage />}
+            />
           </Route>
         </Route>
       </Route>

@@ -11,7 +11,7 @@ function RoleGuard({ allowedRoles }: RoleGuardProps) {
     (state) => state.user.userProfile,
   );
 
-  if (loading) {
+  if (loading || !data || error) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
         Loading...
@@ -19,7 +19,7 @@ function RoleGuard({ allowedRoles }: RoleGuardProps) {
     );
   }
 
-  if ((!data?.role || !allowedRoles.includes(data.role as UserRole)) && error) {
+  if (!data?.role || !allowedRoles.includes(data.role as UserRole)) {
     return <Navigate to="/unauthorized" replace />;
   }
 

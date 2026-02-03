@@ -1,5 +1,5 @@
 import AddedProduct from "../../domain/inventory/entity/AddedProduct";
-import type AddProduct from "../../domain/inventory/entity/AddProduct";
+import AddProduct from "../../domain/inventory/entity/AddProduct";
 import type { AddProductRequestDto } from "../dto/request/AddProductRequestDto";
 import type { AddProductResponseDto } from "../dto/response/AddProductResponseDto";
 
@@ -28,4 +28,29 @@ export const toAddedProductDomain = (
     dto.createdAt,
     dto.updatedAt,
     dto.deletedAt,
+  );
+
+export const toAddProductResponseDto = (
+  domain: AddedProduct,
+): AddProductResponseDto => ({
+  id: domain.getId(),
+  sku: domain.getSku(),
+  name: domain.getName(),
+  category: domain.getCategory(),
+  price: domain.getPrice(),
+  quantity: domain.getQuantity(),
+  supplier: domain.getSupplier(),
+  createdAt: domain.getCreatedAt(),
+  updatedAt: domain.getUpdatedAt(),
+  deletedAt: domain.getDeletedAt(),
+});
+
+export const toAddProductDomain = (dto: AddProductRequestDto): AddProduct =>
+  new AddProduct(
+    dto.sku,
+    dto.name,
+    dto.category,
+    dto.price,
+    dto.quantity,
+    dto.supplier,
   );

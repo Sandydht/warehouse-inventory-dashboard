@@ -7,11 +7,11 @@ import {
 import type { UserProfileResponseDto } from "../../../infrastructure/dto/response/UserProfileResponseDto";
 import { getUserProfile } from "./userThunk";
 
-interface AuthState {
+interface UserState {
   userProfile: AsyncState<UserProfileResponseDto>;
 }
 
-const initialState: AuthState = {
+const initialState: UserState = {
   userProfile: createAsyncState<UserProfileResponseDto>(),
 };
 

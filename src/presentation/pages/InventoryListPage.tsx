@@ -1,8 +1,15 @@
+import { Link } from "react-router-dom";
+
 function InventoryListPage() {
   return (
     <div className="w-full h-full flex flex-col items-start justify-start gap-4">
       <div className="w-full h-auto flex items-start justify-start">
-        <p>Inventory List</p>
+        <Link
+          to={"/inventory-list/add-product"}
+          className="text-left px-3 py-2 rounded cursor-pointer hover:bg-gray-100 text-sm"
+        >
+          Add Product
+        </Link>
       </div>
 
       <div className="w-full h-auto flex flex-col items-start justify-start gap-4 rounded-lg border border-gray-200 p-4 shadow-md">
