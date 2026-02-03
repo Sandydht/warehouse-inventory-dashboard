@@ -39,10 +39,10 @@ function PasswordInput({
           className={`w-full flex items-center justify-between rounded-lg border-2 px-4 overflow-hidden
             ${
               error
-                ? "border-red-400 focus:border-red-500 hover:border-red-500"
+                ? "border-red-400 focus:border-red-500 focus-within:border-red-500"
                 : isFocused
-                  ? "border-blue-500"
-                  : "border-gray-300 hover:border-blue-500"
+                  ? "border-blue-500 focus:border-blue-500 focus-within:border-blue-500"
+                  : "border-gray-300"
             }`}
         >
           <input

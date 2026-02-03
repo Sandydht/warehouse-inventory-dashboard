@@ -48,6 +48,25 @@ describe("AuthRepositoryImpl", () => {
         mockedUserLoginResponseDto.refreshToken,
       );
     });
+
+    it("should throw error when login account fails", async () => {
+      const payload: UserLogin = new UserLogin(
+        validPayload.email,
+        validPayload.password,
+      );
+
+      vi.mocked(publicApi.post).mockRejectedValue(
+        new Error("Invalid credentials"),
+      );
+
+      await expect(
+        authRepositoryImpl.loginAccount(payload),
+      ).rejects.toThrowError("Invalid credentials");
+      expect(publicApi.post).toHaveBeenCalledWith(
+        "/auth/login-account",
+        payload,
+      );
+    });
   });
 
   describe("logoutAccount function", () => {
@@ -67,6 +86,19 @@ describe("AuthRepositoryImpl", () => {
         refreshToken: "valid-refresh-token",
       });
       expect(response.getMessage()).toBe(mockedLogoutResponseDto.message);
+    });
+
+    it("should throw error when logout account fails", async () => {
+      vi.mocked(publicApi.post).mockRejectedValue(new Error("Unauthorized"));
+
+      await expect(
+        authRepositoryImpl.logoutAccount(
+          new RefreshToken("invalid-refresh-token"),
+        ),
+      ).rejects.toThrowError("Unauthorized");
+      expect(publicApi.post).toHaveBeenCalledWith("/auth/logout-account", {
+        refreshToken: "invalid-refresh-token",
+      });
     });
   });
 });

@@ -36,8 +36,8 @@ function InputField({
           className={`w-full px-4 py-2 rounded-lg border-2 text-[12px] outline-none leading-4
             ${
               error
-                ? "border-red-400 focus:border-red-500 hover:border-red-500"
-                : "border-gray-300 focus:border-blue-500 focus-within:border-blue-500 hover:border-blue-500"
+                ? "border-red-400 focus:border-red-500 focus-within:border-red-500"
+                : "border-gray-300 focus:border-blue-500 focus-within:border-blue-500"
             }`}
           {...register}
         />

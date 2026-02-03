@@ -17,7 +17,10 @@ export const authApi = [
       );
     }
 
-    return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+    return HttpResponse.json(
+      { message: "Invalid credentials" },
+      { status: 401 },
+    );
   }),
 
   http.post("/api/auth/logout-account", async ({ request }) => {

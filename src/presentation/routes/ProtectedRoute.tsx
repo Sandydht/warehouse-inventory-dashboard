@@ -10,14 +10,10 @@ function ProtectedRoute() {
   );
 
   useEffect(() => {
-    async function fetchUserProfile() {
-      if (!data && !loading) {
-        await dispatch(getUserProfile());
-      }
+    if (!data && !loading && !error) {
+      dispatch(getUserProfile()).unwrap();
     }
-
-    fetchUserProfile();
-  }, [dispatch, data, loading]);
+  }, [dispatch, data, loading, error]);
 
   if (loading) {
     return (
@@ -27,7 +23,7 @@ function ProtectedRoute() {
     );
   }
 
-  if (!data && error) {
+  if (error) {
     return <Navigate to="/login" replace />;
   }
 

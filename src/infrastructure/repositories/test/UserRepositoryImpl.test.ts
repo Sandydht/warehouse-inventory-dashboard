@@ -40,5 +40,15 @@ describe("UserRepositoryImpl", () => {
       expect(response.getUpdatedAt()).toBe(mockedResponse.updatedAt);
       expect(response.getDeletedAt()).toBe(mockedResponse.deletedAt);
     });
+
+    it("should throw error when get user profile fails", async () => {
+      vi.mocked(privateApi.get).mockRejectedValue(
+        new Error("Failed to fetch user profile"),
+      );
+
+      await expect(userRepositoryImpl.getUserProfile()).rejects.toThrowError(
+        "Failed to fetch user profile",
+      );
+    });
   });
 });

@@ -15,7 +15,7 @@
     "email": "example2@email.com",
     "phoneNumber": "081234567891",
     "fullName": "Example User Two",
-    "password": "password456",
+    "password": "password123",
     "role": "STAFF",
     "createdAt": "2024-01-15T10:00:00Z",
     "updatedAt": "2024-01-20T12:00:00Z",

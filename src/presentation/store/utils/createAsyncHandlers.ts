@@ -24,6 +24,7 @@ export const addAsyncThunkHandlers = <T>(
       state[stateKey].error = null;
     })
     .addCase(thunk.fulfilled, (state: any, action: any) => {
+      state[stateKey].error = null;
       state[stateKey].loading = false;
       state[stateKey].data = action.payload;
     })

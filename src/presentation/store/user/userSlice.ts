@@ -15,13 +15,20 @@ const initialState: AuthState = {
   userProfile: createAsyncState<UserProfileResponseDto>(),
 };
 
-const authSlice = createSlice({
-  name: "auth",
+const userSlice = createSlice({
+  name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    resetUserProfileData: (state) => {
+      state.userProfile.loading = false;
+      state.userProfile.data = null;
+      state.userProfile.error = null;
+    },
+  },
   extraReducers: (builder) => {
     addAsyncThunkHandlers(builder, getUserProfile, "userProfile");
   },
 });
 
-export default authSlice.reducer;
+export const { resetUserProfileData } = userSlice.actions;
+export default userSlice.reducer;

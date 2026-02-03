@@ -8,6 +8,8 @@ import Visibility24pxGray300Icon from "../assets/images/svg/visibility_24px_gray
 import VisibilityOff24pxGray300Icon from "../assets/images/svg/visibility_off_24px_gray_300.svg";
 import PasswordInput from "../components/PasswordInput";
 import InputField from "../components/InputField";
+import { resetUserProfileData } from "../store/user/userSlice";
+import { showSnackbar } from "../store/snackbar/snackbarSlice";
 
 type LoginForm = {
   email: string;
@@ -55,11 +57,12 @@ function LoginPage() {
       };
 
       await dispatch(loginAccount(toUserLoginDomain(payload))).unwrap();
+      dispatch(resetUserProfileData());
 
       reset();
       navigate("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      dispatch(showSnackbar({ message: error as string, type: "error" }));
     }
   };
 
