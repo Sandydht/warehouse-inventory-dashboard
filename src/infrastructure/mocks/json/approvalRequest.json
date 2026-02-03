@@ -1,0 +1,85 @@
+[
+  {
+    "id": "req-001",
+    "type": "CREATE",
+    "status": "PENDING",
+    "targetId": null,
+    "originalData": null,
+    "proposedData": {
+      "id": "inv-002",
+      "sku": "SKU-XYZ-002",
+      "name": "Mechanical Keyboard",
+      "category": "Electronics",
+      "price": 750000,
+      "quantity": 10,
+      "supplier": "Keychron",
+      "createdAt": "2026-01-02T09:00:00Z",
+      "updatedAt": "2026-01-02T09:00:00Z",
+      "deletedAt": null
+    },
+    "rejectionReason": null,
+    "createdBy": "staff-andi",
+    "createdAt": "2026-02-02T09:00:00Z",
+    "updatedAt": "2026-02-02T09:00:00Z",
+    "deletedAt": null
+  },
+  {
+    "id": "req-002",
+    "type": "UPDATE",
+    "status": "PENDING",
+    "targetId": "inv-001",
+    "originalData": {
+      "id": "inv-001",
+      "sku": "SKU-ABC-001",
+      "name": "Wireless Mouse",
+      "category": "Electronics",
+      "price": 150000,
+      "quantity": 20,
+      "supplier": "Logitech",
+      "createdAt": "2026-01-02T09:00:00Z",
+      "updatedAt": "2026-01-02T09:00:00Z",
+      "deletedAt": null
+    },
+    "proposedData": {
+      "id": "inv-001",
+      "sku": "SKU-ABC-001",
+      "name": "Wireless Mouse",
+      "category": "Electronics",
+      "price": 150000,
+      "quantity": 50,
+      "supplier": "Logitech",
+      "createdAt": "2026-01-02T09:00:00Z",
+      "updatedAt": "2026-01-02T09:00:00Z",
+      "deletedAt": null
+    },
+    "rejectionReason": null,
+    "createdBy": "staff-andi",
+    "createdAt": "2026-02-02T09:00:00Z",
+    "updatedAt": "2026-02-02T09:00:00Z",
+    "deletedAt": null
+  },
+  {
+    "id": "req-003",
+    "type": "DELETE",
+    "status": "PENDING",
+    "targetId": "inv-001",
+    "originalData": {
+      "id": "inv-001",
+      "sku": "SKU-ABC-001",
+      "name": "Wireless Mouse",
+      "category": "Electronics",
+      "price": 150000,
+      "quantity": 20,
+      "supplier": "Logitech",
+      "createdAt": "2026-01-02T09:00:00Z",
+      "updatedAt": "2026-01-02T09:00:00Z",
+      "deletedAt": null
+    },
+    "proposedData": null,
+    "rejectionReason": null,
+    "createdBy": "staff-andi",
+    "createdAt": "2026-02-02T09:00:00Z",
+    "updatedAt": "2026-02-02T09:00:00Z",
+    "deletedAt": null
+  }
+]

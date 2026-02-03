@@ -1,6 +1,6 @@
 import { INVENTORY_REPOSITORY_ERRORS } from "../../domain/inventory/constants";
-import type AddedProduct from "../../domain/inventory/entity/AddedProduct";
 import type AddProduct from "../../domain/inventory/entity/AddProduct";
+import type ApprovalRequest from "../../domain/inventory/entity/ApprovalRequest";
 import type InventoryRepository from "../../domain/inventory/InventoryRepository";
 import type MethodAssertion from "../utils/MethodAssertion";
 
@@ -16,7 +16,7 @@ class AddProductToInventoryUseCase {
     this.inventoryRepository = inventoryRepository;
   }
 
-  async execute(payload: AddProduct): Promise<AddedProduct> {
+  async execute(payload: AddProduct): Promise<ApprovalRequest> {
     this.methodAssertion.assertImplemented(
       this.inventoryRepository,
       "addProductToInventory",

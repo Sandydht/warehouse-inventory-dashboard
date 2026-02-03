@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import UserDummyData from "./json/user.json";
+import UserDummyData from "../json/user.json";
 
 export const userApi = [
   http.get("/api/user/get-profile", async ({ request }) => {

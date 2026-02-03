@@ -7,6 +7,7 @@ import type { AddProductRequestDto } from "../../infrastructure/dto/request/AddP
 import { addProductToInventory } from "../store/inventory/inventoryThunk";
 import { toAddProductDomain } from "../../infrastructure/mappers/inventoryMapper";
 import { showSnackbar } from "../store/snackbar/snackbarSlice";
+import { useNavigate } from "react-router-dom";
 
 type AddProductToInventoryForm = {
   sku: string;
@@ -25,6 +26,7 @@ function AddProductInventoryListPage() {
     formState: { errors, isSubmitting },
   } = useForm<AddProductToInventoryForm>();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const skuRegister = register("sku", {
     required: "SKU is required",
@@ -77,6 +79,7 @@ function AddProductInventoryListPage() {
         addProductToInventory(toAddProductDomain(payload)),
       ).unwrap();
       reset();
+      navigate("/inventory-list");
     } catch (error) {
       dispatch(showSnackbar({ message: error as string, type: "error" }));
     }

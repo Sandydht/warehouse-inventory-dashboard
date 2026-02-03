@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
-import UserDummyData from "./json/user.json";
-import type { UserLoginRequestDto } from "../dto/request/UserLoginRequestDto";
-import type { UserLogoutRequestDto } from "../dto/request/UserLogoutRequestDto";
+import UserDummyData from "../json/user.json";
+import type { UserLoginRequestDto } from "../../dto/request/UserLoginRequestDto";
+import type { UserLogoutRequestDto } from "../../dto/request/UserLogoutRequestDto";
 
 export const authApi = [
   http.post("/api/auth/login-account", async ({ request }) => {
