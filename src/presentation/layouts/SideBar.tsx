@@ -1,9 +1,39 @@
+import { Link } from "react-router-dom";
+import type { UserRole } from "../../domain/user/types";
+import { useAppSelector } from "../store/hooks";
+
 type SidebarProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
+interface SideBarItemData {
+  label: string;
+  link: string;
+  roles: UserRole[];
+}
+
 function SideBar({ isOpen, onClose }: SidebarProps) {
+  const { data } = useAppSelector((state) => state.user.userProfile);
+
+  const navList: SideBarItemData[] = [
+    {
+      label: "Dashboard",
+      link: "/dashboard",
+      roles: ["STAFF"],
+    },
+    {
+      label: "My Task",
+      link: "/my-task",
+      roles: ["STAFF"],
+    },
+    {
+      label: "Inventory List",
+      link: "/inventory-list",
+      roles: ["OFFICER"],
+    },
+  ];
+
   return (
     <>
       {isOpen && (
@@ -22,21 +52,32 @@ function SideBar({ isOpen, onClose }: SidebarProps) {
         </div>
 
         <nav className="p-4 flex flex-col gap-2">
-          <SidebarItem label="Dashboard" />
-          <SidebarItem label="Users" />
-          <SidebarItem label="Settings" />
-          <SidebarItem label="Logout" />
+          {navList
+            .filter(
+              (item) =>
+                data?.role && item.roles.includes(data.role as UserRole),
+            )
+            .map((item) => (
+              <SidebarItem
+                key={item.label}
+                label={item.label}
+                link={item.link}
+              />
+            ))}
         </nav>
       </aside>
     </>
   );
 }
 
-function SidebarItem({ label }: { label: string }) {
+function SidebarItem({ label, link }: { label: string; link: string }) {
   return (
-    <button className="text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">
+    <Link
+      to={link}
+      className="text-left px-3 py-2 rounded cursor-pointer hover:bg-gray-100 text-sm"
+    >
       {label}
-    </button>
+    </Link>
   );
 }
 

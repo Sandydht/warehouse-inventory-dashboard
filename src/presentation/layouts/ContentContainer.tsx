@@ -11,8 +11,10 @@ function ContentContainer() {
       <AppBar onMenuClick={() => setSidebarOpen(true)} />
       <SideBar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className="pt-14 md:pl-64 p-4">
-        <Outlet />
+      <main className="pt-14 md:pl-64">
+        <div className="p-4">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

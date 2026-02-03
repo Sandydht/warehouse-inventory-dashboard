@@ -14,7 +14,7 @@ type LoginForm = {
   password: string;
 };
 
-function Login() {
+function LoginPage() {
   const {
     register,
     handleSubmit,
@@ -110,4 +110,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginPage;

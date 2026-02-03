@@ -1,10 +1,32 @@
 import { Navigate, Outlet } from "react-router-dom";
-import SecureStorageImpl from "../../infrastructure/utils/SecureStorageImpl";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useEffect } from "react";
+import { getUserProfile } from "../store/user/userThunk";
 
 function ProtectedRoute() {
-  const secureStorage: SecureStorageImpl = new SecureStorageImpl();
-  const accessToken = secureStorage.getSecureItem("accessToken");
-  if (!accessToken) return <Navigate to="/login" replace />;
+  const dispatch = useAppDispatch();
+  const { loading, data, error } = useAppSelector(
+    (state) => state.user.userProfile,
+  );
+
+  useEffect(() => {
+    if (!data && !loading) {
+      dispatch(getUserProfile());
+    }
+  }, [dispatch, data, loading]);
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!data && error) {
+    return <Navigate to="/login" replace />;
+  }
+
   return <Outlet />;
 }
 

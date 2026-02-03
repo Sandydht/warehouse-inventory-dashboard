@@ -5,7 +5,7 @@
     "phoneNumber": "081234567890",
     "fullName": "Example User One",
     "password": "password123",
-    "role": "OFFICEER",
+    "role": "OFFICER",
     "createdAt": "2024-01-15T10:00:00Z",
     "updatedAt": "2024-01-20T12:00:00Z",
     "deletedAt": null
