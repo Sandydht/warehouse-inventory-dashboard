@@ -7,7 +7,9 @@ type RoleGuardProps = {
 };
 
 function RoleGuard({ allowedRoles }: RoleGuardProps) {
-  const { loading, data } = useAppSelector((state) => state.user.userProfile);
+  const { loading, data, error } = useAppSelector(
+    (state) => state.user.userProfile,
+  );
 
   if (loading) {
     return (
@@ -17,7 +19,7 @@ function RoleGuard({ allowedRoles }: RoleGuardProps) {
     );
   }
 
-  if (!data?.role || !allowedRoles.includes(data.role as UserRole)) {
+  if ((!data?.role || !allowedRoles.includes(data.role as UserRole)) && error) {
     return <Navigate to="/unauthorized" replace />;
   }
 

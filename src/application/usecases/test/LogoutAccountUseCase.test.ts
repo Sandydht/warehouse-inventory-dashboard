@@ -5,6 +5,7 @@ import UserLogout from "../../../domain/auth/entity/UserLogout";
 import LogoutAccountUseCase from "../LogoutAccountUseCase";
 import { AUTH_REPOSITORY_ERRORS } from "../../../domain/auth/constants";
 import type SecureStorage from "../../utils/SecureStorage";
+import { SECURE_STORAGE_ERRORS } from "../../utils/constants";
 
 describe("Logout account use case", () => {
   it("should orchestrating the logout account action correctly", async () => {
@@ -17,7 +18,8 @@ describe("Logout account use case", () => {
     };
 
     const mockSecureStorage: SecureStorage = {
-      setSecureItem: vi.fn(),
+      getSecureItem: vi.fn().mockReturnValue("refreshTokenValue"),
+      removeSecureItem: vi.fn(),
     };
 
     const logoutAccountUseCase = new LogoutAccountUseCase(
@@ -33,7 +35,27 @@ describe("Logout account use case", () => {
       "logoutAccount",
       AUTH_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
-    expect(mockAuthRepository.logoutAccount).toHaveBeenCalled();
+    expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(
+      mockSecureStorage,
+      "getSecureItem",
+      SECURE_STORAGE_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
+    expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(
+      mockSecureStorage,
+      "removeSecureItem",
+      SECURE_STORAGE_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
+
+    expect(mockSecureStorage.getSecureItem).toHaveBeenCalledWith(
+      "refreshToken",
+    );
+    expect(mockSecureStorage.removeSecureItem).toHaveBeenCalledWith(
+      "accessToken",
+    );
+    expect(mockSecureStorage.removeSecureItem).toHaveBeenCalledWith(
+      "refreshToken",
+    );
+    expect(mockAuthRepository.logoutAccount).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual(new UserLogout("See you!"));
   });
 });

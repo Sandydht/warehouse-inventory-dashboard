@@ -10,9 +10,13 @@ function ProtectedRoute() {
   );
 
   useEffect(() => {
-    if (!data && !loading) {
-      dispatch(getUserProfile());
+    async function fetchUserProfile() {
+      if (!data && !loading) {
+        await dispatch(getUserProfile());
+      }
     }
+
+    fetchUserProfile();
   }, [dispatch, data, loading]);
 
   if (loading) {

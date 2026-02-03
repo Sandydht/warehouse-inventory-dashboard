@@ -37,7 +37,7 @@ function InputField({
             ${
               error
                 ? "border-red-400 focus:border-red-500 hover:border-red-500"
-                : "border-gray-300 focus:border-blue-500 hover:border-blue-500"
+                : "border-gray-300 focus:border-blue-500 focus-within:border-blue-500 hover:border-blue-500"
             }`}
           {...register}
         />

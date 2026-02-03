@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import type { UserRole } from "../../domain/user/types";
-import { useAppSelector } from "../store/hooks";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { logoutAccount } from "../store/auth/authThunk";
+import { useNavigate } from "react-router-dom";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -15,24 +17,35 @@ interface SideBarItemData {
 
 function SideBar({ isOpen, onClose }: SidebarProps) {
   const { data } = useAppSelector((state) => state.user.userProfile);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const navList: SideBarItemData[] = [
     {
       label: "Dashboard",
       link: "/dashboard",
-      roles: ["STAFF"],
+      roles: ["OFFICER", "STAFF"],
     },
     {
       label: "My Task",
       link: "/my-task",
-      roles: ["STAFF"],
+      roles: ["OFFICER"],
     },
     {
       label: "Inventory List",
       link: "/inventory-list",
-      roles: ["OFFICER"],
+      roles: ["OFFICER", "STAFF"],
     },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutAccount()).unwrap();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <>
@@ -64,6 +77,14 @@ function SideBar({ isOpen, onClose }: SidebarProps) {
                 link={item.link}
               />
             ))}
+
+          <button
+            type="button"
+            className="text-left px-3 py-2 rounded cursor-pointer hover:bg-gray-100 text-sm"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </nav>
       </aside>
     </>

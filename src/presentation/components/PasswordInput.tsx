@@ -60,7 +60,7 @@ function PasswordInput({
 
           <button
             type="button"
-            className="min-w-6 min-h-6 flex items-center justify-center"
+            className="min-w-6 min-h-6 flex items-center justify-center outline-none focus:border-2 focus:border-blue-500 rounded"
             onClick={() => setIsVisible((prev) => !prev)}
           >
             <img

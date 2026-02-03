@@ -28,15 +28,27 @@ class LogoutAccountUseCase {
       SECURE_STORAGE_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
     this.methodAssertion.assertImplemented(
+      this.secureStorage,
+      "removeSecureItem",
+      SECURE_STORAGE_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
+    this.methodAssertion.assertImplemented(
       this.authRepository,
       "logoutAccount",
       AUTH_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
 
-    const token = this.secureStorage.getSecureItem("refreshToken") as string;
+    const token = this.secureStorage.getSecureItem("refreshToken");
     if (!token) throw new Error("No refresh token found in secure storage.");
 
-    return this.authRepository.logoutAccount(new RefreshToken(token));
+    const result: UserLogout = await this.authRepository.logoutAccount(
+      new RefreshToken(token as string),
+    );
+
+    this.secureStorage.removeSecureItem("accessToken");
+    this.secureStorage.removeSecureItem("refreshToken");
+
+    return result;
   }
 }
 
