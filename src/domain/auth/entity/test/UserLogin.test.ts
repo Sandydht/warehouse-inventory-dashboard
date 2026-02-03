@@ -44,7 +44,7 @@ describe("UserLogin entity", () => {
     ).toThrowError(USER_LOGIN_ERRORS.PASSWORD_MUST_NOT_CONTAIN_SPACE);
   });
 
-  it("should create RegisterUser correctly when payload is valid", () => {
+  it("should create object correctly when payload is valid", () => {
     const userLogin: UserLogin = new UserLogin(
       validPayload.email,
       validPayload.password,

@@ -1,24 +1,18 @@
+import type { AxiosResponse } from "axios";
 import User from "../../domain/user/entity/User";
-import type { UserRole } from "../../domain/user/types";
 import UserRepository from "../../domain/user/UserRepository";
-import UserDummyData from "../datasources/json/user.json";
+import type { UserProfileResponseDto } from "../dto/response/UserProfileResponseDto";
+import { privateApi } from "../http/axiosInstance";
+import { toUserDomain } from "../mappers/userMapper";
 
 class UserRepositoryImpl extends UserRepository {
-  async getUserProfile(id: string): Promise<User> {
-    const findUser = UserDummyData.find((user) => id == user.id);
-    if (!findUser) throw new Error("User not found");
+  async getUserProfile(): Promise<User> {
+    const { data } = await privateApi.get<
+      UserProfileResponseDto,
+      AxiosResponse<UserProfileResponseDto>
+    >("/user/get-profile");
 
-    return new User(
-      findUser.id,
-      findUser.email,
-      findUser.phoneNumber,
-      findUser.fullName,
-      findUser.role as UserRole,
-      findUser.password,
-      findUser.createdAt,
-      findUser.updatedAt,
-      findUser.deletedAt,
-    );
+    return toUserDomain(data);
   }
 }
 

@@ -15,14 +15,14 @@ class GetUserProfileUseCase {
     this.userRepository = userRepository;
   }
 
-  async execute(userId: string): Promise<User> {
+  async execute(): Promise<User> {
     this.methodAssertion.assertImplemented(
       this.userRepository,
       "getUserProfile",
       USER_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
 
-    return await this.userRepository.getUserProfile(userId);
+    return await this.userRepository.getUserProfile();
   }
 }
 

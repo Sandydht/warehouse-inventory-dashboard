@@ -1,36 +1,44 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import UserRepositoryImpl from "../UserRepositoryImpl";
-import User from "../../../domain/user/entity/User";
+import type { UserProfileResponseDto } from "../../dto/response/UserProfileResponseDto";
+import type { UserRole } from "../../../domain/user/types";
+import { privateApi } from "../../http/axiosInstance";
+import type User from "../../../domain/user/entity/User";
+
+vi.mock("../../http/axiosInstance", () => ({
+  privateApi: {
+    get: vi.fn(),
+  },
+}));
 
 describe("UserRepositoryImpl", () => {
   const userRepositoryImpl: UserRepositoryImpl = new UserRepositoryImpl();
 
   describe("getUserProfile function", () => {
-    it("should throw an error when ID does not exist", async () => {
-      await expect(
-        userRepositoryImpl.getUserProfile("notfoundif"),
-      ).rejects.toThrowError("User not found");
-    });
+    it("should return user profile data correctly", async () => {
+      const mockedResponse: UserProfileResponseDto = {
+        id: "user-123",
+        email: "example1@email.com",
+        phoneNumber: "081123123123",
+        fullName: "User",
+        role: "OFFICER" as UserRole,
+        createdAt: new Date(Date.now()).toISOString(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+      vi.mocked(privateApi.get).mockResolvedValue({ data: mockedResponse });
 
-    it("should throw an error when ID is empty string", async () => {
-      await expect(userRepositoryImpl.getUserProfile("")).rejects.toThrowError(
-        "User not found",
-      );
-    });
+      const response: User = await userRepositoryImpl.getUserProfile();
 
-    it("should return a User instance when valid ID is provided", async () => {
-      const result: User = await userRepositoryImpl.getUserProfile("user-001");
-
-      expect(result).toBeInstanceOf(User);
-      expect(result.getId()).toBe("user-001");
-      expect(result.getEmail()).toBeDefined();
-      expect(result.getPhoneNumber()).toBeDefined();
-      expect(result.getFullName()).toBeDefined();
-      expect(result.getRole()).toBeDefined();
-      expect(result.getPassword()).toBeDefined();
-      expect(result.getCreatedAt()).toBeDefined();
-      expect(result.getUpdatedAt()).toBeDefined();
-      expect(result.getDeletedAt()).toBeDefined();
+      expect(privateApi.get).toHaveBeenCalledWith("/user/get-profile");
+      expect(response.getId()).toBe(mockedResponse.id);
+      expect(response.getEmail()).toBe(mockedResponse.email);
+      expect(response.getPhoneNumber()).toBe(mockedResponse.phoneNumber);
+      expect(response.getFullName()).toBe(mockedResponse.fullName);
+      expect(response.getRole()).toBe(mockedResponse.role);
+      expect(response.getCreatedAt()).toBe(mockedResponse.createdAt);
+      expect(response.getUpdatedAt()).toBe(mockedResponse.updatedAt);
+      expect(response.getDeletedAt()).toBe(mockedResponse.deletedAt);
     });
   });
 });

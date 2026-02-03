@@ -17,8 +17,8 @@ describe("UserRepository", () => {
     );
 
     expect(userRepository).toBeInstanceOf(UserRepository);
-    await expect(
-      userRepository.getUserProfile("user-001"),
-    ).rejects.toThrowError(USER_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
+    await expect(userRepository.getUserProfile()).rejects.toThrowError(
+      USER_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
   });
 });

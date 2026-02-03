@@ -21,7 +21,6 @@ describe("Get user profile use case", () => {
             "081123123123",
             "User 1",
             "OFFICER",
-            "password123",
             new Date("2025-02-03").toISOString(),
             null,
             null,
@@ -32,14 +31,14 @@ describe("Get user profile use case", () => {
     const getUserProfileUseCase: GetUserProfileUseCase =
       new GetUserProfileUseCase(mockMethodAssertion, mockUserRepository);
 
-    const result: User = await getUserProfileUseCase.execute("user-001");
+    const result: User = await getUserProfileUseCase.execute();
 
     expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(
       mockUserRepository,
       "getUserProfile",
       USER_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
-    expect(mockUserRepository.getUserProfile).toHaveBeenCalledWith("user-001");
+    expect(mockUserRepository.getUserProfile).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual(
       new User(
         "user-001",
@@ -47,7 +46,6 @@ describe("Get user profile use case", () => {
         "081123123123",
         "User 1",
         "OFFICER",
-        "password123",
         new Date("2025-02-03").toISOString(),
         null,
         null,

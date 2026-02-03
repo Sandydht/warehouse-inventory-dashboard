@@ -1,16 +1,21 @@
+import type { AxiosResponse } from "axios";
 import AuthRepository from "../../domain/auth/AuthRepository";
 import NewAuth from "../../domain/auth/entity/NewAuth";
 import type UserLogin from "../../domain/auth/entity/UserLogin";
-import { loginAccountDummyApi } from "../datasources/api/auth.api";
 import type { UserLoginResponseDto } from "../dto/response/UserLoginResponseDto";
+import { publicApi } from "../http/axiosInstance";
 import { toNewAuthDomain, toUserLoginRequestDto } from "../mappers/authMapper";
+import type { UserLoginRequestDto } from "../dto/request/UserLoginRequestDto";
 
 class AuthRepositoryImpl extends AuthRepository {
   async loginAccount(payload: UserLogin): Promise<NewAuth> {
-    const result: UserLoginResponseDto = await loginAccountDummyApi(
-      toUserLoginRequestDto(payload),
-    );
-    return toNewAuthDomain(result);
+    const { data } = await publicApi.post<
+      UserLoginResponseDto,
+      AxiosResponse<UserLoginResponseDto>,
+      UserLoginRequestDto
+    >("/auth/login-account", toUserLoginRequestDto(payload));
+
+    return toNewAuthDomain(data);
   }
 }
 

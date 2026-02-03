@@ -1,7 +1,15 @@
-import { describe, it, expect } from "vitest";
-import AuthRepositoryImpl from "../AuthRepositoryImpl";
+import { describe, it, expect, vi } from "vitest";
 import NewAuth from "../../../domain/auth/entity/NewAuth";
 import UserLogin from "../../../domain/auth/entity/UserLogin";
+import { publicApi } from "../../http/axiosInstance";
+import AuthRepositoryImpl from "../AuthRepositoryImpl";
+import type { UserLoginResponseDto } from "../../dto/response/UserLoginResponseDto";
+
+vi.mock("../../http/axiosInstance", () => ({
+  publicApi: {
+    post: vi.fn(),
+  },
+}));
 
 describe("AuthRepositoryImpl", () => {
   const authRepositoryImpl: AuthRepositoryImpl = new AuthRepositoryImpl();
@@ -12,25 +20,32 @@ describe("AuthRepositoryImpl", () => {
       password: "password123",
     };
 
-    it("should return accessToken & refreshToken correctly when provided with valid credentials", async () => {
+    it("should login account and return auth data", async () => {
       const payload: UserLogin = new UserLogin(
         validPayload.email,
         validPayload.password,
       );
-      const result: NewAuth = await authRepositoryImpl.loginAccount(payload);
-      expect(result).toBeInstanceOf(NewAuth);
-      expect(result.getAccessToken()).toBeDefined();
-      expect(result.getRefreshToken()).toBeDefined();
-    });
 
-    it("should throw and error when the email is not found", async () => {
-      const payload: UserLogin = new UserLogin(
-        "notfound@email.com",
-        validPayload.password,
+      const mockedUserLoginResponseDto: UserLoginResponseDto = {
+        accessToken: "access-token",
+        refreshToken: "refresh-token",
+      };
+      vi.mocked(publicApi.post).mockResolvedValue({
+        data: mockedUserLoginResponseDto,
+      });
+
+      const response: NewAuth = await authRepositoryImpl.loginAccount(payload);
+
+      expect(publicApi.post).toHaveBeenCalledWith(
+        "/auth/login-account",
+        payload,
       );
-      await expect(
-        authRepositoryImpl.loginAccount(payload),
-      ).rejects.toThrowError("Invalid credentials");
+      expect(response.getAccessToken()).toBe(
+        mockedUserLoginResponseDto.accessToken,
+      );
+      expect(response.getRefreshToken()).toBe(
+        mockedUserLoginResponseDto.refreshToken,
+      );
     });
   });
 });
