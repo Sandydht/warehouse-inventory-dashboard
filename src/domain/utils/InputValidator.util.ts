@@ -6,6 +6,8 @@ class InputValidator {
     /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
   private static readonly INDONESIAN_PHONE_NUMBER_PATTERN =
     /^(?:\+62|62|0)8[1-9][0-9]{6,10}$/;
+  private static readonly SKU_PATTERN = /^[A-Z0-9-]{6,12}$/;
+  private static readonly POSITIVE_NUMBER_PATTERN = /^[0-9]\d*$/;
 
   public static requireNotBlank(value: string, message: string): void {
     if (value == null || value.trim() === "") {
@@ -53,6 +55,21 @@ class InputValidator {
     message: string,
   ): void {
     if (!this.INDONESIAN_PHONE_NUMBER_PATTERN.test(phoneNumber)) {
+      throw new Error(message);
+    }
+  }
+
+  public static skuValidFormat(sku: string, message: string): void {
+    if (!this.SKU_PATTERN.test(sku)) {
+      throw new Error(message);
+    }
+  }
+
+  public static positiveNumberValidFormat(
+    value: number,
+    message: string,
+  ): void {
+    if (value <= 0 || !this.POSITIVE_NUMBER_PATTERN.test(value.toString())) {
       throw new Error(message);
     }
   }

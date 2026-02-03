@@ -154,4 +154,44 @@ describe("InputValidator", () => {
       ).not.toThrowError();
     });
   });
+
+  describe("skuValidFormat function", () => {
+    const errorMessage = "INVALID_SKU_FORMAT";
+
+    it("should throw an error when the SKU format is invalid", () => {
+      const invalidSKU = "abc123";
+      expect(() =>
+        InputValidation.skuValidFormat(invalidSKU, errorMessage),
+      ).toThrowError(errorMessage);
+    });
+
+    it("should not throw an error when the SKU format is valid", () => {
+      const validSKU = "ABC-1234";
+      expect(() =>
+        InputValidation.skuValidFormat(validSKU, errorMessage),
+      ).not.toThrowError();
+    });
+  });
+
+  describe("positiveNumberValidFormat function", () => {
+    const errorMessage = "VALUE_MUST_BE_POSITIVE_NUMBER";
+
+    it("should throw an error when the number is not positive", () => {
+      const invalidNumber1 = -5;
+      const invalidNumber2 = 0;
+      expect(() =>
+        InputValidation.positiveNumberValidFormat(invalidNumber1, errorMessage),
+      ).toThrowError(errorMessage);
+      expect(() =>
+        InputValidation.positiveNumberValidFormat(invalidNumber2, errorMessage),
+      ).toThrowError(errorMessage);
+    });
+
+    it("should not throw an error when the number is positive", () => {
+      const validNumber = 10;
+      expect(() =>
+        InputValidation.positiveNumberValidFormat(validNumber, errorMessage),
+      ).not.toThrowError();
+    });
+  });
 });
