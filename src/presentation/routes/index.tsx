@@ -1,21 +1,19 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
-import Home from "../pages/Home";
+import Dashboard from "../pages/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
+import ContentContainer from "../layouts/ContentContainer";
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
 
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<ContentContainer />} path="/">
+          <Route index element={<Dashboard />} />
+        </Route>
+      </Route>
     </Routes>
   );
 }

@@ -4,6 +4,7 @@ import UserLogin from "../../../domain/auth/entity/UserLogin";
 import { publicApi } from "../../http/axiosInstance";
 import AuthRepositoryImpl from "../AuthRepositoryImpl";
 import type { UserLoginResponseDto } from "../../dto/response/UserLoginResponseDto";
+import RefreshToken from "../../../domain/auth/entity/RefreshToken";
 
 vi.mock("../../http/axiosInstance", () => ({
   publicApi: {
@@ -46,6 +47,26 @@ describe("AuthRepositoryImpl", () => {
       expect(response.getRefreshToken()).toBe(
         mockedUserLoginResponseDto.refreshToken,
       );
+    });
+  });
+
+  describe("logoutAccount function", () => {
+    it("should logout account and return logout message", async () => {
+      const mockedLogoutResponseDto = {
+        message: "Logout successful",
+      };
+      vi.mocked(publicApi.post).mockResolvedValue({
+        data: mockedLogoutResponseDto,
+      });
+
+      const response = await authRepositoryImpl.logoutAccount(
+        new RefreshToken("valid-refresh-token"),
+      );
+
+      expect(publicApi.post).toHaveBeenCalledWith("/auth/logout-account", {
+        refreshToken: "valid-refresh-token",
+      });
+      expect(response.getMessage()).toBe(mockedLogoutResponseDto.message);
     });
   });
 });

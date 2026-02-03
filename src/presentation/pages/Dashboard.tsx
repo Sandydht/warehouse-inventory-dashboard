@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "../store/hooks";
 import { getUserProfile } from "../store/user/userThunk";
 
-function Home() {
+function Dashboard() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -15,9 +15,9 @@ function Home() {
 
   return (
     <>
-      <p>Home page</p>
+      <p>Dashboard Page</p>
     </>
   );
 }
 
-export default Home;
+export default Dashboard;

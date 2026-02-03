@@ -1,19 +1,5 @@
 import { http, HttpResponse } from "msw";
-import CryptoJS from "crypto-js";
 import UserDummyData from "./json/user.json";
-
-const SECRET_KEY = import.meta.env.VITE_STORAGE_SECRET;
-
-const decryptToken = (encryptedToken: string): string | null => {
-  try {
-    const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
-    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-    return JSON.parse(decrypted);
-  } catch (error) {
-    console.error("Decrypt error:", error);
-    return null;
-  }
-};
 
 export const userApi = [
   http.get("/api/user/get-profile", async ({ request }) => {
@@ -23,8 +9,7 @@ export const userApi = [
     }
 
     const token = authHeader.replace("Bearer ", "");
-    const userId = decryptToken(token);
-    const user = UserDummyData.find((user) => user.id === userId);
+    const user = UserDummyData.find((user) => user.id === token);
     if (!user) {
       return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
     }

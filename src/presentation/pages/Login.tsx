@@ -6,7 +6,8 @@ import { toUserLoginDomain } from "../../infrastructure/mappers/authMapper";
 import { useNavigate } from "react-router-dom";
 import Visibility24pxGray300Icon from "../assets/images/svg/visibility_24px_gray_300.svg";
 import VisibilityOff24pxGray300Icon from "../assets/images/svg/visibility_off_24px_gray_300.svg";
-import { useState } from "react";
+import PasswordInput from "../components/PasswordInput";
+import InputField from "../components/InputField";
 
 type LoginForm = {
   email: string;
@@ -22,13 +23,14 @@ function Login() {
   } = useForm<LoginForm>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [isFocusInputPassword, setIsFocusInputPassword] =
-    useState<boolean>(false);
 
-  const handleTogglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
+  const emailRegister = register("email", {
+    required: "Email is required",
+    pattern: {
+      value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+      message: "Email is invalid",
+    },
+  });
 
   const passwordRegister = register("password", {
     required: "Password is required",
@@ -73,83 +75,26 @@ function Login() {
           </p>
         </div>
 
-        <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
-          <label
-            htmlFor="email"
-            className="text-left text-[14px] font-semibold leading-5"
-          >
-            Email <span className="text-red-500">*</span>
-          </label>
-          <div className="w-full h-auto flex flex-col items-start justify-start gap-0.5">
-            <input
-              id="email"
-              className={`w-full h-auto px-4 py-2 rounded-lg cursor-text border-2 text-left text-[12px] outline-none leading-4 ${errors.email ? "border-red-400 focus:border-red-500 hover:border-red-500" : "border-gray-300 focus:border-blue-500 hover:border-blue-500"}`}
-              placeholder="Email"
-              type="email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
-                  message: "Email is invalid",
-                },
-              })}
-            />
-            {errors.email && (
-              <p className="text-left text-[12px] text-red-500 leading-4">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-        </div>
+        <InputField
+          id="email"
+          label="Email"
+          type="email"
+          required={true}
+          placeholder="Email"
+          register={emailRegister}
+          error={errors.email}
+        />
 
-        <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
-          <label
-            htmlFor="password"
-            className="text-left text-[14px] font-semibold leading-5"
-          >
-            Password <span className="text-red-500">*</span>
-          </label>
-          <div className="w-full h-auto flex flex-col items-start justify-start gap-0.5">
-            <div
-              className={`w-full h-auto flex items-center justify-between rounded-lg border-2 overflow-hidden px-4 ${errors.password ? "border-red-400 focus:border-red-500 hover:border-red-500" : isFocusInputPassword ? "border-blue-500 focus:border-blue-500 hover:border-blue-500" : "border-gray-300 focus:border-blue-500 hover:border-blue-500"}`}
-            >
-              <input
-                id="password"
-                className="w-full h-auto py-2 cursor-text text-left text-[12px] outline-none leading-4"
-                placeholder="Password"
-                type={isPasswordVisible ? "text" : "password"}
-                {...passwordRegister}
-                onFocus={() => {
-                  setIsFocusInputPassword(true);
-                }}
-                onBlur={(e) => {
-                  passwordRegister.onBlur(e);
-                  setIsFocusInputPassword(false);
-                }}
-              />
-              <button
-                type="button"
-                className="w-full h-full min-w-6 max-w-6 min-h-6 max-h-6 flex items-center justify-center cursor-pointer outline-none"
-                onClick={handleTogglePasswordVisibility}
-              >
-                <img
-                  className="w-full h-full min-w-6 max-w-6 min-h-6 max-h-6 object-contain object-center"
-                  src={
-                    isPasswordVisible
-                      ? Visibility24pxGray300Icon
-                      : VisibilityOff24pxGray300Icon
-                  }
-                  alt="Toggle Password Visibility"
-                />
-              </button>
-            </div>
-            {errors.password && (
-              <p className="text-left text-[12px] text-red-500 leading-4">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-        </div>
+        <PasswordInput
+          id="password"
+          label="Password"
+          required={true}
+          placeholder="Password"
+          register={passwordRegister}
+          visibilityIcon={Visibility24pxGray300Icon}
+          visibilityOffIcon={VisibilityOff24pxGray300Icon}
+          error={errors.password}
+        />
 
         <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
           <button
