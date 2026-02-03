@@ -1,15 +1,14 @@
 import InputValidator from "../../utils/InputValidator.util";
 import { APPROVAL_REQUEST_ERRORS } from "../constants";
-import type { RequestStatus, RequestType } from "../types";
-import type InventoryItem from "./InventoryItem";
+import type { ApprovalStatus, ApprovalType } from "../types";
 
-class ApprovalRequest {
+class ApprovalRequest<T> {
   private readonly id: string;
-  private readonly type: RequestType;
-  private readonly status: RequestStatus;
+  private readonly type: ApprovalType;
+  private readonly status: ApprovalStatus;
   private readonly targetId: string | null;
-  private readonly originalData: InventoryItem | null;
-  private readonly proposedData: InventoryItem | null;
+  private readonly originalData: T | null;
+  private readonly proposedData: T | null;
   private readonly rejectionReason: string | null;
   private readonly createdBy: string;
   private readonly createdAt: string;
@@ -18,18 +17,18 @@ class ApprovalRequest {
 
   constructor(
     id: string,
-    type: RequestType,
-    status: RequestStatus,
+    type: ApprovalType,
+    status: ApprovalStatus,
     targetId: string | null,
-    originalData: InventoryItem | null,
-    proposedData: InventoryItem | null,
+    originalData: T | null,
+    proposedData: T | null,
     rejectionReason: string | null,
     createdBy: string,
     createdAt: string,
     updatedAt: string | null,
     deletedAt: string | null,
   ) {
-    this._verifyPayload(id, type, status, createdBy, createdAt);
+    this._verifyPayload(id, createdBy, createdAt);
 
     this.id = id;
     this.type = type;
@@ -44,23 +43,9 @@ class ApprovalRequest {
     this.deletedAt = deletedAt;
   }
 
-  private _verifyPayload(
-    id: string,
-    type: RequestType,
-    status: RequestStatus,
-    createdBy: string,
-    createdAt: string,
-  ) {
+  private _verifyPayload(id: string, createdBy: string, createdAt: string) {
     InputValidator.requireNotBlank(
       id,
-      APPROVAL_REQUEST_ERRORS.NOT_CONTAIN_NEEDED_PROPERTY,
-    );
-    InputValidator.requireNotBlank(
-      type,
-      APPROVAL_REQUEST_ERRORS.NOT_CONTAIN_NEEDED_PROPERTY,
-    );
-    InputValidator.requireNotBlank(
-      status,
       APPROVAL_REQUEST_ERRORS.NOT_CONTAIN_NEEDED_PROPERTY,
     );
     InputValidator.requireNotBlank(
@@ -77,11 +62,11 @@ class ApprovalRequest {
     return this.id;
   }
 
-  getType(): RequestType {
+  getType(): ApprovalType {
     return this.type;
   }
 
-  getStatus(): RequestStatus {
+  getStatus(): ApprovalStatus {
     return this.status;
   }
 
@@ -89,15 +74,15 @@ class ApprovalRequest {
     return this.targetId;
   }
 
-  getOriginalData(): InventoryItem | null {
+  getOriginalData(): T | null {
     return this.originalData;
   }
 
-  getProposedData(): InventoryItem | null {
+  getProposedData(): T | null {
     return this.proposedData;
   }
 
-  getRejectReason(): string | null {
+  getRejectionReason(): string | null {
     return this.rejectionReason;
   }
 

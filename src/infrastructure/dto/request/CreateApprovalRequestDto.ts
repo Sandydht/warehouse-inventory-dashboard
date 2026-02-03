@@ -1,4 +1,4 @@
-export interface AddProductRequestDto {
+export interface CreateApprovalRequestDto {
   sku: string;
   name: string;
   category: string;

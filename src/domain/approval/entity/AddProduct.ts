@@ -55,11 +55,11 @@ class AddProduct {
     InputValidator.skuValidFormat(sku, ADD_PRODUCT_ERRORS.SKU_INVALID_FORMAT);
     InputValidator.positiveNumberValidFormat(
       price,
-      ADD_PRODUCT_ERRORS.PRODUCT_PRICE_MUST_BE_POSITIVE_NUMBER,
+      ADD_PRODUCT_ERRORS.PRICE_MUST_BE_POSITIVE_NUMBER,
     );
     InputValidator.positiveNumberValidFormat(
       quantity,
-      ADD_PRODUCT_ERRORS.PRODUCT_QUANTITY_MUST_BE_POSITIVE_NUMBER,
+      ADD_PRODUCT_ERRORS.QUANTITY_MUST_BE_POSITIVE_NUMBER,
     );
   }
 

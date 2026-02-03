@@ -1,68 +1,30 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import ApprovalRequest from "../ApprovalRequest";
-import type { RequestStatus, RequestType } from "../../types";
+import type { ApprovalStatus, ApprovalType } from "../../types";
 import { APPROVAL_REQUEST_ERRORS } from "../../constants";
 
 describe("ApprovalRequest entity", () => {
   const validPayload = {
-    id: "approval-request-001",
-    type: "CREATE",
-    status: "PENDING",
+    id: "req-001",
+    type: "CREATE" as ApprovalType,
+    status: "PENDING" as ApprovalStatus,
     targetId: null,
     originalData: null,
     proposedData: null,
     rejectionReason: null,
-    createdBy: "user1",
-    createdAt: new Date("2026-02-03").toISOString(),
-    updatedAt: new Date("2026-02-03").toISOString(),
+    createdBy: "user",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     deletedAt: null,
   };
 
   it("should throw error when id is empty", () => {
     expect(
       () =>
-        new ApprovalRequest(
+        new ApprovalRequest<unknown>(
           "",
-          validPayload.type as RequestType,
-          validPayload.status as RequestStatus,
-          validPayload.targetId,
-          validPayload.originalData,
-          validPayload.proposedData,
-          validPayload.rejectionReason,
-          validPayload.createdBy,
-          validPayload.createdAt,
-          validPayload.updatedAt,
-          validPayload.deletedAt,
-        ),
-    ).toThrowError(APPROVAL_REQUEST_ERRORS.NOT_CONTAIN_NEEDED_PROPERTY);
-  });
-
-  it("should throw error when type is empty", () => {
-    expect(
-      () =>
-        new ApprovalRequest(
-          validPayload.id,
-          "" as RequestType,
-          validPayload.status as RequestStatus,
-          validPayload.targetId,
-          validPayload.originalData,
-          validPayload.proposedData,
-          validPayload.rejectionReason,
-          validPayload.createdBy,
-          validPayload.createdAt,
-          validPayload.updatedAt,
-          validPayload.deletedAt,
-        ),
-    ).toThrowError(APPROVAL_REQUEST_ERRORS.NOT_CONTAIN_NEEDED_PROPERTY);
-  });
-
-  it("should throw error when status is empty", () => {
-    expect(
-      () =>
-        new ApprovalRequest(
-          validPayload.id,
-          validPayload.type as RequestType,
-          "" as RequestStatus,
+          validPayload.type,
+          validPayload.status,
           validPayload.targetId,
           validPayload.originalData,
           validPayload.proposedData,
@@ -78,10 +40,10 @@ describe("ApprovalRequest entity", () => {
   it("should throw error when createdBy is empty", () => {
     expect(
       () =>
-        new ApprovalRequest(
+        new ApprovalRequest<unknown>(
           validPayload.id,
-          validPayload.type as RequestType,
-          validPayload.status as RequestStatus,
+          validPayload.type,
+          validPayload.status,
           validPayload.targetId,
           validPayload.originalData,
           validPayload.proposedData,
@@ -97,10 +59,10 @@ describe("ApprovalRequest entity", () => {
   it("should throw error when createdAt is empty", () => {
     expect(
       () =>
-        new ApprovalRequest(
+        new ApprovalRequest<unknown>(
           validPayload.id,
-          validPayload.type as RequestType,
-          validPayload.status as RequestStatus,
+          validPayload.type,
+          validPayload.status,
           validPayload.targetId,
           validPayload.originalData,
           validPayload.proposedData,
@@ -114,19 +76,20 @@ describe("ApprovalRequest entity", () => {
   });
 
   it("should create object correctly when payload is valid", () => {
-    const approvalRequest: ApprovalRequest = new ApprovalRequest(
-      validPayload.id,
-      validPayload.type as RequestType,
-      validPayload.status as RequestStatus,
-      validPayload.targetId,
-      validPayload.originalData,
-      validPayload.proposedData,
-      validPayload.rejectionReason,
-      validPayload.createdBy,
-      validPayload.createdAt,
-      validPayload.updatedAt,
-      validPayload.deletedAt,
-    );
+    const approvalRequest: ApprovalRequest<unknown> =
+      new ApprovalRequest<unknown>(
+        validPayload.id,
+        validPayload.type,
+        validPayload.status,
+        validPayload.targetId,
+        validPayload.originalData,
+        validPayload.proposedData,
+        validPayload.rejectionReason,
+        validPayload.createdBy,
+        validPayload.createdAt,
+        validPayload.updatedAt,
+        validPayload.deletedAt,
+      );
 
     expect(approvalRequest).toBeInstanceOf(ApprovalRequest);
     expect(approvalRequest.getId()).toBe(validPayload.id);
@@ -135,7 +98,7 @@ describe("ApprovalRequest entity", () => {
     expect(approvalRequest.getTargetId()).toBe(validPayload.targetId);
     expect(approvalRequest.getOriginalData()).toBe(validPayload.originalData);
     expect(approvalRequest.getProposedData()).toBe(validPayload.proposedData);
-    expect(approvalRequest.getRejectReason()).toBe(
+    expect(approvalRequest.getRejectionReason()).toBe(
       validPayload.rejectionReason,
     );
     expect(approvalRequest.getCreatedBy()).toBe(validPayload.createdBy);

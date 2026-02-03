@@ -1,13 +1,13 @@
-import { describe, it, expect } from "vitest";
-import AddProduct from "../AddProduct";
+import { describe, expect, it } from "vitest";
 import { ADD_PRODUCT_ERRORS } from "../../constants";
+import AddProduct from "../AddProduct";
 
 describe("AddProduct entity", () => {
   const validPayload = {
-    sku: "PROD-001",
+    sku: "PRODUCT-001",
     name: "Product Name",
     category: "Electronics",
-    price: 100000,
+    price: 500000,
     quantity: 10,
     supplier: "Supplier Name",
   };
@@ -68,11 +68,11 @@ describe("AddProduct entity", () => {
     ).toThrowError(ADD_PRODUCT_ERRORS.NOT_CONTAIN_NEEDED_PROPERTY);
   });
 
-  it("should throw error when sku format is invalid", () => {
+  it("should throw error when sku is invalid", () => {
     expect(
       () =>
         new AddProduct(
-          "invalid_sku!",
+          "invalid-sku",
           validPayload.name,
           validPayload.category,
           validPayload.price,
@@ -89,11 +89,11 @@ describe("AddProduct entity", () => {
           validPayload.sku,
           validPayload.name,
           validPayload.category,
-          -100000,
+          -10000,
           validPayload.quantity,
           validPayload.supplier,
         ),
-    ).toThrowError(ADD_PRODUCT_ERRORS.PRODUCT_PRICE_MUST_BE_POSITIVE_NUMBER);
+    ).toThrowError(ADD_PRODUCT_ERRORS.PRICE_MUST_BE_POSITIVE_NUMBER);
   });
 
   it("should throw error when quantity is not a positive number", () => {
@@ -103,15 +103,15 @@ describe("AddProduct entity", () => {
           validPayload.sku,
           validPayload.name,
           validPayload.category,
-          validPayload.price,
-          -10,
+          10000,
+          -50,
           validPayload.supplier,
         ),
-    ).toThrowError(ADD_PRODUCT_ERRORS.PRODUCT_QUANTITY_MUST_BE_POSITIVE_NUMBER);
+    ).toThrowError(ADD_PRODUCT_ERRORS.QUANTITY_MUST_BE_POSITIVE_NUMBER);
   });
 
   it("should create object correctly when payload is valid", () => {
-    const addProduct: AddProduct = new AddProduct(
+    const productItem: AddProduct = new AddProduct(
       validPayload.sku,
       validPayload.name,
       validPayload.category,
@@ -120,12 +120,12 @@ describe("AddProduct entity", () => {
       validPayload.supplier,
     );
 
-    expect(addProduct).toBeInstanceOf(AddProduct);
-    expect(addProduct.getSku()).toBe(validPayload.sku);
-    expect(addProduct.getName()).toBe(validPayload.name);
-    expect(addProduct.getCategory()).toBe(validPayload.category);
-    expect(addProduct.getPrice()).toBe(validPayload.price);
-    expect(addProduct.getQuantity()).toBe(validPayload.quantity);
-    expect(addProduct.getSupplier()).toBe(validPayload.supplier);
+    expect(productItem).toBeInstanceOf(AddProduct);
+    expect(productItem.getSku()).toBe(validPayload.sku);
+    expect(productItem.getName()).toBe(validPayload.name);
+    expect(productItem.getCategory()).toBe(validPayload.category);
+    expect(productItem.getPrice()).toBe(validPayload.price);
+    expect(productItem.getQuantity()).toBe(validPayload.quantity);
+    expect(productItem.getSupplier()).toBe(validPayload.supplier);
   });
 });

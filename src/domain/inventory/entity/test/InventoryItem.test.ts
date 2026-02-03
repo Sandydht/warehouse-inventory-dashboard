@@ -1,18 +1,18 @@
-import { describe, it, expect } from "vitest";
-import { INVENTORY_ITEM_ERRORS } from "../../constants";
+import { describe, expect, it } from "vitest";
 import InventoryItem from "../InventoryItem";
+import { INVENTORY_ITEM_ERRORS } from "../../constants";
 
 describe("InventoryItem entity", () => {
   const validPayload = {
-    id: "prod-123",
-    sku: "PROD-001",
+    id: "inv-001",
+    sku: "PRODUCT-001",
     name: "Product Name",
     category: "Electronics",
-    price: 100000,
+    price: 500000,
     quantity: 10,
     supplier: "Supplier Name",
-    createdAt: new Date(Date.now()).toISOString(),
-    updatedAt: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     deletedAt: null,
   };
 
@@ -124,12 +124,12 @@ describe("InventoryItem entity", () => {
     ).toThrowError(INVENTORY_ITEM_ERRORS.NOT_CONTAIN_NEEDED_PROPERTY);
   });
 
-  it("should throw error when sku format is invalid", () => {
+  it("should throw error when sku is invalid", () => {
     expect(
       () =>
         new InventoryItem(
           validPayload.id,
-          "invalid_sku!",
+          "invalid-sku",
           validPayload.name,
           validPayload.category,
           validPayload.price,
@@ -150,14 +150,14 @@ describe("InventoryItem entity", () => {
           validPayload.sku,
           validPayload.name,
           validPayload.category,
-          -1000000,
+          -10000,
           validPayload.quantity,
           validPayload.supplier,
           validPayload.createdAt,
           validPayload.updatedAt,
           validPayload.deletedAt,
         ),
-    ).toThrowError(INVENTORY_ITEM_ERRORS.PRODUCT_PRICE_MUST_BE_POSITIVE_NUMBER);
+    ).toThrowError(INVENTORY_ITEM_ERRORS.PRICE_MUST_BE_POSITIVE_NUMBER);
   });
 
   it("should throw error when quantity is not a positive number", () => {
@@ -175,9 +175,7 @@ describe("InventoryItem entity", () => {
           validPayload.updatedAt,
           validPayload.deletedAt,
         ),
-    ).toThrowError(
-      INVENTORY_ITEM_ERRORS.PRODUCT_QUANTITY_MUST_BE_POSITIVE_NUMBER,
-    );
+    ).toThrowError(INVENTORY_ITEM_ERRORS.QUANTITY_MUST_BE_POSITIVE_NUMBER);
   });
 
   it("should create object correctly when payload is valid", () => {

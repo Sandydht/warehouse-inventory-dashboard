@@ -89,11 +89,11 @@ class InventoryItem {
     );
     InputValidator.positiveNumberValidFormat(
       price,
-      INVENTORY_ITEM_ERRORS.PRODUCT_PRICE_MUST_BE_POSITIVE_NUMBER,
+      INVENTORY_ITEM_ERRORS.PRICE_MUST_BE_POSITIVE_NUMBER,
     );
     InputValidator.positiveNumberValidFormat(
       quantity,
-      INVENTORY_ITEM_ERRORS.PRODUCT_QUANTITY_MUST_BE_POSITIVE_NUMBER,
+      INVENTORY_ITEM_ERRORS.QUANTITY_MUST_BE_POSITIVE_NUMBER,
     );
   }
 

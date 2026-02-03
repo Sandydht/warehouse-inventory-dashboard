@@ -3,11 +3,11 @@ import ArrowBack24pxBlack from "../assets/images/svg/arrow_back_24px_black.svg";
 import { useForm } from "react-hook-form";
 import InputField from "../components/InputField";
 import { useAppDispatch } from "../store/hooks";
-import type { AddProductRequestDto } from "../../infrastructure/dto/request/AddProductRequestDto";
-import { addProductToInventory } from "../store/inventory/inventoryThunk";
-import { toAddProductDomain } from "../../infrastructure/mappers/inventoryMapper";
 import { showSnackbar } from "../store/snackbar/snackbarSlice";
 import { useNavigate } from "react-router-dom";
+import { createApprovalRequest } from "../store/approval/approvalThunk";
+import { toAddProductDomain } from "../../infrastructure/mappers/approvalMapper";
+import type { CreateApprovalRequestDto } from "../../infrastructure/dto/request/CreateApprovalRequestDto";
 
 type AddProductToInventoryForm = {
   sku: string;
@@ -66,7 +66,7 @@ function AddProductInventoryListPage() {
 
   const onSubmit = async (formData: AddProductToInventoryForm) => {
     try {
-      const payload: AddProductRequestDto = {
+      const payload: CreateApprovalRequestDto = {
         sku: formData.sku,
         name: formData.name,
         category: formData.category,
@@ -74,10 +74,8 @@ function AddProductInventoryListPage() {
         quantity: formData.quantity,
         supplier: formData.supplier,
       };
+      await dispatch(createApprovalRequest(toAddProductDomain(payload)));
 
-      await dispatch(
-        addProductToInventory(toAddProductDomain(payload)),
-      ).unwrap();
       reset();
       navigate("/inventory-list");
     } catch (error) {

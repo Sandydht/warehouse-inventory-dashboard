@@ -1,9 +1,9 @@
-import AddProductToInventoryUseCase from "../application/usecases/AddProductToInventoryUseCase";
+import CreateApprovalRequestUseCase from "../application/usecases/CreateApprovalRequestUseCase";
 import GetUserProfileUseCase from "../application/usecases/GetUserProfileUseCase";
 import LoginAccountUseCase from "../application/usecases/LoginAccountUseCase";
 import LogoutAccountUseCase from "../application/usecases/LogoutAccountUseCase";
+import ApprovalRepositoryImpl from "./repositories/ApprovalRepositoryImpl";
 import AuthRepositoryImpl from "./repositories/AuthRepositoryImpl";
-import InventoryRepositoryImpl from "./repositories/InventoryRepositoryImpl";
 import UserRepositoryImpl from "./repositories/UserRepositoryImpl";
 import MethodAssertionImpl from "./utils/MethodAssertionImpl";
 import SecureStorageImpl from "./utils/SecureStorageImpl";
@@ -13,8 +13,8 @@ const authenticationRepositoryImpl: AuthRepositoryImpl =
 const userRepositoryImpl: UserRepositoryImpl = new UserRepositoryImpl();
 const secureStorageImpl: SecureStorageImpl = new SecureStorageImpl();
 const methodAssertionImpl: MethodAssertionImpl = new MethodAssertionImpl();
-const inventoryRepositoryImpl: InventoryRepositoryImpl =
-  new InventoryRepositoryImpl();
+const approvalRepositoryImpl: ApprovalRepositoryImpl =
+  new ApprovalRepositoryImpl();
 
 export const authDependencies = {
   loginAccountUseCase: new LoginAccountUseCase(
@@ -36,9 +36,9 @@ export const userDependencies = {
   ),
 };
 
-export const inventoryDependencies = {
-  addProductToInventoryUseCase: new AddProductToInventoryUseCase(
+export const approvalDependencies = {
+  createApprovalRequestUseCase: new CreateApprovalRequestUseCase(
     methodAssertionImpl,
-    inventoryRepositoryImpl,
+    approvalRepositoryImpl,
   ),
 };
