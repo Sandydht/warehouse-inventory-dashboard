@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import SearchInput from "../components/SearchInput";
-import DataTable from "../components/DataTable";
+import DataTable, { type Column } from "../components/DataTable";
 import type { InventoryItemDto } from "../../infrastructure/dto/common/InventoryItemDto";
 import type { PaginationQuery } from "../../commons/models/PaginationQuery";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -15,6 +15,10 @@ function InventoryListPage() {
     (state) => state.inventory.inventoryList,
   );
 
+  const { data: userProfileData } = useAppSelector(
+    (state) => state.user.userProfile,
+  );
+
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
 
@@ -26,6 +30,72 @@ function InventoryListPage() {
     key: "createdAt",
     direction: "desc",
   });
+
+  const baseColumns: Column<InventoryItemDto>[] = [
+    {
+      key: "sku",
+      header: "SKU",
+      sortable: true,
+      sortKey: "sku",
+      render: (row: InventoryItemDto) => row.sku,
+    },
+    {
+      key: "name",
+      header: "Name",
+      sortable: true,
+      sortKey: "name",
+      render: (row: InventoryItemDto) => row.name,
+    },
+    {
+      key: "category",
+      header: "Category",
+      sortable: true,
+      sortKey: "category",
+      render: (row: InventoryItemDto) => row.category,
+    },
+    {
+      key: "price",
+      header: "Price",
+      sortable: true,
+      sortKey: "price",
+      render: (row: InventoryItemDto) => `Rp ${row.price.toLocaleString()}`,
+    },
+    {
+      key: "quantity",
+      header: "Quantity",
+      sortable: true,
+      sortKey: "quantity",
+      render: (row: InventoryItemDto) => row.quantity,
+    },
+    {
+      key: "supplier",
+      header: "Supplier",
+      sortable: true,
+      sortKey: "supplier",
+      render: (row: InventoryItemDto) => row.supplier,
+    },
+  ];
+
+  const actionColumn: Column<InventoryItemDto>[] =
+    userProfileData && userProfileData.role === "STAFF"
+      ? [
+          {
+            key: "action",
+            header: "Action",
+            render: (row: InventoryItemDto) => (
+              <div className="flex gap-2">
+                <Link
+                  to={`/inventory-list/${row.id}/edit`}
+                  className="text-blue-500 hover:underline"
+                >
+                  Edit
+                </Link>
+                <button className="text-red-500 hover:underline">Delete</button>
+              </div>
+            ),
+          },
+        ]
+      : [];
 
   useEffect(() => {
     const mockParams: PaginationQuery = {
@@ -50,9 +120,16 @@ function InventoryListPage() {
         </p>
       </div>
 
-      <div className="w-full h-auto">
-        <p>Action button</p>
-      </div>
+      {userProfileData && userProfileData.role === "STAFF" && (
+        <div className="w-full h-auto">
+          <Link
+            to={"/inventory-list/add-product"}
+            className="w-full h-auto px-4 py-2 text-center text-[14px] leading-5 font-bold rounded-lg focus:border-blue-500 text-white min-h-9 max-h-9 bg-sky-500 hover:bg-sky-600 cursor-pointer"
+          >
+            Add Product to Inventory
+          </Link>
+        </div>
+      )}
 
       <div className="w-full h-auto rounded-2xl border-gray-200 border bg-white overflow-hidden shadow-sm flex flex-col items-start justify-start gap-2">
         <div className="w-full h-auto p-4 flex items-center justify-start gap-4">
@@ -67,72 +144,7 @@ function InventoryListPage() {
         <div className="w-full h-auto flex flex-col items-start justify-start">
           <div className="w-full h-auto overflow-auto bg-white border-b border-gray-500 max-h-[calc(100vh-315px)]">
             <DataTable
-              columns={[
-                {
-                  key: "sku",
-                  header: "SKU",
-                  sortable: true,
-                  sortKey: "sku",
-                  render: (row: InventoryItemDto) => row.sku,
-                },
-                {
-                  key: "name",
-                  header: "Name",
-                  sortable: true,
-                  sortKey: "name",
-                  render: (row: InventoryItemDto) => row.name,
-                },
-                {
-                  key: "category",
-                  header: "Category",
-                  sortable: true,
-                  sortKey: "category",
-                  render: (row: InventoryItemDto) => row.category,
-                },
-                {
-                  key: "price",
-                  header: "Price",
-                  sortable: true,
-                  sortKey: "price",
-                  render: (row: InventoryItemDto) =>
-                    `Rp ${row.price.toLocaleString()}`,
-                },
-                {
-                  key: "quantity",
-                  header: "Quantity",
-                  sortable: true,
-                  sortKey: "quantity",
-                  render: (row: InventoryItemDto) => row.quantity,
-                },
-                {
-                  key: "supplier",
-                  header: "Supplier",
-                  sortable: true,
-                  sortKey: "supplier",
-                  render: (row: InventoryItemDto) => row.supplier,
-                },
-                {
-                  key: "action",
-                  header: "Action",
-                  render: (row: InventoryItemDto) => (
-                    <div className="w-full h-auto flex items-center justify-start gap-2">
-                      <Link
-                        to={`/inventory-list/${row.id}/edit`}
-                        className="text-blue-500 cursor-pointer hover:underline"
-                      >
-                        Edit
-                      </Link>
-
-                      <button
-                        type="button"
-                        className="text-red-500 cursor-pointer hover:underline"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ),
-                },
-              ]}
+              columns={[...baseColumns, ...actionColumn]}
               data={data?.data ?? []}
               rowKey={(row) => row.id}
               sort={sort}

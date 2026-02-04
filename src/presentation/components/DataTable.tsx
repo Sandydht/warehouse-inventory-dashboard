@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface Column<T> {
+export interface Column<T> {
   key: string;
   header: string;
   sortable?: boolean;

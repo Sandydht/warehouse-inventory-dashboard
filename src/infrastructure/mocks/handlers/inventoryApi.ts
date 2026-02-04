@@ -16,7 +16,7 @@ export const inventoryApi = [
     const token = authHeader.replace("Bearer ", "");
     const user = UserDummyData.find((user) => user.id === token);
 
-    if (!user || user.role !== "OFFICER") {
+    if (!user) {
       return HttpResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
