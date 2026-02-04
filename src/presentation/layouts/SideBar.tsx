@@ -1,10 +1,9 @@
 import { NavLink } from "react-router-dom";
 import type { UserRole } from "../../domain/user/types";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { logoutAccount } from "../store/auth/authThunk";
-import { useNavigate } from "react-router-dom";
 import AppLogo from "../assets/images/png/app_logo.png";
 import Button from "../components/Button";
+import { openModal } from "../store/modal/confirmationModalSlice";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -21,7 +20,6 @@ function SideBar({ isOpen, onClose }: SidebarProps) {
   const { data } = useAppSelector((state) => state.user.userProfile);
   const { loading } = useAppSelector((state) => state.auth.logout);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const navList: SideBarItemData[] = [
     {
@@ -41,13 +39,14 @@ function SideBar({ isOpen, onClose }: SidebarProps) {
     },
   ];
 
-  const handleLogout = async () => {
-    try {
-      await dispatch(logoutAccount()).unwrap();
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+  const handleOpenConfirmationModal = () => {
+    dispatch(
+      openModal({
+        title: "Logout",
+        body: "Are you sure you want to log out?",
+        confirmType: "LOGOUT_ACCOUNT",
+      }),
+    );
   };
 
   return (
@@ -97,7 +96,7 @@ function SideBar({ isOpen, onClose }: SidebarProps) {
             buttonType="button"
             label={loading ? "Loading..." : "Logout"}
             disabled={loading}
-            onClick={handleLogout}
+            onClick={handleOpenConfirmationModal}
           />
         </div>
       </aside>

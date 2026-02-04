@@ -1,5 +1,6 @@
 import type { ApprovalRequestDto } from "../../infrastructure/dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../../infrastructure/dto/common/InventoryItemDto";
+import BadgeLabel from "./BadgeLabel";
 import DetailItem from "./DetailItem";
 
 interface ApprovalRequestDetailCardProps {
@@ -7,27 +8,20 @@ interface ApprovalRequestDetailCardProps {
 }
 
 function ApprovalRequestDetailCard({ data }: ApprovalRequestDetailCardProps) {
-  const isDeleted = Boolean(data?.proposedData?.deletedAt);
-
   return (
     <div className="w-full h-auto rounded-2xl bg-white shadow-md">
-      <div className="flex flex-col gap-2 border-b p-6 md:flex-row md:items-center md:justify-between">
-        <div>
+      <div className="flex flex-col gap-2 border-b border-gray-300 p-6 md:flex-row md:items-center md:justify-between">
+        <div className="w-full h-auto flex flex-col items-start justify-start gap-1">
           <h1 className="text-xl font-semibold text-gray-900">
             {data.proposedData?.name}
           </h1>
           <p className="text-sm text-gray-500">SKU: {data.proposedData?.sku}</p>
         </div>
 
-        <span
-          className={`w-fit rounded-full px-3 py-1 text-sm font-medium ${
-            isDeleted
-              ? "bg-red-100 text-red-700"
-              : "bg-green-100 text-green-700"
-          }`}
-        >
-          {isDeleted ? "Deleted" : "Active"}
-        </span>
+        <div className="w-auto h-auto flex flex-col items-start justify-start gap-1">
+          <BadgeLabel type={data.status} value={data.status} />
+          <BadgeLabel type={data.type} value={data.type} />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">

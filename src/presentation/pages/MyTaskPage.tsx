@@ -11,6 +11,7 @@ import DataTable from "../components/DataTable";
 import type { ApprovalRequestDto } from "../../infrastructure/dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../../infrastructure/dto/common/InventoryItemDto";
 import { Link } from "react-router-dom";
+import BadgeLabel from "../components/BadgeLabel";
 
 function MyTaskPage() {
   const dispatch = useAppDispatch();
@@ -146,16 +147,15 @@ function MyTaskPage() {
                   key: "status",
                   header: "Status",
                   render: (row: ApprovalRequestDto<InventoryItemDto>) => (
-                    <span className="rounded-full px-2 py-1 text-xs font-medium bg-gray-200 text-gray-600">
-                      {row.status}
-                    </span>
+                    <BadgeLabel type={row.status} value={row.status} />
                   ),
                 },
                 {
                   key: "type",
                   header: "Type",
-                  render: (row: ApprovalRequestDto<InventoryItemDto>) =>
-                    row.type,
+                  render: (row: ApprovalRequestDto<InventoryItemDto>) => (
+                    <BadgeLabel type={row.type} value={row.type} />
+                  ),
                 },
                 {
                   key: "action",

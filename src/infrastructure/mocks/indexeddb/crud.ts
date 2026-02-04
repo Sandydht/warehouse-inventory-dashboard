@@ -8,7 +8,7 @@ export class IndexedDbCrud<T extends { id: string }> {
   }
 
   private async getStore(mode: IDBTransactionMode) {
-    const db = await openDB(this.storeName);
+    const db = await openDB();
     return db.transaction(this.storeName, mode).objectStore(this.storeName);
   }
 

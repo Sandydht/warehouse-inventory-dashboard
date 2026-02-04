@@ -1,6 +1,7 @@
 import type { PaginatedResult } from "../../commons/models/PaginatedResult";
 import AddProduct from "../../domain/approval/entity/AddProduct";
 import ApprovalRequest from "../../domain/approval/entity/ApprovalRequest";
+import ApproveRequest from "../../domain/approval/entity/ApproveRequest";
 import type InventoryItem from "../../domain/inventory/entity/InventoryItem";
 import type { ApprovalRequestDto } from "../dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../dto/common/InventoryItemDto";
@@ -78,3 +79,6 @@ export const fromApprovalRequestDomainToApprovalRequestDto = (
   updatedAt: domain.getUpdatedAt(),
   deletedAt: domain.getDeletedAt(),
 });
+
+export const toApproveRequestDomain = (id: string): ApproveRequest =>
+  new ApproveRequest(id);

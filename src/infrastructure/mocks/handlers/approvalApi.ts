@@ -169,4 +169,53 @@ export const approvalApi = [
       return HttpResponse.json(result, { status: 200 });
     },
   ),
+  http.post("/api/approval/:id/approve", async ({ params, request }) => {
+    const authHeader = request.headers.get("Authorization");
+    if (!authHeader) {
+      return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const user = UserDummyData.find((user) => user.id === token);
+
+    if (!user || user.role !== "OFFICER") {
+      return HttpResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
+    const { id } = params;
+
+    if (!id) {
+      return HttpResponse.json({ message: "Invalid id" }, { status: 400 });
+    }
+
+    const approvalDb = new IndexedDbCrud<ApprovalRequestDto<InventoryItemDto>>(
+      "approval_requests",
+    );
+    const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
+    const result = await approvalDb.getById(id as string);
+
+    if (!result) {
+      return HttpResponse.json({ message: "Not Found" }, { status: 404 });
+    }
+
+    if (result.status !== "PENDING") {
+      return HttpResponse.json(
+        { message: "Approval already processed" },
+        { status: 400 },
+      );
+    }
+
+    result.status = "APPROVED";
+    await approvalDb.update(result);
+
+    switch (result.type) {
+      case "CREATE":
+        if (result.proposedData) {
+          await inventoryDb.create(result.proposedData);
+        }
+        break;
+    }
+
+    return HttpResponse.json(result, { status: 200 });
+  }),
 ];

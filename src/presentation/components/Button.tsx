@@ -1,5 +1,5 @@
 interface ButtonProps {
-  type: "primary" | "secondary" | "danger";
+  type: "primary" | "secondary" | "danger" | "gray";
   id: string;
   buttonType: "button" | "submit";
   label: string;
@@ -32,6 +32,17 @@ function Button({
         id={id}
         type={buttonType}
         className={`w-full h-auto px-4 py-2 rounded-lg text-center text-[14px] leading-5 font-bold text-white focus:border-blue-500 min-h-9 max-h-9 ${disabled ? "bg-gray-500 cursor-not-allowed" : "bg-red-500 hover:bg-red-600 cursor-pointer"}`}
+        onClick={onClick}
+      >
+        {label}
+      </button>
+    );
+  } else if (type === "gray") {
+    return (
+      <button
+        id={id}
+        type={buttonType}
+        className={`w-full h-auto px-4 py-2 rounded-lg text-center text-[14px] leading-5 font-bold text-white focus:border-blue-500 min-h-9 max-h-9 ${disabled ? "bg-gray-500 cursor-not-allowed" : "bg-gray-500 hover:bg-gray-600 cursor-pointer"}`}
         onClick={onClick}
       >
         {label}

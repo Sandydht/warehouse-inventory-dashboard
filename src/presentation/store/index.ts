@@ -3,6 +3,7 @@ import authReducer from "./auth/authSlice";
 import userReducer from "./user/userSlice";
 import snackbarReducer from "./snackbar/snackbarSlice";
 import approvalReducer from "./approval/approvalSlice";
+import confirmationModalReducer from "./modal/confirmationModalSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     user: userReducer,
     snackbar: snackbarReducer,
     approval: approvalReducer,
+    confirmationModal: confirmationModalReducer,
   },
 });
 

@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getApprovalRequestDetail } from "../store/approval/approvalThunk";
 import GetApprovalRequestDetail from "../../domain/approval/entity/GetApprovalRequestDetail";
 import ApprovalRequestDetailCard from "../components/ApprovalRequestDetailCard";
+import Button from "../components/Button";
+import { openModal } from "../store/modal/confirmationModalSlice";
 
 function ApprovalRequestDetailPage() {
   const dispatch = useAppDispatch();
@@ -19,6 +21,17 @@ function ApprovalRequestDetailPage() {
       dispatch(getApprovalRequestDetail(new GetApprovalRequestDetail(id)));
     }
   }, [id, dispatch]);
+
+  const handleOpenConfirmationModal = () => {
+    dispatch(
+      openModal({
+        title: "Approve Request",
+        body: "Are you sure you want to approve request?",
+        confirmType: "APPROVE_REQUEST",
+        payload: { id },
+      }),
+    );
+  };
 
   return (
     <div className="w-full h-auto flex flex-col items-start justify-start gap-4">
@@ -35,57 +48,71 @@ function ApprovalRequestDetailPage() {
         </p>
       </div>
 
-      <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
+      <div className="w-full h-auto min-h-[calc(100vh-205px)] flex flex-col items-start justify-start gap-2">
         {!loading && data && data.type === "CREATE" && (
-          <>
-            <ApprovalRequestDetailCard data={data} />
-          </>
+          <ApprovalRequestDetailCard data={data} />
         )}
 
         {!loading && data && data.type === "UPDATE" && (
-          <>
-            <DiffPreview
-              diffs={[
-                {
-                  field: "SKU",
-                  before: data?.originalData?.sku,
-                  after: data?.proposedData?.sku,
-                  type: "modified",
-                },
-                {
-                  field: "Name",
-                  before: data?.originalData?.name,
-                  after: data?.proposedData?.name,
-                  type: "modified",
-                },
-                {
-                  field: "Category",
-                  before: data?.originalData?.category,
-                  after: data?.proposedData?.category,
-                  type: "modified",
-                },
-                {
-                  field: "Price",
-                  before: data?.originalData?.price,
-                  after: data?.proposedData?.price,
-                  type: "modified",
-                },
-                {
-                  field: "Quantity",
-                  before: data?.originalData?.quantity,
-                  after: data?.proposedData?.quantity,
-                  type: "modified",
-                },
-                {
-                  field: "Supplier",
-                  before: data?.originalData?.supplier,
-                  after: data?.proposedData?.supplier,
-                  type: "modified",
-                },
-              ]}
-            />
-          </>
+          <DiffPreview
+            diffs={[
+              {
+                field: "SKU",
+                before: data?.originalData?.sku,
+                after: data?.proposedData?.sku,
+                type: "modified",
+              },
+              {
+                field: "Name",
+                before: data?.originalData?.name,
+                after: data?.proposedData?.name,
+                type: "modified",
+              },
+              {
+                field: "Category",
+                before: data?.originalData?.category,
+                after: data?.proposedData?.category,
+                type: "modified",
+              },
+              {
+                field: "Price",
+                before: data?.originalData?.price,
+                after: data?.proposedData?.price,
+                type: "modified",
+              },
+              {
+                field: "Quantity",
+                before: data?.originalData?.quantity,
+                after: data?.proposedData?.quantity,
+                type: "modified",
+              },
+              {
+                field: "Supplier",
+                before: data?.originalData?.supplier,
+                after: data?.proposedData?.supplier,
+                type: "modified",
+              },
+            ]}
+          />
         )}
+      </div>
+
+      <div className="w-full h-auto flex items-center justify-center gap-4">
+        <Button
+          type="primary"
+          id="logoutButton"
+          buttonType="button"
+          label={"Approve"}
+          disabled={false}
+          onClick={handleOpenConfirmationModal}
+        />
+        <Button
+          type="danger"
+          id="logoutButton"
+          buttonType="button"
+          label={"Reject"}
+          disabled={false}
+        />
       </div>
     </div>
   );
