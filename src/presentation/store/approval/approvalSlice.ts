@@ -8,12 +8,13 @@ import {
 } from "../utils/createAsyncHandlers";
 import { createApprovalRequest, getApprovalList } from "./approvalThunk";
 import type { GetApprovalListResponseDto } from "../../../infrastructure/dto/response/GetApprovalListResponseDto";
-import type ApprovalRequest from "../../../domain/approval/entity/ApprovalRequest";
+import type { ApprovalRequestDto } from "../../../infrastructure/dto/common/ApprovalRequestDto";
+import type { InventoryItemDto } from "../../../infrastructure/dto/common/InventoryItemDto";
 
 interface ApprovalState {
   approvalRequest: AsyncState<CreateApprovalResponseDto<InventoryItem>>;
   approvalList: AsyncState<
-    GetApprovalListResponseDto<ApprovalRequest<InventoryItem>>
+    GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>>
   >;
 }
 
@@ -21,7 +22,7 @@ const initialState: ApprovalState = {
   approvalRequest: createAsyncState<CreateApprovalResponseDto<InventoryItem>>(),
   approvalList:
     createAsyncState<
-      GetApprovalListResponseDto<ApprovalRequest<InventoryItem>>
+      GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>>
     >(),
 };
 

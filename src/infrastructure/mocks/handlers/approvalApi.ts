@@ -87,8 +87,8 @@ export const approvalApi = [
     const limit = url.searchParams.get("limit") ?? 10;
     const search = url.searchParams.get("search")?.toLowerCase() ?? "";
     const status = url.searchParams.get("status");
-    const sortBy = url.searchParams.get("sortBy") ?? "createdAt";
-    const order = url.searchParams.get("order") ?? "desc";
+    const sortBy = url.searchParams.get("sortBy") ?? "updatedAt";
+    const sortOrder = url.searchParams.get("sortOrder") ?? "desc";
 
     const approvalDb = new IndexedDbCrud<ApprovalRequestDto<InventoryItemDto>>(
       "approval_requests",
@@ -135,8 +135,8 @@ export const approvalApi = [
           break;
       }
 
-      if (aValue < bValue) return order === "asc" ? -1 : 1;
-      if (aValue > bValue) return order === "asc" ? 1 : -1;
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
 
       return 0;
     });
@@ -146,7 +146,7 @@ export const approvalApi = [
       limit: Number(limit),
       search,
       sortBy,
-      sortOrder: order as SortOrder,
+      sortOrder: sortOrder as SortOrder,
     };
     const result = paginateArray<ApprovalRequestDto<InventoryItemDto>>(
       approvalList,
