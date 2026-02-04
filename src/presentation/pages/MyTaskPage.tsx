@@ -13,7 +13,9 @@ import type { InventoryItemDto } from "../../infrastructure/dto/common/Inventory
 
 function MyTaskPage() {
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.approval.approvalList);
+  const { data, loading } = useAppSelector(
+    (state) => state.approval.approvalList,
+  );
 
   const [page, setPage] = useState(1);
 
@@ -143,13 +145,7 @@ function MyTaskPage() {
                   key: "status",
                   header: "Status",
                   render: (row: ApprovalRequestDto<InventoryItemDto>) => (
-                    <span
-                      className={`rounded-full px-2 py-1 text-xs font-medium ${
-                        row.status === "PENDING"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-200 text-gray-600"
-                      }`}
-                    >
+                    <span className="rounded-full px-2 py-1 text-xs font-medium bg-gray-200 text-gray-600">
                       {row.status}
                     </span>
                   ),
@@ -179,6 +175,7 @@ function MyTaskPage() {
               rowKey={(row) => row.id}
               sort={sort}
               onSortChange={setSort}
+              loading={loading}
             />
           </div>
 

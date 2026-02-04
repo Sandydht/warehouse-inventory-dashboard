@@ -55,7 +55,7 @@ function Dropdown({
                 onChange?.(item);
                 setOpen(false);
               }}
-              className="w-full h-auto px-4 py-2 border-b border-gray-100 cursor-pointer text-center text-[14px] leading-5 text-gray-600"
+              className="w-full h-auto px-4 py-2 border-b border-gray-100 cursor-pointer text-left text-[14px] leading-5 text-gray-600 hover:bg-gray-100"
             >
               {item.label}
             </button>

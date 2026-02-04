@@ -42,7 +42,6 @@ function ElipsisPagination({ meta, onPageChange }: PaginationProps) {
 
   return (
     <div className="flex items-center justify-center gap-2">
-      {/* Prev */}
       <button
         disabled={!hasPrevPage}
         onClick={() => onPageChange(page - 1)}
@@ -50,7 +49,7 @@ function ElipsisPagination({ meta, onPageChange }: PaginationProps) {
           px-3 py-1 rounded-md border text-sm
           ${
             hasPrevPage
-              ? "hover:bg-gray-100 text-gray-700"
+              ? "hover:bg-gray-100 text-gray-700 cursor-pointer"
               : "text-gray-400 cursor-not-allowed"
           }
         `}
@@ -58,7 +57,6 @@ function ElipsisPagination({ meta, onPageChange }: PaginationProps) {
         Prev
       </button>
 
-      {/* Pages */}
       {pages.map((item, index) =>
         item === "..." ? (
           <span
@@ -72,7 +70,7 @@ function ElipsisPagination({ meta, onPageChange }: PaginationProps) {
             key={item}
             onClick={() => onPageChange(item)}
             className={`
-              px-3 py-1 rounded-md border text-sm
+              px-3 py-1 rounded-md border text-sm cursor-pointer
               ${
                 item === page
                   ? "bg-blue-600 text-white border-blue-600"
@@ -85,7 +83,6 @@ function ElipsisPagination({ meta, onPageChange }: PaginationProps) {
         ),
       )}
 
-      {/* Next */}
       <button
         disabled={!hasNextPage}
         onClick={() => onPageChange(page + 1)}
@@ -93,7 +90,7 @@ function ElipsisPagination({ meta, onPageChange }: PaginationProps) {
           px-3 py-1 rounded-md border text-sm
           ${
             hasNextPage
-              ? "hover:bg-gray-100 text-gray-700"
+              ? "hover:bg-gray-100 text-gray-700 cursor-pointer"
               : "text-gray-400 cursor-not-allowed"
           }
         `}
