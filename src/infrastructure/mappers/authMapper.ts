@@ -7,36 +7,39 @@ import type { UserLogoutRequestDto } from "../dto/request/UserLogoutRequestDto";
 import type { UserLoginResponseDto } from "../dto/response/UserLoginResponseDto";
 import type { UserLogoutResponseDto } from "../dto/response/UserLogoutResponseDto";
 
-export const toUserLoginDomain = (dto: UserLoginRequestDto) =>
-  new UserLogin(dto.email, dto.password);
+export const fromUserLoginRequestDtoToUserLoginDomain = (
+  dto: UserLoginRequestDto,
+) => new UserLogin(dto.email, dto.password);
 
-export const toUserLoginRequestDto = (
+export const fromUserLoginDomainToUserLoginRequestDto = (
   domain: UserLogin,
 ): UserLoginRequestDto => ({
   email: domain.getEmail(),
   password: domain.getPassword(),
 });
 
-export const toNewAuthDomain = (dto: UserLoginResponseDto): NewAuth =>
-  new NewAuth(dto.accessToken, dto.refreshToken);
+export const fromUserLoginResponseDtoToNewAuthDomain = (
+  dto: UserLoginResponseDto,
+): NewAuth => new NewAuth(dto.accessToken, dto.refreshToken);
 
-export const toUserLoginResponseDto = (
+export const fromNewAuthDomainToUserLoginResponseDto = (
   domain: NewAuth,
 ): UserLoginResponseDto => ({
   accessToken: domain.getAccessToken(),
   refreshToken: domain.getRefreshToken(),
 });
 
-export const toUserLogoutDomain = (dto: UserLogoutResponseDto): UserLogout =>
-  new UserLogout(dto.message);
+export const fromUserLogoutResponseDtoToUserLogoutDomain = (
+  dto: UserLogoutResponseDto,
+): UserLogout => new UserLogout(dto.message);
 
-export const toUserLogoutRequestDto = (
+export const fromRefreshTokenDomainToUserLogoutRequestDto = (
   domain: RefreshToken,
 ): UserLogoutRequestDto => ({
   refreshToken: domain.getToken(),
 });
 
-export const toUserLogoutResponseDto = (
+export const fromUserLogoutDomainToUserLogoutResponseDto = (
   domain: UserLogout,
 ): UserLogoutResponseDto => ({
   message: domain.getMessage(),

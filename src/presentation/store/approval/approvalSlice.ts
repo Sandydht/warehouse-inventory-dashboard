@@ -1,29 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type InventoryItem from "../../../domain/inventory/entity/InventoryItem";
-import type { CreateApprovalResponseDto } from "../../../infrastructure/dto/response/CreateApprovalResponseDto";
 import {
   addAsyncThunkHandlers,
   createAsyncState,
   type AsyncState,
 } from "../utils/createAsyncHandlers";
-import { createApprovalRequest, getApprovalList } from "./approvalThunk";
+import {
+  approveRequest,
+  createApprovalRequest,
+  getApprovalList,
+  getApprovalRequestDetail,
+  rejectRequest,
+} from "./approvalThunk";
 import type { GetApprovalListResponseDto } from "../../../infrastructure/dto/response/GetApprovalListResponseDto";
 import type { ApprovalRequestDto } from "../../../infrastructure/dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../../../infrastructure/dto/common/InventoryItemDto";
 
 interface ApprovalState {
-  approvalRequest: AsyncState<CreateApprovalResponseDto<InventoryItem>>;
+  approvalRequest: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
   approvalList: AsyncState<
     GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>>
   >;
+  approvalRequestDetail: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
+  approveRequest: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
+  rejectRequest: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
 }
 
 const initialState: ApprovalState = {
-  approvalRequest: createAsyncState<CreateApprovalResponseDto<InventoryItem>>(),
+  approvalRequest: createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
   approvalList:
     createAsyncState<
       GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>>
     >(),
+  approvalRequestDetail:
+    createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
+  approveRequest: createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
+  rejectRequest: createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
 };
 
 const approvalSlice = createSlice({
@@ -33,6 +44,13 @@ const approvalSlice = createSlice({
   extraReducers: (builder) => {
     addAsyncThunkHandlers(builder, createApprovalRequest, "approvalRequest");
     addAsyncThunkHandlers(builder, getApprovalList, "approvalList");
+    addAsyncThunkHandlers(
+      builder,
+      getApprovalRequestDetail,
+      "approvalRequestDetail",
+    );
+    addAsyncThunkHandlers(builder, approveRequest, "approveRequest");
+    addAsyncThunkHandlers(builder, rejectRequest, "rejectRequest");
   },
 });
 

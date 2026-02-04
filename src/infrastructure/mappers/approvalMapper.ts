@@ -5,10 +5,9 @@ import type InventoryItem from "../../domain/inventory/entity/InventoryItem";
 import type { ApprovalRequestDto } from "../dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../dto/common/InventoryItemDto";
 import type { CreateApprovalRequestDto } from "../dto/request/CreateApprovalRequestDto";
-import type { CreateApprovalResponseDto } from "../dto/response/CreateApprovalResponseDto";
 import type { GetApprovalListResponseDto } from "../dto/response/GetApprovalListResponseDto";
 
-export const toCreateApprovalRequestDto = (
+export const fromAddProductDomainToCreateApprovalRequestDto = (
   domain: AddProduct,
 ): CreateApprovalRequestDto => ({
   sku: domain.getSku(),
@@ -19,40 +18,9 @@ export const toCreateApprovalRequestDto = (
   supplier: domain.getSupplier(),
 });
 
-export const toApprovalRequestDomain = (
-  dto: CreateApprovalResponseDto<InventoryItem>,
-): ApprovalRequest<InventoryItem> =>
-  new ApprovalRequest<InventoryItem>(
-    dto.id,
-    dto.type,
-    dto.status,
-    dto.targetId,
-    dto.originalData,
-    dto.proposedData,
-    dto.rejectionReason,
-    dto.createdBy,
-    dto.createdAt,
-    dto.updatedAt,
-    dto.deletedAt,
-  );
-
-export const toCreateApprovalResponseDto = (
-  domain: ApprovalRequest<InventoryItem>,
-): CreateApprovalResponseDto<InventoryItem> => ({
-  id: domain.getId(),
-  type: domain.getType(),
-  status: domain.getStatus(),
-  targetId: domain.getTargetId(),
-  originalData: domain.getOriginalData(),
-  proposedData: domain.getProposedData(),
-  rejectionReason: domain.getRejectionReason(),
-  createdBy: domain.getCreatedBy(),
-  createdAt: domain.getCreatedAt(),
-  updatedAt: domain.getUpdatedAt(),
-  deletedAt: domain.getDeletedAt(),
-});
-
-export const toAddProductDomain = (dto: CreateApprovalRequestDto): AddProduct =>
+export const fromCreateApprovalRequestDtoToAddProductDomain = (
+  dto: CreateApprovalRequestDto,
+): AddProduct =>
   new AddProduct(
     dto.sku,
     dto.name,
@@ -62,7 +30,7 @@ export const toAddProductDomain = (dto: CreateApprovalRequestDto): AddProduct =>
     dto.supplier,
   );
 
-export const toGetApprovalListResponseDto = (
+export const fromPaginatedResultDomainToGetApprovalListResponseDto = (
   domain: PaginatedResult<ApprovalRequest<InventoryItem>>,
 ): GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>> => ({
   data: domain.data as unknown as ApprovalRequestDto<InventoryItemDto>[],
@@ -70,10 +38,43 @@ export const toGetApprovalListResponseDto = (
   query: domain.query,
 });
 
-export const toPaginatedResultDomain = (
+export const fromGetApprovalListResponseDtoToPaginatedResultDomain = (
   dto: GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>>,
 ): PaginatedResult<ApprovalRequest<InventoryItem>> => ({
   data: dto.data as unknown as ApprovalRequest<InventoryItem>[],
   meta: dto.meta,
   query: dto.query,
+});
+
+export const fromApprovalRequestDtoToApprovalRequestDomain = (
+  dto: ApprovalRequestDto<InventoryItemDto>,
+) =>
+  new ApprovalRequest<InventoryItem>(
+    dto.id,
+    dto.type,
+    dto.status,
+    dto.targetId,
+    dto.originalData as unknown as InventoryItem | null,
+    dto.proposedData as unknown as InventoryItem | null,
+    dto.rejectionReason,
+    dto.createdBy,
+    dto.createdAt,
+    dto.updatedAt,
+    dto.deletedAt,
+  );
+
+export const fromApprovalRequestDomainToApprovalRequestDto = (
+  domain: ApprovalRequest<InventoryItem>,
+): ApprovalRequestDto<InventoryItemDto> => ({
+  id: domain.getId(),
+  type: domain.getType(),
+  status: domain.getStatus(),
+  targetId: domain.getTargetId(),
+  originalData: domain.getOriginalData() as unknown as InventoryItemDto | null,
+  proposedData: domain.getProposedData() as unknown as InventoryItemDto | null,
+  rejectionReason: domain.getRejectionReason(),
+  createdBy: domain.getCreatedBy(),
+  createdAt: domain.getCreatedAt(),
+  updatedAt: domain.getUpdatedAt(),
+  deletedAt: domain.getDeletedAt(),
 });

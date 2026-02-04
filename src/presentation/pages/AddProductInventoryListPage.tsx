@@ -6,7 +6,7 @@ import { useAppDispatch } from "../store/hooks";
 import { showSnackbar } from "../store/snackbar/snackbarSlice";
 import { useNavigate } from "react-router-dom";
 import { createApprovalRequest } from "../store/approval/approvalThunk";
-import { toAddProductDomain } from "../../infrastructure/mappers/approvalMapper";
+import { fromCreateApprovalRequestDtoToAddProductDomain } from "../../infrastructure/mappers/approvalMapper";
 import type { CreateApprovalRequestDto } from "../../infrastructure/dto/request/CreateApprovalRequestDto";
 
 type AddProductToInventoryForm = {
@@ -74,7 +74,11 @@ function AddProductInventoryListPage() {
         quantity: formData.quantity,
         supplier: formData.supplier,
       };
-      await dispatch(createApprovalRequest(toAddProductDomain(payload)));
+      await dispatch(
+        createApprovalRequest(
+          fromCreateApprovalRequestDtoToAddProductDomain(payload),
+        ),
+      );
 
       reset();
       navigate("/inventory-list");

@@ -2,7 +2,9 @@ import User from "../../domain/user/entity/User";
 import type { UserRole } from "../../domain/user/types";
 import type { UserProfileResponseDto } from "../dto/response/UserProfileResponseDto";
 
-export const toUserDomain = (dto: UserProfileResponseDto): User => {
+export const fromUserProfileResponseDtoToUserDomain = (
+  dto: UserProfileResponseDto,
+): User => {
   return new User(
     dto.id,
     dto.email,
@@ -15,7 +17,7 @@ export const toUserDomain = (dto: UserProfileResponseDto): User => {
   );
 };
 
-export const toUserProfileResponseDto = (
+export const fromUserDomainToUserProfileResponseDto = (
   domain: User,
 ): UserProfileResponseDto => ({
   id: domain.getId(),

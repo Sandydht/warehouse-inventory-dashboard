@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import type { UserLoginRequestDto } from "../../infrastructure/dto/request/UserLoginRequestDto";
 import { useAppDispatch } from "../store/hooks";
 import { loginAccount } from "../store/auth/authThunk";
-import { toUserLoginDomain } from "../../infrastructure/mappers/authMapper";
+import { fromUserLoginRequestDtoToUserLoginDomain } from "../../infrastructure/mappers/authMapper";
 import { useNavigate } from "react-router-dom";
 import Visibility24pxGray300Icon from "../assets/images/svg/visibility_24px_gray_300.svg";
 import VisibilityOff24pxGray300Icon from "../assets/images/svg/visibility_off_24px_gray_300.svg";
@@ -57,7 +57,9 @@ function LoginPage() {
         password: formData.password,
       };
 
-      await dispatch(loginAccount(toUserLoginDomain(payload))).unwrap();
+      await dispatch(
+        loginAccount(fromUserLoginRequestDtoToUserLoginDomain(payload)),
+      ).unwrap();
       dispatch(resetUserProfileData());
 
       reset();

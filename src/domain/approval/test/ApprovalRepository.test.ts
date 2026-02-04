@@ -3,6 +3,9 @@ import ApprovalRepository from "../ApprovalRepository";
 import type MethodAssertion from "../../../application/utils/MethodAssertion";
 import { APPROVAL_REPOSITORY_ERRORS } from "../constants";
 import AddProduct from "../entity/AddProduct";
+import GetApprovalRequestDetail from "../entity/GetApprovalRequestDetail";
+import ApproveRequest from "../entity/ApproveRequest";
+import RejectRequest from "../entity/RejectRequest";
 
 describe("ApprovalRepository", () => {
   it("should throw error when invoke abstract behavior", async () => {
@@ -19,6 +22,21 @@ describe("ApprovalRepository", () => {
     mockMethodAssertion.assertImplemented(
       approvalRepository,
       "getApprovalList",
+      APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
+    mockMethodAssertion.assertImplemented(
+      approvalRepository,
+      "getApprovalRequestDetail",
+      APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
+    mockMethodAssertion.assertImplemented(
+      approvalRepository,
+      "approveRequest",
+      APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
+    mockMethodAssertion.assertImplemented(
+      approvalRepository,
+      "rejectRequst",
       APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
 
@@ -38,5 +56,16 @@ describe("ApprovalRepository", () => {
     await expect(approvalRepository.getApprovalList({})).rejects.toThrowError(
       APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
+    await expect(
+      approvalRepository.getApprovalRequestDetail(
+        new GetApprovalRequestDetail("req-001"),
+      ),
+    ).rejects.toThrowError(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
+    await expect(
+      approvalRepository.approveRequest(new ApproveRequest("req-001")),
+    ).rejects.toThrowError(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
+    await expect(
+      approvalRepository.rejectRequst(new RejectRequest("req-001", "Test")),
+    ).rejects.toThrowError(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
   });
 });

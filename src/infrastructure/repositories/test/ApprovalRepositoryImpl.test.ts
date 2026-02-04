@@ -2,16 +2,18 @@ import { describe, expect, it, vi } from "vitest";
 import ApprovalRepositoryImpl from "../ApprovalRepositoryImpl";
 import { privateApi } from "../../http/axiosInstance";
 import AddProduct from "../../../domain/approval/entity/AddProduct";
-import type { CreateApprovalResponseDto } from "../../dto/response/CreateApprovalResponseDto";
 import InventoryItem from "../../../domain/inventory/entity/InventoryItem";
 import ApprovalRequest from "../../../domain/approval/entity/ApprovalRequest";
-import { toApprovalRequestDomain } from "../../mappers/approvalMapper";
+import { fromApprovalRequestDtoToApprovalRequestDomain } from "../../mappers/approvalMapper";
 import type { GetApprovalListResponseDto } from "../../dto/response/GetApprovalListResponseDto";
 import type { ApprovalRequestDto } from "../../dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../../dto/common/InventoryItemDto";
 import type { PaginationMeta } from "../../../commons/models/PaginationMeta";
 import type { PaginatedResult } from "../../../commons/models/PaginatedResult";
 import type { PaginationQuery } from "../../../commons/models/PaginationQuery";
+import GetApprovalRequestDetail from "../../../domain/approval/entity/GetApprovalRequestDetail";
+import ApproveRequest from "../../../domain/approval/entity/ApproveRequest";
+import RejectRequest from "../../../domain/approval/entity/RejectRequest";
 
 vi.mock("../../http/axiosInstance", () => ({
   privateApi: {
@@ -24,6 +26,34 @@ describe("ApprovalRepositoryImpl", () => {
   const approvalRepositoryImpl: ApprovalRepositoryImpl =
     new ApprovalRepositoryImpl();
 
+  const now = new Date("2026-03-02").toISOString();
+  const mockInventoryItemDto: InventoryItemDto = {
+    id: "inv-001",
+    sku: "PRODUCT-001",
+    name: "Product Name",
+    category: "Electronics",
+    price: 500000,
+    quantity: 10,
+    supplier: "Supplier Name",
+    createdAt: now,
+    updatedAt: now,
+    deletedAt: null,
+  };
+
+  const mockApprovalRequestDto: ApprovalRequestDto<InventoryItemDto> = {
+    id: "req-001",
+    type: "CREATE",
+    status: "PENDING",
+    targetId: null,
+    originalData: null,
+    proposedData: mockInventoryItemDto,
+    rejectionReason: null,
+    createdBy: "user",
+    createdAt: now,
+    updatedAt: now,
+    deletedAt: null,
+  };
+
   describe("createApprovalRequest function", () => {
     const mockProductItem: AddProduct = new AddProduct(
       "PRODUCT-001",
@@ -35,38 +65,8 @@ describe("ApprovalRepositoryImpl", () => {
     );
 
     it("should create approval request correctly", async () => {
-      const now = new Date("2026-03-02").toISOString();
-
-      const mockInventoryItem: InventoryItem = new InventoryItem(
-        "inv-001",
-        "PRODUCT-001",
-        "Product Name",
-        "Electronics",
-        500000,
-        10,
-        "Supplier Name",
-        now,
-        now,
-        null,
-      );
-
-      const mockCreateApprovalResponseDto: CreateApprovalResponseDto<InventoryItem> =
-        {
-          id: "req-001",
-          type: "CREATE",
-          status: "PENDING",
-          targetId: null,
-          originalData: null,
-          proposedData: mockInventoryItem,
-          rejectionReason: null,
-          createdBy: "user",
-          createdAt: now,
-          updatedAt: now,
-          deletedAt: null,
-        };
-
       vi.mocked(privateApi.post).mockResolvedValue({
-        data: mockCreateApprovalResponseDto,
+        data: mockApprovalRequestDto,
       });
 
       const result: ApprovalRequest<InventoryItem> =
@@ -77,7 +77,7 @@ describe("ApprovalRepositoryImpl", () => {
         mockProductItem,
       );
       expect(result).toStrictEqual(
-        toApprovalRequestDomain(mockCreateApprovalResponseDto),
+        fromApprovalRequestDtoToApprovalRequestDomain(mockApprovalRequestDto),
       );
     });
 
@@ -177,6 +177,102 @@ describe("ApprovalRepositoryImpl", () => {
       await expect(approvalRepositoryImpl.getApprovalList({})).rejects.toThrow(
         "Network Error",
       );
+    });
+  });
+
+  describe("getApprovalRequestDetail function", () => {
+    const mockGetApprovalRequestDetail: GetApprovalRequestDetail =
+      new GetApprovalRequestDetail("req-001");
+
+    it("should fetch approval details and return mapped domain data", async () => {
+      vi.mocked(privateApi.get).mockResolvedValue({
+        data: mockApprovalRequestDto,
+      });
+
+      const result: ApprovalRequest<InventoryItem> =
+        await approvalRepositoryImpl.getApprovalRequestDetail(
+          mockGetApprovalRequestDetail,
+        );
+
+      expect(privateApi.get).toHaveBeenCalledWith(
+        "/approval/approval-request-detail/req-001",
+      );
+
+      expect(result).toStrictEqual(
+        fromApprovalRequestDtoToApprovalRequestDomain(mockApprovalRequestDto),
+      );
+    });
+
+    it("should throw an error if the API call fails", async () => {
+      const networkError = new Error("Network Error");
+      vi.mocked(privateApi.get).mockRejectedValue(networkError);
+      await expect(
+        approvalRepositoryImpl.getApprovalRequestDetail(
+          mockGetApprovalRequestDetail,
+        ),
+      ).rejects.toThrow("Network Error");
+    });
+  });
+
+  describe("approveRequest function", () => {
+    const mockApproveRequest: ApproveRequest = new ApproveRequest("req-001");
+
+    it("should successfully approve a request and return the domain model", async () => {
+      vi.mocked(privateApi.post).mockResolvedValue({
+        data: mockApprovalRequestDto,
+      });
+
+      const result: ApprovalRequest<InventoryItem> =
+        await approvalRepositoryImpl.approveRequest(mockApproveRequest);
+
+      expect(privateApi.post).toHaveBeenCalledWith(
+        `/approval/${mockApproveRequest.getId()}/approve`,
+      );
+
+      expect(result).toStrictEqual(
+        fromApprovalRequestDtoToApprovalRequestDomain(mockApprovalRequestDto),
+      );
+    });
+
+    it("should throw an error if the API call fails", async () => {
+      const networkError = new Error("Network Error");
+      vi.mocked(privateApi.post).mockRejectedValue(networkError);
+      await expect(
+        approvalRepositoryImpl.approveRequest(mockApproveRequest),
+      ).rejects.toThrow("Network Error");
+    });
+  });
+
+  describe("rejectRequst function", () => {
+    const mockRejectRequest: RejectRequest = new RejectRequest(
+      "req-001",
+      "Test",
+    );
+
+    it("should successfully reject a request and return the domain model", async () => {
+      vi.mocked(privateApi.post).mockResolvedValue({
+        data: mockApprovalRequestDto,
+      });
+
+      const result: ApprovalRequest<InventoryItem> =
+        await approvalRepositoryImpl.rejectRequst(mockRejectRequest);
+
+      expect(privateApi.post).toHaveBeenCalledWith(
+        `/approval/${mockRejectRequest.getId()}/reject`,
+        { rejectReason: mockRejectRequest.getRejectReason() },
+      );
+
+      expect(result).toStrictEqual(
+        fromApprovalRequestDtoToApprovalRequestDomain(mockApprovalRequestDto),
+      );
+    });
+
+    it("should throw an error if the API call fails", async () => {
+      const networkError = new Error("Network Error");
+      vi.mocked(privateApi.post).mockRejectedValue(networkError);
+      await expect(
+        approvalRepositoryImpl.rejectRequst(mockRejectRequest),
+      ).rejects.toThrow("Network Error");
     });
   });
 });

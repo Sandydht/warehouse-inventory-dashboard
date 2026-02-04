@@ -1,18 +1,36 @@
 import { approvalDependencies } from "../../../infrastructure/container";
 import {
-  toCreateApprovalResponseDto,
-  toGetApprovalListResponseDto,
+  fromApprovalRequestDomainToApprovalRequestDto,
+  fromPaginatedResultDomainToGetApprovalListResponseDto,
 } from "../../../infrastructure/mappers/approvalMapper";
 import { createUseCaseThunk } from "../utils/createThunk";
 
 export const createApprovalRequest = createUseCaseThunk(
   "approval/create-approval-request",
   () => approvalDependencies.createApprovalRequestUseCase,
-  (result) => toCreateApprovalResponseDto(result),
+  (result) => fromApprovalRequestDomainToApprovalRequestDto(result),
 );
 
 export const getApprovalList = createUseCaseThunk(
   "approval/get-approval-list",
   () => approvalDependencies.getApprovalListUseCase,
-  (result) => toGetApprovalListResponseDto(result),
+  (result) => fromPaginatedResultDomainToGetApprovalListResponseDto(result),
+);
+
+export const getApprovalRequestDetail = createUseCaseThunk(
+  "approval/get-approval-request-detail",
+  () => approvalDependencies.getApprovalRequestDetailUseCase,
+  (result) => fromApprovalRequestDomainToApprovalRequestDto(result),
+);
+
+export const approveRequest = createUseCaseThunk(
+  "approval/approve-request",
+  () => approvalDependencies.approveRequestUseCase,
+  (result) => fromApprovalRequestDomainToApprovalRequestDto(result),
+);
+
+export const rejectRequest = createUseCaseThunk(
+  "approval/reject-request",
+  () => approvalDependencies.rejectRequestUseCase,
+  (result) => fromApprovalRequestDomainToApprovalRequestDto(result),
 );

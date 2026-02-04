@@ -1,18 +1,18 @@
 import { authDependencies } from "../../../infrastructure/container";
 import {
-  toUserLoginResponseDto,
-  toUserLogoutResponseDto,
+  fromNewAuthDomainToUserLoginResponseDto,
+  fromUserLogoutDomainToUserLogoutResponseDto,
 } from "../../../infrastructure/mappers/authMapper";
 import { createUseCaseThunk } from "../utils/createThunk";
 
 export const loginAccount = createUseCaseThunk(
   "auth/login-account",
   () => authDependencies.loginAccountUseCase,
-  (result) => toUserLoginResponseDto(result),
+  (result) => fromNewAuthDomainToUserLoginResponseDto(result),
 );
 
 export const logoutAccount = createUseCaseThunk(
   "auth/logout-account",
   () => authDependencies.logoutAccountUseCase,
-  (result) => toUserLogoutResponseDto(result),
+  (result) => fromUserLogoutDomainToUserLogoutResponseDto(result),
 );

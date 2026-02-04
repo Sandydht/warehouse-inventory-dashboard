@@ -5,10 +5,10 @@ import type UserLogin from "../../domain/auth/entity/UserLogin";
 import type { UserLoginResponseDto } from "../dto/response/UserLoginResponseDto";
 import { publicApi } from "../http/axiosInstance";
 import {
-  toNewAuthDomain,
-  toUserLoginRequestDto,
-  toUserLogoutDomain,
-  toUserLogoutRequestDto,
+  fromUserLoginResponseDtoToNewAuthDomain,
+  fromUserLoginDomainToUserLoginRequestDto,
+  fromUserLogoutResponseDtoToUserLogoutDomain,
+  fromRefreshTokenDomainToUserLogoutRequestDto,
 } from "../mappers/authMapper";
 import type { UserLoginRequestDto } from "../dto/request/UserLoginRequestDto";
 import type { UserLogoutResponseDto } from "../dto/response/UserLogoutResponseDto";
@@ -22,9 +22,9 @@ class AuthRepositoryImpl extends AuthRepository {
       UserLoginResponseDto,
       AxiosResponse<UserLoginResponseDto>,
       UserLoginRequestDto
-    >("/auth/login-account", toUserLoginRequestDto(payload));
+    >("/auth/login-account", fromUserLoginDomainToUserLoginRequestDto(payload));
 
-    return toNewAuthDomain(data);
+    return fromUserLoginResponseDtoToNewAuthDomain(data);
   }
 
   async logoutAccount(payload: RefreshToken): Promise<UserLogout> {
@@ -32,9 +32,12 @@ class AuthRepositoryImpl extends AuthRepository {
       UserLogoutResponseDto,
       AxiosResponse<UserLogoutResponseDto>,
       UserLogoutRequestDto
-    >("/auth/logout-account", toUserLogoutRequestDto(payload));
+    >(
+      "/auth/logout-account",
+      fromRefreshTokenDomainToUserLogoutRequestDto(payload),
+    );
 
-    return toUserLogoutDomain(data);
+    return fromUserLogoutResponseDtoToUserLogoutDomain(data);
   }
 }
 

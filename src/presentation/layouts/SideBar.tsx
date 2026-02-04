@@ -79,6 +79,7 @@ function SideBar({ isOpen, onClose }: SidebarProps) {
             )
             .map((item) => (
               <NavLink
+                key={item.link}
                 to={item.link}
                 className={({ isActive }) =>
                   `w-full h-auto px-4 py-2 text-left text-[14px] leading-5 font-bold rounded-lg focus:border-blue-500 ${isActive ? "bg-sky-500 text-white hover:bg-sky-600" : "bg-white hover:bg-gray-100"}`

@@ -2,11 +2,7 @@ import { http, HttpResponse } from "msw";
 import UserDummyData from "../json/user.json";
 import type { CreateApprovalRequestDto } from "../../dto/request/CreateApprovalRequestDto";
 import { IndexedDbCrud } from "../indexeddb/crud";
-import type { CreateApprovalResponseDto } from "../../dto/response/CreateApprovalResponseDto";
-import InventoryItem from "../../../domain/inventory/entity/InventoryItem";
 import { v4 as uuidv4 } from "uuid";
-import ApprovalRequest from "../../../domain/approval/entity/ApprovalRequest";
-import { toCreateApprovalResponseDto } from "../../mappers/approvalMapper";
 import type { InventoryItemDto } from "../../dto/common/InventoryItemDto";
 import type { ApprovalRequestDto } from "../../dto/common/ApprovalRequestDto";
 import { paginateArray } from "../utils/paginateArray";
@@ -28,45 +24,35 @@ export const approvalApi = [
     }
 
     const payload = (await request.json()) as CreateApprovalRequestDto;
-
     const now = new Date().toISOString();
+    const inventoryItemDto: InventoryItemDto = {
+      ...payload,
+      id: uuidv4(),
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null,
+    };
 
-    const inventoryItem: InventoryItem = new InventoryItem(
-      uuidv4(),
-      payload.sku,
-      payload.name,
-      payload.category,
-      payload.price,
-      payload.quantity,
-      payload.supplier,
-      now,
-      now,
-      null,
+    const approvalRequestDto: ApprovalRequestDto<InventoryItemDto> = {
+      id: uuidv4(),
+      type: "CREATE",
+      status: "PENDING",
+      targetId: null,
+      originalData: null,
+      proposedData: inventoryItemDto,
+      rejectionReason: null,
+      createdBy: user.fullName,
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null,
+    };
+
+    const approvalDb = new IndexedDbCrud<ApprovalRequestDto<InventoryItemDto>>(
+      "approval_requests",
     );
+    await approvalDb.create(approvalRequestDto);
 
-    const approvalRequest: ApprovalRequest<InventoryItem> =
-      new ApprovalRequest<InventoryItem>(
-        uuidv4(),
-        "CREATE",
-        "PENDING",
-        null,
-        null,
-        inventoryItem,
-        null,
-        user.fullName,
-        now,
-        now,
-        null,
-      );
-
-    const mapDtoData: CreateApprovalResponseDto<InventoryItem> =
-      toCreateApprovalResponseDto(approvalRequest);
-    const approvalDb = new IndexedDbCrud<
-      CreateApprovalResponseDto<InventoryItem>
-    >("approval_requests");
-    await approvalDb.create(mapDtoData);
-
-    return HttpResponse.json(mapDtoData, { status: 201 });
+    return HttpResponse.json(approvalRequestDto, { status: 201 });
   }),
   http.get("/api/approval/approval-list", async ({ request }) => {
     const authHeader = request.headers.get("Authorization");
