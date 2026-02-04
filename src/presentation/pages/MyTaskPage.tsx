@@ -10,6 +10,7 @@ import type { ApprovalStatus } from "../../domain/approval/types";
 import DataTable from "../components/DataTable";
 import type { ApprovalRequestDto } from "../../infrastructure/dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../../infrastructure/dto/common/InventoryItemDto";
+import { Link } from "react-router-dom";
 
 function MyTaskPage() {
   const dispatch = useAppDispatch();
@@ -159,14 +160,14 @@ function MyTaskPage() {
                 {
                   key: "action",
                   header: "Action",
-                  render: () => (
+                  render: (row: ApprovalRequestDto<InventoryItemDto>) => (
                     <>
-                      <button className="mr-2 text-blue-600 cursor-pointer hover:underline">
-                        Approve
-                      </button>
-                      <button className="text-red-600 cursor-pointer hover:underline">
-                        Reject
-                      </button>
+                      <Link
+                        to={`/my-task/approval-request-detail/${row.id}`}
+                        className="text-blue-600 cursor-pointer hover:underline"
+                      >
+                        See Detail
+                      </Link>
                     </>
                   ),
                 },

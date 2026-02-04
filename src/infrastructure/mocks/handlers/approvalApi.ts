@@ -141,4 +141,32 @@ export const approvalApi = [
 
     return HttpResponse.json(result, { status: 200 });
   }),
+  http.get(
+    "/api/approval/approval-request-detail/:id",
+    async ({ params, request }) => {
+      const authHeader = request.headers.get("Authorization");
+      if (!authHeader) {
+        return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+
+      const token = authHeader.replace("Bearer ", "");
+      const user = UserDummyData.find((user) => user.id === token);
+
+      if (!user || user.role !== "OFFICER") {
+        return HttpResponse.json({ message: "Forbidden" }, { status: 403 });
+      }
+
+      const { id } = params;
+      const approvalDb = new IndexedDbCrud<
+        ApprovalRequestDto<InventoryItemDto>
+      >("approval_requests");
+      const result = await approvalDb.getById(id as string);
+
+      if (!result) {
+        return HttpResponse.json({ message: "Not Found" }, { status: 404 });
+      }
+
+      return HttpResponse.json(result, { status: 200 });
+    },
+  ),
 ];

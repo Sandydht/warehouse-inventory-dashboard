@@ -104,7 +104,7 @@ function AddProductInventoryListPage() {
           />
         </Link>
 
-        <p className="text-left text-[22px] text-black leading-7">
+        <p className="text-left text-[22px] leading-7 font-bold">
           Add Product To Inventory
         </p>
       </div>

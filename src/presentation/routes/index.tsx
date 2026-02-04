@@ -8,6 +8,8 @@ import MyTaskPage from "../pages/MyTaskPage";
 import RoleGuard from "./RoleGuard";
 import UnauthorizedPage from "../pages/UnauthorizedPage";
 import AddProductInventoryListPage from "../pages/AddProductInventoryListPage";
+import ApprovalRequestDetailPage from "../pages/ApprovalRequestDetailPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 function AppRoutes() {
   return (
@@ -27,6 +29,13 @@ function AppRoutes() {
             <Route path="/my-task" element={<MyTaskPage />} />
           </Route>
 
+          <Route element={<RoleGuard allowedRoles={["OFFICER"]} />}>
+            <Route
+              path="/my-task/approval-request-detail/:id"
+              element={<ApprovalRequestDetailPage />}
+            />
+          </Route>
+
           <Route element={<RoleGuard allowedRoles={["OFFICER", "STAFF"]} />}>
             <Route path="/inventory-list" element={<InventoryList />} />
           </Route>
@@ -37,6 +46,8 @@ function AppRoutes() {
               element={<AddProductInventoryListPage />}
             />
           </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Route>
     </Routes>
