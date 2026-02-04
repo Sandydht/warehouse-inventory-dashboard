@@ -1,8 +1,10 @@
+import PageResponse from "../../commons/models/PageResponse";
 import AddProduct from "../../domain/approval/entity/AddProduct";
 import ApprovalRequest from "../../domain/approval/entity/ApprovalRequest";
 import type InventoryItem from "../../domain/inventory/entity/InventoryItem";
 import type { CreateApprovalRequestDto } from "../dto/request/CreateApprovalRequestDto";
 import type { CreateApprovalResponseDto } from "../dto/response/CreateApprovalResponseDto";
+import type { GetApprovalListResponseDto } from "../dto/response/GetApprovalListResponseDto";
 
 export const toCreateApprovalRequestDto = (
   domain: AddProduct,
@@ -56,4 +58,15 @@ export const toAddProductDomain = (dto: CreateApprovalRequestDto): AddProduct =>
     dto.price,
     dto.quantity,
     dto.supplier,
+  );
+
+export const toPageResponseApprovalRequestListDomain = (
+  dto: GetApprovalListResponseDto<ApprovalRequest<InventoryItem>>,
+): PageResponse<ApprovalRequest<InventoryItem>> =>
+  new PageResponse<ApprovalRequest<InventoryItem>>(
+    dto.data,
+    dto.page,
+    dto.size,
+    dto.totalElements,
+    dto.totalPages,
   );

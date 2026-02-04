@@ -16,6 +16,11 @@ describe("ApprovalRepository", () => {
       "createApprovalRequest",
       APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
+    mockMethodAssertion.assertImplemented(
+      approvalRepository,
+      "getApprovalList",
+      APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
 
     expect(approvalRepository).toBeInstanceOf(ApprovalRepository);
     await expect(
@@ -30,5 +35,8 @@ describe("ApprovalRepository", () => {
         ),
       ),
     ).rejects.toThrowError(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
+    await expect(approvalRepository.getApprovalList({})).rejects.toThrowError(
+      APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
   });
 });

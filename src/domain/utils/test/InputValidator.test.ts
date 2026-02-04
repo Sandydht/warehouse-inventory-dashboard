@@ -178,7 +178,7 @@ describe("InputValidator", () => {
 
     it("should throw an error when the number is not positive", () => {
       const invalidNumber1 = -5;
-      const invalidNumber2 = 0;
+      const invalidNumber2 = -1;
       expect(() =>
         InputValidation.positiveNumberValidFormat(invalidNumber1, errorMessage),
       ).toThrowError(errorMessage);

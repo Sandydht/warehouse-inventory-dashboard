@@ -69,7 +69,7 @@ class InputValidator {
     value: number,
     message: string,
   ): void {
-    if (value <= 0 || !this.POSITIVE_NUMBER_PATTERN.test(value.toString())) {
+    if (value < 0 || !this.POSITIVE_NUMBER_PATTERN.test(value.toString())) {
       throw new Error(message);
     }
   }
