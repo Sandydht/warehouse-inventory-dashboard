@@ -9,7 +9,7 @@ interface ApprovalRequestDetailCardProps {
 
 function ApprovalRequestDetailCard({ data }: ApprovalRequestDetailCardProps) {
   return (
-    <div className="w-full h-auto rounded-2xl bg-white shadow-md">
+    <div className="w-full h-auto rounded-lg bg-white shadow-md border border-gray-200 overflow-hidden">
       <div className="flex flex-col gap-2 border-b border-gray-300 p-6 md:flex-row md:items-center md:justify-between">
         <div className="w-full h-auto flex flex-col items-start justify-start gap-1">
           <h1 className="text-xl font-semibold text-gray-900">

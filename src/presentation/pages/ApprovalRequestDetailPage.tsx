@@ -48,7 +48,7 @@ function ApprovalRequestDetailPage() {
         </p>
       </div>
 
-      <div className="w-full h-auto min-h-[calc(100vh-205px)] flex flex-col items-start justify-start gap-2">
+      <div className="w-full h-auto min-h-[calc(100vh-205px)] flex flex-col items-start justify-start gap-4">
         {!loading && data && data.type === "CREATE" && (
           <ApprovalRequestDetailCard data={data} />
         )}

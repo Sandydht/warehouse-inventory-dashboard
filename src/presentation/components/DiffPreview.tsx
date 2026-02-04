@@ -17,7 +17,7 @@ interface DiffPreviewProps {
 
 function DiffPreview({ title = "Change Preview", diffs }: DiffPreviewProps) {
   return (
-    <div className="w-full h-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="w-full h-auto rounded-lg border border-gray-200 bg-white shadow-md overflow-hidden">
       {/* Header */}
       <div className="border-b px-4 py-3 md:px-6 md:py-4">
         <h2 className="text-base md:text-lg font-semibold text-gray-800">

@@ -56,7 +56,7 @@ function MyTaskPage() {
         </p>
       </div>
 
-      <div className="w-full h-auto rounded-2xl border-gray-200 border bg-white overflow-hidden shadow-sm flex flex-col items-start justify-start gap-2">
+      <div className="w-full h-auto rounded-lg border-gray-200 border bg-white overflow-hidden shadow-md flex flex-col items-start justify-start gap-2">
         <div className="w-full h-auto p-4 flex items-center justify-start gap-4">
           <div className="w-full h-auto max-w-125">
             <SearchInput
