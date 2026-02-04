@@ -2,12 +2,14 @@ import ApproveRequestUseCase from "../application/usecases/ApproveRequestUseCase
 import CreateApprovalRequestUseCase from "../application/usecases/CreateApprovalRequestUseCase";
 import GetApprovalListUseCase from "../application/usecases/GetApprovalListUseCase";
 import GetApprovalRequestDetailUseCase from "../application/usecases/GetApprovalRequestDetailUseCase";
+import GetInventoryListUseCase from "../application/usecases/GetInventoryListUseCase";
 import GetUserProfileUseCase from "../application/usecases/GetUserProfileUseCase";
 import LoginAccountUseCase from "../application/usecases/LoginAccountUseCase";
 import LogoutAccountUseCase from "../application/usecases/LogoutAccountUseCase";
 import RejectRequestUseCase from "../application/usecases/RejectRequestUseCase";
 import ApprovalRepositoryImpl from "./repositories/ApprovalRepositoryImpl";
 import AuthRepositoryImpl from "./repositories/AuthRepositoryImpl";
+import InventoryRepositoryImpl from "./repositories/InventoryRepositoryImpl";
 import UserRepositoryImpl from "./repositories/UserRepositoryImpl";
 import MethodAssertionImpl from "./utils/MethodAssertionImpl";
 import SecureStorageImpl from "./utils/SecureStorageImpl";
@@ -19,6 +21,8 @@ const secureStorageImpl: SecureStorageImpl = new SecureStorageImpl();
 const methodAssertionImpl: MethodAssertionImpl = new MethodAssertionImpl();
 const approvalRepositoryImpl: ApprovalRepositoryImpl =
   new ApprovalRepositoryImpl();
+const inventoryRepositoryImpl: InventoryRepositoryImpl =
+  new InventoryRepositoryImpl();
 
 export const authDependencies = {
   loginAccountUseCase: new LoginAccountUseCase(
@@ -60,5 +64,12 @@ export const approvalDependencies = {
   rejectRequestUseCase: new RejectRequestUseCase(
     methodAssertionImpl,
     approvalRepositoryImpl,
+  ),
+};
+
+export const inventoryDependencies = {
+  getInventoryListUseCase: new GetInventoryListUseCase(
+    methodAssertionImpl,
+    inventoryRepositoryImpl,
   ),
 };

@@ -104,9 +104,34 @@ export const approvalApi = [
       let bValue: string | number;
 
       switch (sortBy) {
-        case "type":
-          aValue = a.type;
-          bValue = b.type;
+        case "sku":
+          aValue = a.originalData?.sku || a.proposedData?.sku || "";
+          bValue = a.originalData?.sku || b.proposedData?.sku || "";
+          break;
+
+        case "name":
+          aValue = a.originalData?.name || a.proposedData?.name || "";
+          bValue = a.originalData?.name || b.proposedData?.name || "";
+          break;
+
+        case "category":
+          aValue = a.originalData?.category || a.proposedData?.category || "";
+          bValue = a.originalData?.category || b.proposedData?.category || "";
+          break;
+
+        case "price":
+          aValue = a.originalData?.price || a.proposedData?.price || "";
+          bValue = a.originalData?.price || b.proposedData?.price || "";
+          break;
+
+        case "quantity":
+          aValue = a.originalData?.quantity || a.proposedData?.quantity || "";
+          bValue = a.originalData?.quantity || b.proposedData?.quantity || "";
+          break;
+
+        case "supplier":
+          aValue = a.originalData?.supplier || a.proposedData?.supplier || "";
+          bValue = a.originalData?.supplier || b.proposedData?.supplier || "";
           break;
 
         case "createdBy":

@@ -4,6 +4,7 @@ import userReducer from "./user/userSlice";
 import snackbarReducer from "./snackbar/snackbarSlice";
 import approvalReducer from "./approval/approvalSlice";
 import confirmationModalReducer from "./modal/confirmationModalSlice";
+import inventoryReducer from "./inventory/inventorySlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     snackbar: snackbarReducer,
     approval: approvalReducer,
     confirmationModal: confirmationModalReducer,
+    inventory: inventoryReducer,
   },
 });
 

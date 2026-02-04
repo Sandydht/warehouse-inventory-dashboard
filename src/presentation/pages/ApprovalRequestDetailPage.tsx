@@ -4,10 +4,10 @@ import DiffPreview from "../components/DiffPreview";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getApprovalRequestDetail } from "../store/approval/approvalThunk";
-import GetApprovalRequestDetail from "../../domain/approval/entity/GetApprovalRequestDetail";
 import ApprovalRequestDetailCard from "../components/ApprovalRequestDetailCard";
 import Button from "../components/Button";
 import { openModal } from "../store/modal/confirmationModalSlice";
+import { toGetApprovalRequestDetailDomain } from "../../infrastructure/mappers/approvalMapper";
 
 function ApprovalRequestDetailPage() {
   const dispatch = useAppDispatch();
@@ -18,11 +18,11 @@ function ApprovalRequestDetailPage() {
 
   useEffect(() => {
     if (id) {
-      dispatch(getApprovalRequestDetail(new GetApprovalRequestDetail(id)));
+      dispatch(getApprovalRequestDetail(toGetApprovalRequestDetailDomain(id)));
     }
   }, [id, dispatch]);
 
-  const handleOpenConfirmationModal = () => {
+  const handleOpenConfirmationModalApproveRequest = () => {
     dispatch(
       openModal({
         title: "Approve Request",
@@ -103,15 +103,15 @@ function ApprovalRequestDetailPage() {
           id="logoutButton"
           buttonType="button"
           label={"Approve"}
-          disabled={false}
-          onClick={handleOpenConfirmationModal}
+          disabled={data?.status !== "PENDING"}
+          onClick={handleOpenConfirmationModalApproveRequest}
         />
         <Button
           type="danger"
           id="logoutButton"
           buttonType="button"
           label={"Reject"}
-          disabled={false}
+          disabled={data?.status !== "PENDING"}
         />
       </div>
     </div>
