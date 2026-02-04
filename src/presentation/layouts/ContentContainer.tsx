@@ -7,12 +7,12 @@ function ContentContainer() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="w-full h-auto min-h-screen bg-gray-100">
       <AppBar onMenuClick={() => setSidebarOpen(true)} />
       <SideBar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className="pt-14 md:pl-64">
-        <div className="p-4">
+      <main className="pt-15.25 md:pl-64">
+        <div className="md:px-10 md:py-5 p-4">
           <Outlet />
         </div>
       </main>

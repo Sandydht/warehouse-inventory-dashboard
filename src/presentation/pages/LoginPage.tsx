@@ -10,6 +10,7 @@ import PasswordInput from "../components/PasswordInput";
 import InputField from "../components/InputField";
 import { resetUserProfileData } from "../store/user/userSlice";
 import { showSnackbar } from "../store/snackbar/snackbarSlice";
+import Button from "../components/Button";
 
 type LoginForm = {
   email: string;
@@ -67,7 +68,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="w-full h-full min-h-screen py-30 flex flex-col items-center justify-start bg-linear-to-t from-sky-500 to-indigo-500 p-6.25">
+    <div className="w-full h-full min-h-screen py-30 flex flex-col items-center justify-start bg-white p-6.25">
       <form
         className="w-full h-auto p-4 max-w-106.25 bg-white rounded-xl shadow-lg border border-gray-200 gap-4 flex flex-col items-start justify-start"
         onSubmit={(e) => handleSubmit(onSubmit)(e)}
@@ -100,13 +101,13 @@ function LoginPage() {
         />
 
         <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
-          <button
-            className={`w-full h-auto text-white font-bold py-2 px-4 rounded-lg text-center text-[14px] leading-5 focus:border-blue-500 ${isSubmitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 cursor-pointer"}`}
-            type="submit"
+          <Button
+            type="primary"
+            id="loginButton"
+            buttonType="submit"
+            label={isSubmitting ? "Loading..." : "Login"}
             disabled={isSubmitting}
-          >
-            {isSubmitting ? "Loading..." : "Login"}
-          </button>
+          />
         </div>
       </form>
     </div>

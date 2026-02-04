@@ -1,9 +1,9 @@
 [
   {
     "id": "afffc04a-8424-4f4e-a5c3-dee931f9d2eb",
-    "email": "example1@email.com",
+    "email": "officer@email.com",
     "phoneNumber": "081234567890",
-    "fullName": "Example User One",
+    "fullName": "Officer",
     "password": "password123",
     "role": "OFFICER",
     "createdAt": "2024-01-15T10:00:00Z",
@@ -12,9 +12,9 @@
   },
   {
     "id": "9b1deb4d-5b7d-4f8a-9f1b-3c7c9a8c1a2e",
-    "email": "example2@email.com",
+    "email": "staff@email.com",
     "phoneNumber": "081234567891",
-    "fullName": "Example User Two",
+    "fullName": "Staff",
     "password": "password123",
     "role": "STAFF",
     "createdAt": "2024-01-15T10:00:00Z",

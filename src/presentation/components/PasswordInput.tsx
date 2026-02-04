@@ -49,7 +49,7 @@ function PasswordInput({
             id={id}
             type={isVisible ? "text" : "password"}
             placeholder={placeholder}
-            className="w-full py-2 text-[12px] outline-none leading-4"
+            className="w-full py-2 text-[12px] outline-none leading-4 min-h-9 max-h-9 text-gray-600"
             {...register}
             onFocus={() => setIsFocused(true)}
             onBlur={(e) => {

@@ -33,7 +33,7 @@ function InputField({
           id={id}
           type={type}
           placeholder={placeholder}
-          className={`w-full px-4 py-2 rounded-lg border-2 text-[12px] outline-none leading-4
+          className={`w-full px-4 py-2 rounded-lg border-2 text-[12px] outline-none leading-4 min-h-9 max-h-9 text-gray-600
             ${
               error
                 ? "border-red-400 focus:border-red-500 focus-within:border-red-500"

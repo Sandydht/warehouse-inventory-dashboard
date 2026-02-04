@@ -5,12 +5,11 @@ import { getApprovalList } from "../store/approval/approvalThunk";
 import type { PaginationQuery } from "../../commons/models/PaginationQuery";
 import type { InventoryItemDto } from "../../infrastructure/dto/common/InventoryItemDto";
 import ElipsisPagination from "../components/ElipsisPagination";
-
-export type ProductStatus = "active" | "inactive";
-export type ProductType = "physical" | "digital";
-
-type SortKey = keyof InventoryItemDto;
-type SortOrder = "asc" | "desc";
+import SearchInput from "../components/SearchInput";
+import { useDebounce } from "../hooks/useDebounce";
+import Dropdown from "../components/Dropdown";
+import type { ApprovalStatus } from "../../domain/approval/types";
+import type { SortOrder } from "../../commons/models/types";
 
 function MyTaskPage() {
   const dispatch = useAppDispatch();
@@ -18,28 +17,27 @@ function MyTaskPage() {
 
   const [page, setPage] = useState(1);
 
-  const [sortKey, setSortKey] = useState<SortKey>("createdAt");
+  const [sortKey, setSortKey] = useState<keyof InventoryItemDto>("createdAt");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | ProductStatus>(
-    "all",
-  );
+  const debouncedSearch = useDebounce(search, 500);
+  const [statusFilter, setStatusFilter] = useState<string>("");
 
   useEffect(() => {
     const mockParams: PaginationQuery = {
       page,
       limit: 10,
-      search: "",
-      status: "PENDING",
+      search: debouncedSearch,
+      status: statusFilter as ApprovalStatus,
       sortBy: sortKey,
       sortOrder: sortOrder,
     };
 
     dispatch(getApprovalList(mockParams));
-  }, [dispatch, sortOrder, sortKey, page]);
+  }, [dispatch, sortOrder, sortKey, page, debouncedSearch, statusFilter]);
 
-  const handleSort = (key: SortKey) => {
+  const handleSort = (key: keyof InventoryItemDto) => {
     if (key === sortKey) {
       setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
@@ -48,7 +46,13 @@ function MyTaskPage() {
     }
   };
 
-  const Th = ({ label, columnKey }: { label: string; columnKey: SortKey }) => {
+  const Th = ({
+    label,
+    columnKey,
+  }: {
+    label: string;
+    columnKey: keyof InventoryItemDto;
+  }) => {
     const isActive = sortKey === columnKey;
 
     return (
@@ -76,25 +80,29 @@ function MyTaskPage() {
 
       <div className="w-full h-auto rounded-2xl border-gray-200 border bg-white overflow-hidden shadow-sm flex flex-col items-start justify-start gap-2">
         <div className="w-full h-auto p-4 flex items-center justify-start gap-4">
-          <input
-            type="text"
-            placeholder="Search SKU, name, category, supplier..."
-            className="w-full max-w-sm rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className="w-full h-auto max-w-125">
+            <SearchInput
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
-          <select
-            className="rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={statusFilter}
-            onChange={(e) =>
-              setStatusFilter(e.target.value as "all" | ProductStatus)
-            }
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
+          <div className="w-full h-auto max-w-37.5">
+            <Dropdown
+              value={statusFilter}
+              onChange={(item) => setStatusFilter(String(item.value))}
+              items={[
+                {
+                  label: "All",
+                  value: "",
+                },
+                {
+                  label: "Pending",
+                  value: "PENDING",
+                },
+              ]}
+            />
+          </div>
         </div>
 
         <div className="w-full h-auto flex flex-col items-start justify-start">
