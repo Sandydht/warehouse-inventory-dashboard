@@ -5,12 +5,13 @@ import AddProduct from "../../../domain/approval/entity/AddProduct";
 import type { CreateApprovalResponseDto } from "../../dto/response/CreateApprovalResponseDto";
 import InventoryItem from "../../../domain/inventory/entity/InventoryItem";
 import ApprovalRequest from "../../../domain/approval/entity/ApprovalRequest";
-import {
-  toApprovalRequestDomain,
-  toPageResponseApprovalRequestListDomain,
-} from "../../mappers/approvalMapper";
-import type { ApprovalStatus } from "../../../domain/approval/types";
+import { toApprovalRequestDomain } from "../../mappers/approvalMapper";
 import type { GetApprovalListResponseDto } from "../../dto/response/GetApprovalListResponseDto";
+import type { ApprovalRequestDto } from "../../dto/common/ApprovalRequestDto";
+import type { InventoryItemDto } from "../../dto/common/InventoryItemDto";
+import type { PaginationMeta } from "../../../commons/models/PaginationMeta";
+import type { PaginatedResult } from "../../../commons/models/PaginatedResult";
+import type { PaginationQuery } from "../../../commons/models/PaginationQuery";
 
 vi.mock("../../http/axiosInstance", () => ({
   privateApi: {
@@ -93,60 +94,81 @@ describe("ApprovalRepositoryImpl", () => {
 
   describe("getApprovalList function", () => {
     it("should fetch approval list with correct parameters and return mapped domain data", async () => {
-      const mockParams = {
-        search: "laptop",
-        status: "PENDING" as ApprovalStatus,
+      const mockParams: PaginationQuery = {
+        page: 1,
+        limit: 10,
+        search: "",
+        status: "PENDING",
         sortBy: "createdAt",
-        order: "desc" as const,
+        sortOrder: "desc",
       };
+
+      const mockPaginationMeta: PaginationMeta = {
+        page: 1,
+        limit: 10,
+        totalItems: 10,
+        totalPages: 1,
+        hasNextPage: false,
+        hasPrevPage: false,
+      };
+
       const mockGetApprovalListResponseDto: GetApprovalListResponseDto<
-        ApprovalRequest<InventoryItem>
+        ApprovalRequestDto<InventoryItemDto>
       > = {
         data: [],
-        page: 1,
-        size: 10,
-        totalElements: 0,
-        totalPages: 1,
+        meta: mockPaginationMeta,
+        query: mockParams,
       };
 
       vi.mocked(privateApi.get).mockResolvedValue({
         data: mockGetApprovalListResponseDto,
       });
 
-      const result = await approvalRepositoryImpl.getApprovalList(mockParams);
+      const result: PaginatedResult<ApprovalRequest<InventoryItem>> =
+        await approvalRepositoryImpl.getApprovalList(mockParams);
 
       expect(privateApi.get).toHaveBeenCalledWith("/approval/approval-list", {
         params: mockParams,
       });
-      expect(result).toStrictEqual(
-        toPageResponseApprovalRequestListDomain(mockGetApprovalListResponseDto),
-      );
+
+      expect(result.data).toBe(mockGetApprovalListResponseDto.data);
+      expect(result.meta).toBe(mockGetApprovalListResponseDto.meta);
+      expect(result.query).toBe(mockGetApprovalListResponseDto.query);
     });
 
     it("should handle empty parameters gracefully", async () => {
-      const mockParams = {};
+      const mockParams: PaginationQuery = {};
+      const mockPaginationMeta: PaginationMeta = {
+        page: 1,
+        limit: 10,
+        totalItems: 10,
+        totalPages: 1,
+        hasNextPage: false,
+        hasPrevPage: false,
+      };
+
       const mockGetApprovalListResponseDto: GetApprovalListResponseDto<
-        ApprovalRequest<InventoryItem>
+        ApprovalRequestDto<InventoryItemDto>
       > = {
         data: [],
-        page: 1,
-        size: 10,
-        totalElements: 0,
-        totalPages: 1,
+        meta: mockPaginationMeta,
+        query: mockParams,
       };
 
       vi.mocked(privateApi.get).mockResolvedValue({
         data: mockGetApprovalListResponseDto,
       });
 
-      const result = await approvalRepositoryImpl.getApprovalList(mockParams);
+      const result: PaginatedResult<ApprovalRequest<InventoryItem>> =
+        await approvalRepositoryImpl.getApprovalList(mockParams);
 
       expect(privateApi.get).toHaveBeenCalledWith("/approval/approval-list", {
         params: mockParams,
       });
-      expect(result).toStrictEqual(
-        toPageResponseApprovalRequestListDomain(mockGetApprovalListResponseDto),
-      );
+
+      expect(result.data).toBe(mockGetApprovalListResponseDto.data);
+      expect(result.meta).toBe(mockGetApprovalListResponseDto.meta);
+      expect(result.query).toBe(mockGetApprovalListResponseDto.query);
     });
 
     it("should throw an error if the API call fails", async () => {

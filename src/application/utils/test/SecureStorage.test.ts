@@ -4,7 +4,7 @@ import MethodAssertion from "../MethodAssertion";
 import { SECURE_STORAGE_ERRORS } from "../constants";
 
 describe("SecureStorage interface", () => {
-  it("should throw error when invoke abstract behavior", async () => {
+  it("should throw error when invoke abstract behavior", () => {
     const secureStorage: SecureStorage = new SecureStorage();
     const mockMethodAssertion: MethodAssertion = {
       assertImplemented: vi.fn(),

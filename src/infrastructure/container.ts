@@ -1,4 +1,5 @@
 import CreateApprovalRequestUseCase from "../application/usecases/CreateApprovalRequestUseCase";
+import GetApprovalListUseCase from "../application/usecases/GetApprovalListUseCase";
 import GetUserProfileUseCase from "../application/usecases/GetUserProfileUseCase";
 import LoginAccountUseCase from "../application/usecases/LoginAccountUseCase";
 import LogoutAccountUseCase from "../application/usecases/LogoutAccountUseCase";
@@ -38,6 +39,10 @@ export const userDependencies = {
 
 export const approvalDependencies = {
   createApprovalRequestUseCase: new CreateApprovalRequestUseCase(
+    methodAssertionImpl,
+    approvalRepositoryImpl,
+  ),
+  getApprovalListUseCase: new GetApprovalListUseCase(
     methodAssertionImpl,
     approvalRepositoryImpl,
   ),

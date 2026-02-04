@@ -1,7 +1,9 @@
-import PageResponse from "../../commons/models/PageResponse";
+import type { PaginatedResult } from "../../commons/models/PaginatedResult";
 import AddProduct from "../../domain/approval/entity/AddProduct";
 import ApprovalRequest from "../../domain/approval/entity/ApprovalRequest";
 import type InventoryItem from "../../domain/inventory/entity/InventoryItem";
+import type { ApprovalRequestDto } from "../dto/common/ApprovalRequestDto";
+import type { InventoryItemDto } from "../dto/common/InventoryItemDto";
 import type { CreateApprovalRequestDto } from "../dto/request/CreateApprovalRequestDto";
 import type { CreateApprovalResponseDto } from "../dto/response/CreateApprovalResponseDto";
 import type { GetApprovalListResponseDto } from "../dto/response/GetApprovalListResponseDto";
@@ -60,13 +62,18 @@ export const toAddProductDomain = (dto: CreateApprovalRequestDto): AddProduct =>
     dto.supplier,
   );
 
-export const toPageResponseApprovalRequestListDomain = (
-  dto: GetApprovalListResponseDto<ApprovalRequest<InventoryItem>>,
-): PageResponse<ApprovalRequest<InventoryItem>> =>
-  new PageResponse<ApprovalRequest<InventoryItem>>(
-    dto.data,
-    dto.page,
-    dto.size,
-    dto.totalElements,
-    dto.totalPages,
-  );
+export const toGetApprovalListResponseDto = (
+  domain: PaginatedResult<ApprovalRequest<InventoryItem>>,
+): GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>> => ({
+  data: domain.data as unknown as ApprovalRequestDto<InventoryItemDto>[],
+  meta: domain.meta,
+  query: domain.query,
+});
+
+export const toPaginatedResultDomain = (
+  dto: GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>>,
+): PaginatedResult<ApprovalRequest<InventoryItem>> => ({
+  data: dto.data as unknown as ApprovalRequest<InventoryItem>[],
+  meta: dto.meta,
+  query: dto.query,
+});

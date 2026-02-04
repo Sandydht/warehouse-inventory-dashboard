@@ -5,15 +5,17 @@ import type { CreateApprovalRequestDto } from "../dto/request/CreateApprovalRequ
 import {
   toApprovalRequestDomain,
   toCreateApprovalRequestDto,
-  toPageResponseApprovalRequestListDomain,
+  toPaginatedResultDomain,
 } from "../mappers/approvalMapper";
 import type AddProduct from "../../domain/approval/entity/AddProduct";
 import type ApprovalRequest from "../../domain/approval/entity/ApprovalRequest";
 import type InventoryItem from "../../domain/inventory/entity/InventoryItem";
 import type { CreateApprovalResponseDto } from "../dto/response/CreateApprovalResponseDto";
-import type { ApprovalStatus } from "../../domain/approval/types";
 import type { GetApprovalListResponseDto } from "../dto/response/GetApprovalListResponseDto";
-import type PageResponse from "../../commons/models/PageResponse";
+import type { PaginatedResult } from "../../commons/models/PaginatedResult";
+import type { PaginationQuery } from "../../commons/models/PaginationQuery";
+import type { ApprovalRequestDto } from "../dto/common/ApprovalRequestDto";
+import type { InventoryItemDto } from "../dto/common/InventoryItemDto";
 
 class ApprovalRepositoryImpl extends ApprovalRepository {
   async createApprovalRequest(
@@ -28,18 +30,17 @@ class ApprovalRepositoryImpl extends ApprovalRepository {
     return toApprovalRequestDomain(data);
   }
 
-  async getApprovalList(params: {
-    search?: string;
-    status?: ApprovalStatus;
-    sortBy?: string;
-    order?: "asc" | "desc";
-  }): Promise<PageResponse<ApprovalRequest<InventoryItem>>> {
+  async getApprovalList(
+    params: PaginationQuery,
+  ): Promise<PaginatedResult<ApprovalRequest<InventoryItem>>> {
     const { data } = await privateApi.get<
-      GetApprovalListResponseDto<ApprovalRequest<InventoryItem>>,
-      AxiosResponse<GetApprovalListResponseDto<ApprovalRequest<InventoryItem>>>
+      GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>>,
+      AxiosResponse<
+        GetApprovalListResponseDto<ApprovalRequestDto<InventoryItemDto>>
+      >
     >("/approval/approval-list", { params });
 
-    return toPageResponseApprovalRequestListDomain(data);
+    return toPaginatedResultDomain(data);
   }
 }
 

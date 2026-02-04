@@ -1,7 +1,8 @@
+import type { PaginationMeta } from "../../../commons/models/PaginationMeta";
+import type { PaginationQuery } from "../../../commons/models/PaginationQuery";
+
 export interface GetApprovalListResponseDto<T> {
   data: T[];
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
+  meta: PaginationMeta;
+  query: Omit<PaginationQuery, "page" | "limit">;
 }
