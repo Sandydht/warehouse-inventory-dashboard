@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getInventoryList } from "../store/inventory/inventoryThunk";
 import ElipsisPagination from "../components/ElipsisPagination";
 import { Link } from "react-router-dom";
+import { openModal } from "../store/modal/confirmationModalSlice";
 
 function InventoryListPage() {
   const dispatch = useAppDispatch();
@@ -90,7 +91,13 @@ function InventoryListPage() {
                 >
                   Edit
                 </Link>
-                <button className="text-red-500 hover:underline cursor-pointer">
+                <button
+                  type="button"
+                  className="text-red-500 hover:underline cursor-pointer"
+                  onClick={() =>
+                    handleOpenConfirmationModalForDeleteInventory(row.id)
+                  }
+                >
                   Delete
                 </button>
               </div>
@@ -98,6 +105,17 @@ function InventoryListPage() {
           },
         ]
       : [];
+
+  const handleOpenConfirmationModalForDeleteInventory = (id: string) => {
+    dispatch(
+      openModal({
+        title: "Delete Product from Inventory",
+        body: "Are you sure you want to delete product from inventory?",
+        confirmType: "DELETE_PRODUCT_FROM_INVENTORY",
+        payload: { id },
+      }),
+    );
+  };
 
   useEffect(() => {
     const mockParams: PaginationQuery = {

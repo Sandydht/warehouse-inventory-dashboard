@@ -1,5 +1,6 @@
 import ApproveRequestUseCase from "../application/usecases/ApproveRequestUseCase";
 import CreateApprovalRequestUseCase from "../application/usecases/CreateApprovalRequestUseCase";
+import CreateApprovalRequestEditUseCase from "../application/usecases/CreateApprovalRequestEditUseCase";
 import GetApprovalListUseCase from "../application/usecases/GetApprovalListUseCase";
 import GetApprovalRequestDetailUseCase from "../application/usecases/GetApprovalRequestDetailUseCase";
 import GetInventoryListUseCase from "../application/usecases/GetInventoryListUseCase";
@@ -13,6 +14,7 @@ import InventoryRepositoryImpl from "./repositories/InventoryRepositoryImpl";
 import UserRepositoryImpl from "./repositories/UserRepositoryImpl";
 import MethodAssertionImpl from "./utils/MethodAssertionImpl";
 import SecureStorageImpl from "./utils/SecureStorageImpl";
+import CreateApprovalRequestDeleteUseCase from "../application/usecases/CreateApprovalRequestDeleteUseCase";
 
 const authenticationRepositoryImpl: AuthRepositoryImpl =
   new AuthRepositoryImpl();
@@ -62,6 +64,14 @@ export const approvalDependencies = {
     approvalRepositoryImpl,
   ),
   rejectRequestUseCase: new RejectRequestUseCase(
+    methodAssertionImpl,
+    approvalRepositoryImpl,
+  ),
+  createDeleteApprovalRequestUseCase: new CreateApprovalRequestDeleteUseCase(
+    methodAssertionImpl,
+    approvalRepositoryImpl,
+  ),
+  createEditApprovalRequestUseCase: new CreateApprovalRequestEditUseCase(
     methodAssertionImpl,
     approvalRepositoryImpl,
   ),

@@ -101,7 +101,9 @@ function MyTaskPage() {
                   sortable: true,
                   sortKey: "sku",
                   render: (row: ApprovalRequestDto<InventoryItemDto>) =>
-                    row.proposedData?.sku,
+                    row.type === "DELETE"
+                      ? row.originalData?.sku
+                      : row.proposedData?.sku,
                 },
                 {
                   key: "name",
@@ -109,7 +111,9 @@ function MyTaskPage() {
                   sortable: true,
                   sortKey: "name",
                   render: (row: ApprovalRequestDto<InventoryItemDto>) =>
-                    row.proposedData?.name,
+                    row.type === "DELETE"
+                      ? row.originalData?.name
+                      : row.proposedData?.name,
                 },
                 {
                   key: "category",
@@ -117,7 +121,9 @@ function MyTaskPage() {
                   sortable: true,
                   sortKey: "category",
                   render: (row: ApprovalRequestDto<InventoryItemDto>) =>
-                    row.proposedData?.category,
+                    row.type === "DELETE"
+                      ? row.originalData?.category
+                      : row.proposedData?.category,
                 },
                 {
                   key: "price",
@@ -125,7 +131,9 @@ function MyTaskPage() {
                   sortable: true,
                   sortKey: "price",
                   render: (row: ApprovalRequestDto<InventoryItemDto>) =>
-                    `Rp ${row.proposedData?.price.toLocaleString()}`,
+                    row.type === "DELETE"
+                      ? `Rp ${row.originalData?.price.toLocaleString()}`
+                      : `Rp ${row.proposedData?.price.toLocaleString()}`,
                 },
                 {
                   key: "quantity",
@@ -133,7 +141,9 @@ function MyTaskPage() {
                   sortable: true,
                   sortKey: "quantity",
                   render: (row: ApprovalRequestDto<InventoryItemDto>) =>
-                    row.proposedData?.quantity,
+                    row.type === "DELETE"
+                      ? row.originalData?.quantity
+                      : row.proposedData?.quantity,
                 },
                 {
                   key: "supplier",
@@ -141,7 +151,9 @@ function MyTaskPage() {
                   sortable: true,
                   sortKey: "supplier",
                   render: (row: ApprovalRequestDto<InventoryItemDto>) =>
-                    row.proposedData?.supplier,
+                    row.type === "DELETE"
+                      ? row.originalData?.supplier
+                      : row.proposedData?.supplier,
                 },
                 {
                   key: "status",

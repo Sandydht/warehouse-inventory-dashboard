@@ -4,7 +4,10 @@ import { privateApi } from "../../http/axiosInstance";
 import AddProduct from "../../../domain/approval/entity/AddProduct";
 import InventoryItem from "../../../domain/inventory/entity/InventoryItem";
 import ApprovalRequest from "../../../domain/approval/entity/ApprovalRequest";
-import { fromApprovalRequestDtoToApprovalRequestDomain } from "../../mappers/approvalMapper";
+import {
+  fromApprovalRequestDtoToApprovalRequestDomain,
+  fromEditProductDomainToCreatedEditApprovalRequestDto,
+} from "../../mappers/approvalMapper";
 import type { GetApprovalListResponseDto } from "../../dto/response/GetApprovalListResponseDto";
 import type { ApprovalRequestDto } from "../../dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../../dto/common/InventoryItemDto";
@@ -14,11 +17,15 @@ import type { PaginationQuery } from "../../../commons/models/PaginationQuery";
 import GetApprovalRequestDetail from "../../../domain/approval/entity/GetApprovalRequestDetail";
 import ApproveRequest from "../../../domain/approval/entity/ApproveRequest";
 import RejectRequest from "../../../domain/approval/entity/RejectRequest";
+import DeleteProduct from "../../../domain/approval/entity/DeleteProduct";
+import EditProduct from "../../../domain/approval/entity/EditProduct";
 
 vi.mock("../../http/axiosInstance", () => ({
   privateApi: {
     post: vi.fn(),
     get: vi.fn(),
+    delete: vi.fn(),
+    patch: vi.fn(),
   },
 }));
 
@@ -272,6 +279,73 @@ describe("ApprovalRepositoryImpl", () => {
       vi.mocked(privateApi.post).mockRejectedValue(networkError);
       await expect(
         approvalRepositoryImpl.rejectRequst(mockRejectRequest),
+      ).rejects.toThrow("Network Error");
+    });
+  });
+
+  describe("deleteProduct function", () => {
+    const mockDeleteProduct: DeleteProduct = new DeleteProduct("req-001");
+
+    it("should successfully delete a request and return the domain model", async () => {
+      vi.mocked(privateApi.delete).mockResolvedValue({
+        data: mockApprovalRequestDto,
+      });
+
+      const result: ApprovalRequest<InventoryItem> =
+        await approvalRepositoryImpl.deleteProduct(mockDeleteProduct);
+
+      expect(privateApi.delete).toHaveBeenCalledWith(
+        `/approval/delete/${mockDeleteProduct.getId()}`,
+      );
+
+      expect(result).toStrictEqual(
+        fromApprovalRequestDtoToApprovalRequestDomain(mockApprovalRequestDto),
+      );
+    });
+
+    it("should throw an error if the API call fails", async () => {
+      const networkError = new Error("Network Error");
+      vi.mocked(privateApi.delete).mockRejectedValue(networkError);
+      await expect(
+        approvalRepositoryImpl.deleteProduct(mockDeleteProduct),
+      ).rejects.toThrow("Network Error");
+    });
+  });
+
+  describe("editProduct function", () => {
+    const mockEditProduct: EditProduct = new EditProduct(
+      "env-001",
+      "PRODUCT-001",
+      "Product Name",
+      "Electronics",
+      500000,
+      10,
+      "Supplier Name",
+    );
+
+    it("should successfully edit a request and return the domain model", async () => {
+      vi.mocked(privateApi.patch).mockResolvedValue({
+        data: mockApprovalRequestDto,
+      });
+
+      const result: ApprovalRequest<InventoryItem> =
+        await approvalRepositoryImpl.editProduct(mockEditProduct);
+
+      expect(privateApi.patch).toHaveBeenCalledWith(
+        `/approval/edit/${mockEditProduct.getId()}`,
+        fromEditProductDomainToCreatedEditApprovalRequestDto(mockEditProduct),
+      );
+
+      expect(result).toStrictEqual(
+        fromApprovalRequestDtoToApprovalRequestDomain(mockApprovalRequestDto),
+      );
+    });
+
+    it("should throw an error if the API call fails", async () => {
+      const networkError = new Error("Network Error");
+      vi.mocked(privateApi.patch).mockRejectedValue(networkError);
+      await expect(
+        approvalRepositoryImpl.editProduct(mockEditProduct),
       ).rejects.toThrow("Network Error");
     });
   });

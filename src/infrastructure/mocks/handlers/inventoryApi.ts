@@ -30,6 +30,7 @@ export const inventoryApi = [
 
     const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
     let inventoryList = await inventoryDb.getAll();
+    inventoryList = inventoryList.filter((data) => data.deletedAt === null);
 
     if (search) {
       inventoryList = inventoryList.filter((data) => {

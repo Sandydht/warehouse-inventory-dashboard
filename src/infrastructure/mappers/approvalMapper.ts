@@ -2,11 +2,14 @@ import type { PaginatedResult } from "../../commons/models/PaginatedResult";
 import AddProduct from "../../domain/approval/entity/AddProduct";
 import ApprovalRequest from "../../domain/approval/entity/ApprovalRequest";
 import ApproveRequest from "../../domain/approval/entity/ApproveRequest";
+import DeleteProduct from "../../domain/approval/entity/DeleteProduct";
+import type EditProduct from "../../domain/approval/entity/EditProduct";
 import GetApprovalRequestDetail from "../../domain/approval/entity/GetApprovalRequestDetail";
 import type InventoryItem from "../../domain/inventory/entity/InventoryItem";
 import type { ApprovalRequestDto } from "../dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../dto/common/InventoryItemDto";
 import type { CreateApprovalRequestDto } from "../dto/request/CreateApprovalRequestDto";
+import type { CreateEditApprovalRequestDto } from "../dto/request/CreateEditApprovalRequestDto";
 import type { GetApprovalListResponseDto } from "../dto/response/GetApprovalListResponseDto";
 
 export const fromAddProductDomainToCreateApprovalRequestDto = (
@@ -87,3 +90,17 @@ export const toApproveRequestDomain = (id: string): ApproveRequest =>
 export const toGetApprovalRequestDetailDomain = (
   id: string,
 ): GetApprovalRequestDetail => new GetApprovalRequestDetail(id);
+
+export const fromEditProductDomainToCreatedEditApprovalRequestDto = (
+  domain: EditProduct,
+): CreateEditApprovalRequestDto => ({
+  sku: domain.getSku(),
+  name: domain.getName(),
+  category: domain.getCategory(),
+  price: domain.getPrice(),
+  quantity: domain.getQuantity(),
+  supplier: domain.getSupplier(),
+});
+
+export const toDeleteProductDomain = (id: string): DeleteProduct =>
+  new DeleteProduct(id);

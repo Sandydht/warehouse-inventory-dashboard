@@ -34,3 +34,15 @@ export const rejectRequest = createUseCaseThunk(
   () => approvalDependencies.rejectRequestUseCase,
   (result) => fromApprovalRequestDomainToApprovalRequestDto(result),
 );
+
+export const createApprovalRequestDelete = createUseCaseThunk(
+  "approval/create-approval-request-delete",
+  () => approvalDependencies.createDeleteApprovalRequestUseCase,
+  (result) => fromApprovalRequestDomainToApprovalRequestDto(result),
+);
+
+export const createApprovalRequestEdit = createUseCaseThunk(
+  "approval/create-approval-request-edit",
+  () => approvalDependencies.createEditApprovalRequestUseCase,
+  (result) => fromApprovalRequestDomainToApprovalRequestDto(result),
+);

@@ -6,8 +6,14 @@ import { closeModal } from "../../store/modal/confirmationModalSlice";
 import { logoutAccount } from "../../store/auth/authThunk";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../store/hooks";
-import { approveRequest } from "../../store/approval/approvalThunk";
-import { toApproveRequestDomain } from "../../../infrastructure/mappers/approvalMapper";
+import {
+  approveRequest,
+  createApprovalRequestDelete,
+} from "../../store/approval/approvalThunk";
+import {
+  toApproveRequestDomain,
+  toDeleteProductDomain,
+} from "../../../infrastructure/mappers/approvalMapper";
 
 function ConfirmationModalBox() {
   const { isOpen, title, body, confirmType, payload } = useSelector(
@@ -40,6 +46,9 @@ function ConfirmationModalBox() {
       case "APPROVE_REQUEST":
         handleApproveRequest();
         break;
+      case "DELETE_PRODUCT_FROM_INVENTORY":
+        handleDeleteProductFromInventory();
+        break;
       default:
         dispatch(closeModal());
         break;
@@ -67,6 +76,20 @@ function ConfirmationModalBox() {
       navigate("/my-task");
     } catch (error) {
       console.error("Approve request failed:", error);
+    }
+  };
+
+  const handleDeleteProductFromInventory = async () => {
+    try {
+      await dispatch(
+        createApprovalRequestDelete(toDeleteProductDomain(payloadWithId.id)),
+      ).unwrap();
+      dispatch(closeModal());
+    } catch (error) {
+      console.error(
+        "Create approval request delete product from inventory failed:",
+        error,
+      );
     }
   };
 

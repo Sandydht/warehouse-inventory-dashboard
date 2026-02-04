@@ -29,7 +29,7 @@ export const approvalApi = [
       ...payload,
       id: uuidv4(),
       createdAt: now,
-      updatedAt: now,
+      updatedAt: null,
       deletedAt: null,
     };
 
@@ -41,9 +41,9 @@ export const approvalApi = [
       originalData: null,
       proposedData: inventoryItemDto,
       rejectionReason: null,
-      createdBy: user.fullName,
+      createdBy: user.id,
       createdAt: now,
-      updatedAt: now,
+      updatedAt: null,
       deletedAt: null,
     };
 
@@ -218,6 +218,7 @@ export const approvalApi = [
     );
     const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
     const result = await approvalDb.getById(id as string);
+    const now = new Date().toISOString();
 
     if (!result) {
       return HttpResponse.json({ message: "Not Found" }, { status: 404 });
@@ -239,8 +240,123 @@ export const approvalApi = [
           await inventoryDb.create(result.proposedData);
         }
         break;
+
+      case "DELETE":
+        if (result.originalData) {
+          result.originalData.deletedAt = now;
+          await inventoryDb.update(result.originalData);
+        }
+        break;
     }
 
     return HttpResponse.json(result, { status: 200 });
+  }),
+  http.delete(
+    "/api/approval/delete/:inventoryId",
+    async ({ params, request }) => {
+      const authHeader = request.headers.get("Authorization");
+      if (!authHeader) {
+        return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+
+      const token = authHeader.replace("Bearer ", "");
+      const user = UserDummyData.find((user) => user.id === token);
+
+      if (!user || user.role === "OFFICER") {
+        return HttpResponse.json({ message: "Forbidden" }, { status: 403 });
+      }
+
+      const { inventoryId } = params;
+
+      if (!inventoryId) {
+        return HttpResponse.json({ message: "Invalid id" }, { status: 400 });
+      }
+
+      const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
+      const inventory = await inventoryDb.getById(inventoryId as string);
+
+      if (!inventory) {
+        return HttpResponse.json({ message: "Not Found" }, { status: 404 });
+      }
+
+      const now = new Date().toISOString();
+      const inventoryItemDto: InventoryItemDto = {
+        ...inventory,
+      };
+
+      const approvalRequestDto: ApprovalRequestDto<InventoryItemDto> = {
+        id: uuidv4(),
+        type: "DELETE",
+        status: "PENDING",
+        targetId: inventory.id,
+        originalData: inventoryItemDto,
+        proposedData: null,
+        rejectionReason: null,
+        createdBy: user.id,
+        createdAt: now,
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      const approvalDb = new IndexedDbCrud<
+        ApprovalRequestDto<InventoryItemDto>
+      >("approval_requests");
+      await approvalDb.create(approvalRequestDto);
+
+      return HttpResponse.json(approvalRequestDto, { status: 201 });
+    },
+  ),
+  http.patch("/api/approval/edit/:inventoryId", async ({ params, request }) => {
+    const authHeader = request.headers.get("Authorization");
+    if (!authHeader) {
+      return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const user = UserDummyData.find((user) => user.id === token);
+
+    if (!user || user.role === "OFFICER") {
+      return HttpResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
+    const { id } = params;
+
+    if (!id) {
+      return HttpResponse.json({ message: "Invalid id" }, { status: 400 });
+    }
+
+    const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
+    const result = await inventoryDb.getById(id as string);
+
+    if (!result) {
+      return HttpResponse.json({ message: "Not Found" }, { status: 404 });
+    }
+
+    const now = new Date().toISOString();
+    const inventoryItemDto: InventoryItemDto = {
+      ...result,
+      deletedAt: now,
+    };
+
+    const approvalRequestDto: ApprovalRequestDto<InventoryItemDto> = {
+      id: uuidv4(),
+      type: "DELETE",
+      status: "PENDING",
+      targetId: result.id,
+      originalData: inventoryItemDto,
+      proposedData: null,
+      rejectionReason: null,
+      createdBy: user.fullName,
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null,
+    };
+
+    const approvalDb = new IndexedDbCrud<ApprovalRequestDto<InventoryItemDto>>(
+      "approval_requests",
+    );
+    await approvalDb.create(approvalRequestDto);
+
+    return HttpResponse.json(approvalRequestDto, { status: 201 });
   }),
 ];

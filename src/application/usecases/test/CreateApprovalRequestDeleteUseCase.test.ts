@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import type MethodAssertion from "../../utils/MethodAssertion";
 import type ApprovalRepository from "../../../domain/approval/ApprovalRepository";
-import CreateApprovalRequestUseCase from "../CreateApprovalRequestUseCase";
 import { APPROVAL_REPOSITORY_ERRORS } from "../../../domain/approval/constants";
-import AddProduct from "../../../domain/approval/entity/AddProduct";
 import ApprovalRequest from "../../../domain/approval/entity/ApprovalRequest";
 import InventoryItem from "../../../domain/inventory/entity/InventoryItem";
+import CreateApprovalRequestDeleteUseCase from "../CreateApprovalRequestDeleteUseCase";
+import DeleteProduct from "../../../domain/approval/entity/DeleteProduct";
 
-describe("Create approval request use case", () => {
-  it("should orchestrating the create approval request action correctly", async () => {
+describe("Create approval request delete use case", () => {
+  it("should orchestrating the create approval request delete action correctly", async () => {
     const mockMethodAssertion: MethodAssertion = {
       assertImplemented: vi.fn(),
     };
@@ -43,34 +43,27 @@ describe("Create approval request use case", () => {
       );
 
     const mockApprovalRepository: ApprovalRepository = {
-      createApprovalRequest: vi.fn().mockResolvedValue(mockApprovalRequest),
+      deleteProduct: vi.fn().mockResolvedValue(mockApprovalRequest),
     };
 
-    const createApprovalRequestUseCase: CreateApprovalRequestUseCase =
-      new CreateApprovalRequestUseCase(
+    const createDeleteApprovalRequestUseCase: CreateApprovalRequestDeleteUseCase =
+      new CreateApprovalRequestDeleteUseCase(
         mockMethodAssertion,
         mockApprovalRepository,
       );
 
-    const mockAddProduct: AddProduct = new AddProduct(
-      "PRODUCT-001",
-      "Product Name",
-      "Electronics",
-      500000,
-      10,
-      "Supplier Name",
-    );
+    const mockDeleteProduct: DeleteProduct = new DeleteProduct("PRODUCT-001");
 
     const result: ApprovalRequest<InventoryItem> =
-      await createApprovalRequestUseCase.execute(mockAddProduct);
+      await createDeleteApprovalRequestUseCase.execute(mockDeleteProduct);
 
     expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(
       mockApprovalRepository,
-      "createApprovalRequest",
+      "deleteProduct",
       APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
-    expect(mockApprovalRepository.createApprovalRequest).toHaveBeenCalledWith(
-      mockAddProduct,
+    expect(mockApprovalRepository.deleteProduct).toHaveBeenCalledWith(
+      mockDeleteProduct,
     );
     expect(result).toStrictEqual(mockApprovalRequest);
   });

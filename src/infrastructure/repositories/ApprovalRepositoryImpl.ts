@@ -6,6 +6,7 @@ import {
   fromAddProductDomainToCreateApprovalRequestDto,
   fromGetApprovalListResponseDtoToPaginatedResultDomain,
   fromApprovalRequestDtoToApprovalRequestDomain,
+  fromEditProductDomainToCreatedEditApprovalRequestDto,
 } from "../mappers/approvalMapper";
 import type AddProduct from "../../domain/approval/entity/AddProduct";
 import type ApprovalRequest from "../../domain/approval/entity/ApprovalRequest";
@@ -18,6 +19,9 @@ import type { InventoryItemDto } from "../dto/common/InventoryItemDto";
 import type GetApprovalRequestDetail from "../../domain/approval/entity/GetApprovalRequestDetail";
 import type ApproveRequest from "../../domain/approval/entity/ApproveRequest";
 import type RejectRequest from "../../domain/approval/entity/RejectRequest";
+import type DeleteProduct from "../../domain/approval/entity/DeleteProduct";
+import type EditProduct from "../../domain/approval/entity/EditProduct";
+import type { CreateEditApprovalRequestDto } from "../dto/request/CreateEditApprovalRequestDto";
 
 class ApprovalRepositoryImpl extends ApprovalRepository {
   async createApprovalRequest(
@@ -79,6 +83,32 @@ class ApprovalRepositoryImpl extends ApprovalRepository {
     >(`/approval/${payload.getId()}/reject`, {
       rejectReason: payload.getRejectReason(),
     });
+
+    return fromApprovalRequestDtoToApprovalRequestDomain(data);
+  }
+
+  async deleteProduct(
+    payload: DeleteProduct,
+  ): Promise<ApprovalRequest<InventoryItem>> {
+    const { data } = await privateApi.delete<
+      ApprovalRequestDto<InventoryItemDto>,
+      AxiosResponse<ApprovalRequestDto<InventoryItemDto>>
+    >(`/approval/delete/${payload.getId()}`);
+
+    return fromApprovalRequestDtoToApprovalRequestDomain(data);
+  }
+
+  async editProduct(
+    payload: EditProduct,
+  ): Promise<ApprovalRequest<InventoryItem>> {
+    const { data } = await privateApi.patch<
+      ApprovalRequestDto<InventoryItemDto>,
+      AxiosResponse<ApprovalRequestDto<InventoryItemDto>>,
+      CreateEditApprovalRequestDto
+    >(
+      `/approval/edit/${payload.getId()}`,
+      fromEditProductDomainToCreatedEditApprovalRequestDto(payload),
+    );
 
     return fromApprovalRequestDtoToApprovalRequestDomain(data);
   }

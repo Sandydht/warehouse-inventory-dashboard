@@ -6,6 +6,8 @@ import AddProduct from "../entity/AddProduct";
 import GetApprovalRequestDetail from "../entity/GetApprovalRequestDetail";
 import ApproveRequest from "../entity/ApproveRequest";
 import RejectRequest from "../entity/RejectRequest";
+import DeleteProduct from "../entity/DeleteProduct";
+import EditProduct from "../entity/EditProduct";
 
 describe("ApprovalRepository", () => {
   it("should throw error when invoke abstract behavior", async () => {
@@ -39,6 +41,16 @@ describe("ApprovalRepository", () => {
       "rejectRequst",
       APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
     );
+    mockMethodAssertion.assertImplemented(
+      approvalRepository,
+      "deleteProduct",
+      APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
+    mockMethodAssertion.assertImplemented(
+      approvalRepository,
+      "editProduct",
+      APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED,
+    );
 
     expect(approvalRepository).toBeInstanceOf(ApprovalRepository);
     await expect(
@@ -66,6 +78,22 @@ describe("ApprovalRepository", () => {
     ).rejects.toThrowError(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
     await expect(
       approvalRepository.rejectRequst(new RejectRequest("req-001", "Test")),
+    ).rejects.toThrowError(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
+    await expect(
+      approvalRepository.deleteProduct(new DeleteProduct("req-001")),
+    ).rejects.toThrowError(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
+    await expect(
+      approvalRepository.editProduct(
+        new EditProduct(
+          "env-001",
+          "PRODUCT-001",
+          "Product Name",
+          "Electronics",
+          500000,
+          10,
+          "Supplier Name",
+        ),
+      ),
     ).rejects.toThrowError(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
   });
 });

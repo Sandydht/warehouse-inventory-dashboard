@@ -6,6 +6,8 @@ import { APPROVAL_REPOSITORY_ERRORS } from "./constants";
 import type AddProduct from "./entity/AddProduct";
 import type ApprovalRequest from "./entity/ApprovalRequest";
 import type ApproveRequest from "./entity/ApproveRequest";
+import type DeleteProduct from "./entity/DeleteProduct";
+import type EditProduct from "./entity/EditProduct";
 import type GetApprovalRequestDetail from "./entity/GetApprovalRequestDetail";
 import type RejectRequest from "./entity/RejectRequest";
 
@@ -36,6 +38,18 @@ class ApprovalRepository {
 
   async rejectRequst?(
     _payload: RejectRequest,
+  ): Promise<ApprovalRequest<InventoryItem>> {
+    throw new Error(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
+  }
+
+  async deleteProduct?(
+    _payload: DeleteProduct,
+  ): Promise<ApprovalRequest<InventoryItem>> {
+    throw new Error(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
+  }
+
+  async editProduct?(
+    _payload: EditProduct,
   ): Promise<ApprovalRequest<InventoryItem>> {
     throw new Error(APPROVAL_REPOSITORY_ERRORS.METHOD_NOT_IMPLEMENTED);
   }

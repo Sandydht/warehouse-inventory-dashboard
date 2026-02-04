@@ -7,6 +7,8 @@ import {
 import {
   approveRequest,
   createApprovalRequest,
+  createApprovalRequestDelete,
+  createApprovalRequestEdit,
   getApprovalList,
   getApprovalRequestDetail,
   rejectRequest,
@@ -23,6 +25,8 @@ interface ApprovalState {
   approvalRequestDetail: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
   approveRequest: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
   rejectRequest: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
+  createApprovalRequestDelete: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
+  createApprovalRequestEdit: AsyncState<ApprovalRequestDto<InventoryItemDto>>;
 }
 
 const initialState: ApprovalState = {
@@ -35,6 +39,10 @@ const initialState: ApprovalState = {
     createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
   approveRequest: createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
   rejectRequest: createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
+  createApprovalRequestDelete:
+    createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
+  createApprovalRequestEdit:
+    createAsyncState<ApprovalRequestDto<InventoryItemDto>>(),
 };
 
 const approvalSlice = createSlice({
@@ -51,6 +59,16 @@ const approvalSlice = createSlice({
     );
     addAsyncThunkHandlers(builder, approveRequest, "approveRequest");
     addAsyncThunkHandlers(builder, rejectRequest, "rejectRequest");
+    addAsyncThunkHandlers(
+      builder,
+      createApprovalRequestDelete,
+      "createApprovalRequestDelete",
+    );
+    addAsyncThunkHandlers(
+      builder,
+      createApprovalRequestEdit,
+      "createApprovalRequestEdit",
+    );
   },
 });
 
