@@ -1,7 +1,15 @@
+import AppRoutes from "./presentation/routes";
+import Snackbar from "./presentation/components/Snackbar";
+import ConfirmationModalBox from "./presentation/components/modal/ConfirmationModalBox";
+import RejectApprovalRequestModalBox from "./presentation/components/modal/RejectApprovalRequestModalBox";
+
 function App() {
   return (
     <>
-      <p>Warehouse Inventory Dashboard</p>
+      <ConfirmationModalBox />
+      <RejectApprovalRequestModalBox />
+      <Snackbar />
+      <AppRoutes />
     </>
   );
 }

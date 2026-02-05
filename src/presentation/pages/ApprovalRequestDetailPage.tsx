@@ -1,0 +1,127 @@
+import { Link, useParams } from "react-router-dom";
+import ArrowBack24pxBlack from "../assets/images/svg/arrow_back_24px_black.svg";
+import DiffPreview from "../components/DiffPreview";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { getApprovalRequestDetail } from "../store/approval/approvalThunk";
+import ApprovalRequestDetailCard from "../components/ApprovalRequestDetailCard";
+import Button from "../components/Button";
+import { openModal as openConfirmationModal } from "../store/modal/confirmationModalSlice";
+import { openModal as openRejectModal } from "../store/modal/rejectApprovalRequestModalSlice";
+import { toGetApprovalRequestDetailDomain } from "../../infrastructure/mappers/approvalMapper";
+
+function ApprovalRequestDetailPage() {
+  const dispatch = useAppDispatch();
+  const { data, loading } = useAppSelector(
+    (state) => state.approval.approvalRequestDetail,
+  );
+  const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getApprovalRequestDetail(toGetApprovalRequestDetailDomain(id)));
+    }
+  }, [id, dispatch]);
+
+  const handleOpenConfirmationModalForApproveRequest = () => {
+    dispatch(
+      openConfirmationModal({
+        title: "Approve Request",
+        body: "Are you sure you want to approve request?",
+        confirmType: "APPROVE_REQUEST",
+        payload: { id },
+      }),
+    );
+  };
+
+  const handleOpenRejectReasonModalForRejectRequest = () => {
+    dispatch(
+      openRejectModal({
+        payload: { id },
+      }),
+    );
+  };
+
+  return (
+    <div className="w-full h-auto flex flex-col items-start justify-start gap-4">
+      <div className="w-full h-auto flex items-center justify-start gap-2">
+        <Link to={"/my-task"} className="text-left p-2 rounded cursor-pointer">
+          <img
+            src={ArrowBack24pxBlack}
+            alt="Arrow back icon"
+            className="w-full h-full min-w-6 max-w-6 min-h-6 max-h-6"
+          />
+        </Link>
+        <p className="text-left text-[22px] leading-7 font-bold">
+          Approval Request Detail
+        </p>
+      </div>
+
+      <div className="w-full h-auto min-h-[calc(100vh-205px)] flex flex-col items-start justify-start gap-4">
+        {!loading &&
+          data &&
+          (data.type == "CREATE" || data.type == "DELETE") && (
+            <ApprovalRequestDetailCard data={data} />
+          )}
+
+        {!loading && data && data.type === "UPDATE" && (
+          <DiffPreview
+            diffs={[
+              {
+                field: "SKU",
+                before: data?.originalData?.sku,
+                after: data?.proposedData?.sku,
+              },
+              {
+                field: "Name",
+                before: data?.originalData?.name,
+                after: data?.proposedData?.name,
+              },
+              {
+                field: "Category",
+                before: data?.originalData?.category,
+                after: data?.proposedData?.category,
+              },
+              {
+                field: "Price",
+                before: `Rp ${data?.originalData?.price}`,
+                after: `Rp ${data?.proposedData?.price}`,
+              },
+              {
+                field: "Quantity",
+                before: data?.originalData?.quantity,
+                after: data?.proposedData?.quantity,
+              },
+              {
+                field: "Supplier",
+                before: data?.originalData?.supplier,
+                after: data?.proposedData?.supplier,
+              },
+            ]}
+          />
+        )}
+      </div>
+
+      <div className="w-full h-auto flex items-center justify-center gap-4">
+        <Button
+          type="primary"
+          id="logoutButton"
+          buttonType="button"
+          label={"Approve"}
+          disabled={data?.status !== "PENDING"}
+          onClick={handleOpenConfirmationModalForApproveRequest}
+        />
+        <Button
+          type="danger"
+          id="logoutButton"
+          buttonType="button"
+          label={"Reject"}
+          disabled={data?.status !== "PENDING"}
+          onClick={handleOpenRejectReasonModalForRejectRequest}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default ApprovalRequestDetailPage;

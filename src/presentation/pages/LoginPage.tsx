@@ -1,0 +1,124 @@
+import { useForm } from "react-hook-form";
+import type { UserLoginRequestDto } from "../../infrastructure/dto/request/UserLoginRequestDto";
+import { useAppDispatch } from "../store/hooks";
+import { loginAccount } from "../store/auth/authThunk";
+import { fromUserLoginRequestDtoToUserLoginDomain } from "../../infrastructure/mappers/authMapper";
+import { useNavigate } from "react-router-dom";
+import Visibility24pxGray300Icon from "../assets/images/svg/visibility_24px_gray_300.svg";
+import VisibilityOff24pxGray300Icon from "../assets/images/svg/visibility_off_24px_gray_300.svg";
+import PasswordInput from "../components/PasswordInput";
+import InputField from "../components/InputField";
+import { resetUserProfileData } from "../store/user/userSlice";
+import { showSnackbar } from "../store/snackbar/snackbarSlice";
+import Button from "../components/Button";
+import AppLogo from "../assets/images/png/app_logo.png";
+
+type LoginForm = {
+  email: string;
+  password: string;
+};
+
+function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginForm>();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const emailRegister = register("email", {
+    required: "Email is required",
+    pattern: {
+      value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+      message: "Email is invalid",
+    },
+  });
+
+  const passwordRegister = register("password", {
+    required: "Password is required",
+    minLength: {
+      value: 8,
+      message: "Password must be at least 8 characters",
+    },
+    validate: {
+      hasLetterAndNumber: (value) =>
+        (/[A-Za-z]/.test(value) && /\d/.test(value)) ||
+        "Password must contain both letters and numbers",
+      noSpaces: (value) =>
+        !/\s/.test(value) || "Password must not contain space",
+    },
+  });
+
+  const onSubmit = async (formData: LoginForm) => {
+    try {
+      const payload: UserLoginRequestDto = {
+        email: formData.email,
+        password: formData.password,
+      };
+
+      await dispatch(
+        loginAccount(fromUserLoginRequestDtoToUserLoginDomain(payload)),
+      ).unwrap();
+      dispatch(resetUserProfileData());
+
+      reset();
+      navigate("/");
+    } catch (error) {
+      dispatch(showSnackbar({ message: error as string, type: "error" }));
+    }
+  };
+
+  return (
+    <div className="w-full h-full min-h-screen py-30 flex flex-col items-center justify-start bg-white p-6.25">
+      <div className="w-full h-auto p-4 max-w-106.25 bg-white rounded-lg shadow-lg border border-gray-200 gap-4 flex flex-col items-center justify-start">
+        <div className="w-auto h-auto">
+          <img
+            src={AppLogo}
+            alt="App logo"
+            className="w-75 h-auto object-contain object-center"
+          />
+        </div>
+
+        <form
+          className="w-full h-auto gap-4 flex flex-col items-start justify-start"
+          onSubmit={(e) => handleSubmit(onSubmit)(e)}
+        >
+          <InputField
+            id="email"
+            label="Email"
+            type="email"
+            required={true}
+            placeholder="Email"
+            register={emailRegister}
+            error={errors.email}
+          />
+
+          <PasswordInput
+            id="password"
+            label="Password"
+            required={true}
+            placeholder="Password"
+            register={passwordRegister}
+            visibilityIcon={Visibility24pxGray300Icon}
+            visibilityOffIcon={VisibilityOff24pxGray300Icon}
+            error={errors.password}
+          />
+
+          <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
+            <Button
+              type="primary"
+              id="loginButton"
+              buttonType="submit"
+              label={isSubmitting ? "Loading..." : "Login"}
+              disabled={isSubmitting}
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default LoginPage;
