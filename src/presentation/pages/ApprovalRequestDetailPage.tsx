@@ -71,37 +71,31 @@ function ApprovalRequestDetailPage() {
                 field: "SKU",
                 before: data?.originalData?.sku,
                 after: data?.proposedData?.sku,
-                type: "modified",
               },
               {
                 field: "Name",
                 before: data?.originalData?.name,
                 after: data?.proposedData?.name,
-                type: "modified",
               },
               {
                 field: "Category",
                 before: data?.originalData?.category,
                 after: data?.proposedData?.category,
-                type: "modified",
               },
               {
                 field: "Price",
                 before: data?.originalData?.price,
                 after: data?.proposedData?.price,
-                type: "modified",
               },
               {
                 field: "Quantity",
                 before: data?.originalData?.quantity,
                 after: data?.proposedData?.quantity,
-                type: "modified",
               },
               {
                 field: "Supplier",
                 before: data?.originalData?.supplier,
                 after: data?.proposedData?.supplier,
-                type: "modified",
               },
             ]}
           />

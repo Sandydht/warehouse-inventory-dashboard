@@ -219,39 +219,59 @@ export const approvalApi = [
       "approval_requests",
     );
     const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
-    const result = await approvalDb.getById(id as string);
+    const approvalRequest = await approvalDb.getById(id as string);
     const now = new Date().toISOString();
 
-    if (!result) {
+    if (!approvalRequest) {
       return HttpResponse.json({ message: "Not Found" }, { status: 404 });
     }
 
-    if (result.status !== "PENDING") {
+    if (approvalRequest.status !== "PENDING") {
       return HttpResponse.json(
         { message: "Approval already processed" },
         { status: 400 },
       );
     }
 
-    result.status = "APPROVED";
-    await approvalDb.update(result);
-
-    switch (result.type) {
+    switch (approvalRequest.type) {
       case "CREATE":
-        if (result.proposedData) {
-          await inventoryDb.create(result.proposedData);
+        if (!approvalRequest.proposedData) {
+          return HttpResponse.json(
+            { message: "Invalid approval data" },
+            { status: 400 },
+          );
         }
+        await inventoryDb.create(approvalRequest.proposedData);
         break;
 
       case "DELETE":
-        if (result.originalData) {
-          result.originalData.deletedAt = now;
-          await inventoryDb.update(result.originalData);
+        if (!approvalRequest.originalData) {
+          return HttpResponse.json(
+            { message: "Invalid approval data" },
+            { status: 400 },
+          );
         }
+        approvalRequest.originalData.deletedAt = now;
+        await inventoryDb.update(approvalRequest.originalData);
+        break;
+
+      case "UPDATE":
+        if (!approvalRequest.originalData || !approvalRequest.proposedData) {
+          return HttpResponse.json(
+            { message: "Invalid approval data" },
+            { status: 400 },
+          );
+        }
+
+        await inventoryDb.update(approvalRequest.proposedData);
         break;
     }
 
-    return HttpResponse.json(result, { status: 200 });
+    approvalRequest.status = "APPROVED";
+    approvalRequest.updatedAt = now;
+    await approvalDb.update(approvalRequest);
+
+    return HttpResponse.json(approvalRequest, { status: 200 });
   }),
   http.post("/api/approval/:id/reject", async ({ params, request }) => {
     const authHeader = request.headers.get("Authorization");
