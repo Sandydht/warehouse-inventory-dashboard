@@ -84,8 +84,8 @@ function ApprovalRequestDetailPage() {
               },
               {
                 field: "Price",
-                before: data?.originalData?.price,
-                after: data?.proposedData?.price,
+                before: `Rp ${data?.originalData?.price}`,
+                after: `Rp ${data?.proposedData?.price}`,
               },
               {
                 field: "Quantity",

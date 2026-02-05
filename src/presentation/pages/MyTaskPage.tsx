@@ -92,7 +92,7 @@ function MyTaskPage() {
         </div>
 
         <div className="w-full h-auto flex flex-col items-start justify-start">
-          <div className="w-full h-auto overflow-auto bg-white border-b border-gray-500 max-h-[calc(100vh-315px)]">
+          <div className="w-full h-auto overflow-auto bg-white max-h-[calc(100vh-315px)]">
             <DataTable
               columns={[
                 {
@@ -192,14 +192,14 @@ function MyTaskPage() {
             />
           </div>
 
-          <div className="w-full h-auto flex items-center justify-end p-4">
-            {data?.meta && (
+          {data?.meta && data.meta.page > 1 && (
+            <div className="w-full h-auto flex items-center justify-end p-4 border-t border-gray-300 shadow-md">
               <ElipsisPagination
                 meta={data?.meta}
                 onPageChange={(newPage) => setPage(newPage)}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

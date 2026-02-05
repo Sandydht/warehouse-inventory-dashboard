@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import InputField from "../components/InputField";
 import { useAppDispatch } from "../store/hooks";
 import { showSnackbar } from "../store/snackbar/snackbarSlice";
-import { useNavigate } from "react-router-dom";
 import { createApprovalRequest } from "../store/approval/approvalThunk";
 import { fromCreateApprovalRequestDtoToAddProductDomain } from "../../infrastructure/mappers/approvalMapper";
 import type { CreateApprovalRequestDto } from "../../infrastructure/dto/request/CreateApprovalRequestDto";
@@ -27,7 +26,6 @@ function AddProductInventoryListPage() {
     formState: { errors, isSubmitting },
   } = useForm<AddProductToInventoryForm>();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const skuRegister = register("sku", {
     required: "SKU is required",
@@ -82,7 +80,13 @@ function AddProductInventoryListPage() {
       );
 
       reset();
-      navigate("/inventory-list");
+      dispatch(
+        showSnackbar({
+          message:
+            "Product request submitted successfully and is pending approval.",
+          type: "success",
+        }),
+      );
     } catch (error) {
       dispatch(showSnackbar({ message: error as string, type: "error" }));
     }

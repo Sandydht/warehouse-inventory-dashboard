@@ -44,6 +44,7 @@ export const approvalApi = [
       proposedData: inventoryItemDto,
       rejectionReason: null,
       createdBy: user.id,
+      checkedBy: null,
       createdAt: now,
       updatedAt: null,
       deletedAt: null,
@@ -268,6 +269,7 @@ export const approvalApi = [
     }
 
     approvalRequest.status = "APPROVED";
+    approvalRequest.checkedBy = user.id;
     approvalRequest.updatedAt = now;
     await approvalDb.update(approvalRequest);
 
@@ -319,6 +321,7 @@ export const approvalApi = [
     }
 
     approvalRequest.status = "REJECTED";
+    approvalRequest.checkedBy = user.id;
     approvalRequest.rejectionReason = payload.rejectReason;
     approvalRequest.updatedAt = now;
     await approvalDb.update(approvalRequest);
@@ -367,6 +370,7 @@ export const approvalApi = [
         proposedData: null,
         rejectionReason: null,
         createdBy: user.id,
+        checkedBy: null,
         createdAt: now,
         updatedAt: null,
         deletedAt: null,
@@ -432,6 +436,7 @@ export const approvalApi = [
       proposedData: proposedInventoryItemDto,
       rejectionReason: null,
       createdBy: user.id,
+      checkedBy: null,
       createdAt: now,
       updatedAt: null,
       deletedAt: null,

@@ -12,7 +12,8 @@ describe("ApprovalRequest entity", () => {
     originalData: null,
     proposedData: null,
     rejectionReason: null,
-    createdBy: "user",
+    createdBy: "staff-id",
+    checkedBy: "officer-id",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     deletedAt: null,
@@ -30,6 +31,7 @@ describe("ApprovalRequest entity", () => {
           validPayload.proposedData,
           validPayload.rejectionReason,
           validPayload.createdBy,
+          validPayload.checkedBy,
           validPayload.createdAt,
           validPayload.updatedAt,
           validPayload.deletedAt,
@@ -49,6 +51,7 @@ describe("ApprovalRequest entity", () => {
           validPayload.proposedData,
           validPayload.rejectionReason,
           "",
+          validPayload.checkedBy,
           validPayload.createdAt,
           validPayload.updatedAt,
           validPayload.deletedAt,
@@ -68,6 +71,7 @@ describe("ApprovalRequest entity", () => {
           validPayload.proposedData,
           validPayload.rejectionReason,
           validPayload.createdBy,
+          validPayload.checkedBy,
           "",
           validPayload.updatedAt,
           validPayload.deletedAt,
@@ -86,6 +90,7 @@ describe("ApprovalRequest entity", () => {
         validPayload.proposedData,
         validPayload.rejectionReason,
         validPayload.createdBy,
+        validPayload.checkedBy,
         validPayload.createdAt,
         validPayload.updatedAt,
         validPayload.deletedAt,
@@ -102,6 +107,7 @@ describe("ApprovalRequest entity", () => {
       validPayload.rejectionReason,
     );
     expect(approvalRequest.getCreatedBy()).toBe(validPayload.createdBy);
+    expect(approvalRequest.getCheckedBy()).toBe(validPayload.checkedBy);
     expect(approvalRequest.getCreatedAt()).toBe(validPayload.createdAt);
     expect(approvalRequest.getUpdatedAt()).toBe(validPayload.updatedAt);
     expect(approvalRequest.getDeletedAt()).toBe(validPayload.deletedAt);

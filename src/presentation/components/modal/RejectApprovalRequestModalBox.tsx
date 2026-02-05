@@ -4,8 +4,14 @@ import TextareaInputField from "../TextareaInputField";
 import { useAppDispatch } from "../../store/hooks";
 import { showSnackbar } from "../../store/snackbar/snackbarSlice";
 import { closeModal } from "../../store/modal/rejectApprovalRequestModalSlice";
-import { rejectRequest } from "../../store/approval/approvalThunk";
-import { toRejectRequestDomain } from "../../../infrastructure/mappers/approvalMapper";
+import {
+  getApprovalRequestDetail,
+  rejectRequest,
+} from "../../store/approval/approvalThunk";
+import {
+  toGetApprovalRequestDetailDomain,
+  toRejectRequestDomain,
+} from "../../../infrastructure/mappers/approvalMapper";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 
@@ -43,9 +49,20 @@ function RejectApprovalRequestModalBox() {
           toRejectRequestDomain(payloadWithId.id, formData.rejectReason),
         ),
       );
+      await dispatch(
+        getApprovalRequestDetail(
+          toGetApprovalRequestDetailDomain(payloadWithId.id),
+        ),
+      );
 
       reset();
       dispatch(closeModal());
+      dispatch(
+        showSnackbar({
+          message: "The request has been rejected successfully.",
+          type: "error",
+        }),
+      );
     } catch (error) {
       dispatch(showSnackbar({ message: error as string, type: "error" }));
     }

@@ -109,7 +109,7 @@ function EditInventoryPage() {
     <div className="w-full h-auto flex flex-col items-start justify-start gap-4">
       <div className="w-full h-auto flex items-center justify-start gap-2">
         <Link
-          to={"/inventory-list"}
+          to={`/inventory-list/detail/${data?.id}`}
           className="text-left p-2 rounded cursor-pointer"
         >
           <img

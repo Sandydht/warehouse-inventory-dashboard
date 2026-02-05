@@ -9,11 +9,14 @@ import { useAppDispatch } from "../../store/hooks";
 import {
   approveRequest,
   createApprovalRequestDelete,
+  getApprovalRequestDetail,
 } from "../../store/approval/approvalThunk";
 import {
   toApproveRequestDomain,
   toDeleteProductDomain,
+  toGetApprovalRequestDetailDomain,
 } from "../../../infrastructure/mappers/approvalMapper";
+import { showSnackbar } from "../../store/snackbar/snackbarSlice";
 
 function ConfirmationModalBox() {
   const { isOpen, title, body, confirmType, payload } = useSelector(
@@ -21,6 +24,15 @@ function ConfirmationModalBox() {
   );
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { loading: logoutLoading } = useSelector(
+    (state: RootState) => state.auth.logout,
+  );
+  const { loading: approveRequestLoading } = useSelector(
+    (state: RootState) => state.approval.approveRequest,
+  );
+  const { loading: createApprovalRequestDeleteLoading } = useSelector(
+    (state: RootState) => state.approval.createApprovalRequestDelete,
+  );
 
   const payloadWithId = payload as { id: string };
 
@@ -49,9 +61,6 @@ function ConfirmationModalBox() {
       case "DELETE_PRODUCT_FROM_INVENTORY":
         handleDeleteProductFromInventory();
         break;
-      default:
-        dispatch(closeModal());
-        break;
     }
 
     dispatch(closeModal());
@@ -63,7 +72,7 @@ function ConfirmationModalBox() {
       dispatch(closeModal());
       navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error);
+      dispatch(showSnackbar({ message: error as string, type: "error" }));
     }
   };
 
@@ -72,10 +81,20 @@ function ConfirmationModalBox() {
       await dispatch(
         approveRequest(toApproveRequestDomain(payloadWithId.id)),
       ).unwrap();
+      await dispatch(
+        getApprovalRequestDetail(
+          toGetApprovalRequestDetailDomain(payloadWithId.id),
+        ),
+      );
       dispatch(closeModal());
-      navigate("/my-task");
+      dispatch(
+        showSnackbar({
+          message: "The request has been approved successfully.",
+          type: "success",
+        }),
+      );
     } catch (error) {
-      console.error("Approve request failed:", error);
+      dispatch(showSnackbar({ message: error as string, type: "error" }));
     }
   };
 
@@ -85,11 +104,16 @@ function ConfirmationModalBox() {
         createApprovalRequestDelete(toDeleteProductDomain(payloadWithId.id)),
       ).unwrap();
       dispatch(closeModal());
-    } catch (error) {
-      console.error(
-        "Create approval request delete product from inventory failed:",
-        error,
+      navigate("/inventory-list");
+      dispatch(
+        showSnackbar({
+          message:
+            "The product deletion request has been submitted and is awaiting approval.",
+          type: "success",
+        }),
       );
+    } catch (error) {
+      dispatch(showSnackbar({ message: error as string, type: "error" }));
     }
   };
 
@@ -122,7 +146,11 @@ function ConfirmationModalBox() {
                 id="confirmButton"
                 buttonType="button"
                 label={"Confirm"}
-                disabled={false}
+                disabled={
+                  logoutLoading ||
+                  approveRequestLoading ||
+                  createApprovalRequestDeleteLoading
+                }
                 onClick={handleConfirm}
               />
             </div>

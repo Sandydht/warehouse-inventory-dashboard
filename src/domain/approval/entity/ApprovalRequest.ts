@@ -11,6 +11,7 @@ class ApprovalRequest<T> {
   private readonly proposedData: T | null;
   private readonly rejectionReason: string | null;
   private readonly createdBy: string;
+  private readonly checkedBy: string | null;
   private readonly createdAt: string;
   private readonly updatedAt: string | null;
   private readonly deletedAt: string | null;
@@ -24,6 +25,7 @@ class ApprovalRequest<T> {
     proposedData: T | null,
     rejectionReason: string | null,
     createdBy: string,
+    checkedBy: string | null,
     createdAt: string,
     updatedAt: string | null,
     deletedAt: string | null,
@@ -38,6 +40,7 @@ class ApprovalRequest<T> {
     this.proposedData = proposedData;
     this.rejectionReason = rejectionReason;
     this.createdBy = createdBy;
+    this.checkedBy = checkedBy;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.deletedAt = deletedAt;
@@ -88,6 +91,10 @@ class ApprovalRequest<T> {
 
   getCreatedBy(): string {
     return this.createdBy;
+  }
+
+  getCheckedBy(): string | null {
+    return this.checkedBy;
   }
 
   getCreatedAt(): string {

@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getInventoryList } from "../store/inventory/inventoryThunk";
 import ElipsisPagination from "../components/ElipsisPagination";
 import { Link } from "react-router-dom";
-import { openModal } from "../store/modal/confirmationModalSlice";
+// import { openModal } from "../store/modal/confirmationModalSlice";
 
 function InventoryListPage() {
   const dispatch = useAppDispatch();
@@ -80,42 +80,46 @@ function InventoryListPage() {
   const actionColumn: Column<InventoryItemDto>[] =
     userProfileData && userProfileData.role === "STAFF"
       ? [
+          // {
+          //   key: "action",
+          //   header: "Action",
+          //   render: (row: InventoryItemDto) => (
+          //     <div className="flex gap-2">
+          //       <Link
+          //         to={`/inventory-list/${row.id}/edit`}
+          //         className="text-blue-500 hover:underline cursor-pointer"
+          //       >
+          //         Edit
+          //       </Link>
+          //       <button
+          //         type="button"
+          //         className="text-red-500 hover:underline cursor-pointer"
+          //         onClick={() =>
+          //           handleOpenConfirmationModalForDeleteInventory(row.id)
+          //         }
+          //       >
+          //         Delete
+          //       </button>
+          //     </div>
+          //   ),
+          // },
+
           {
             key: "action",
             header: "Action",
             render: (row: InventoryItemDto) => (
-              <div className="flex gap-2">
+              <>
                 <Link
-                  to={`/inventory-list/${row.id}/edit`}
-                  className="text-blue-500 hover:underline cursor-pointer"
+                  to={`/inventory-list/detail/${row.id}`}
+                  className="text-blue-600 cursor-pointer hover:underline"
                 >
-                  Edit
+                  See Detail
                 </Link>
-                <button
-                  type="button"
-                  className="text-red-500 hover:underline cursor-pointer"
-                  onClick={() =>
-                    handleOpenConfirmationModalForDeleteInventory(row.id)
-                  }
-                >
-                  Delete
-                </button>
-              </div>
+              </>
             ),
           },
         ]
       : [];
-
-  const handleOpenConfirmationModalForDeleteInventory = (id: string) => {
-    dispatch(
-      openModal({
-        title: "Delete Product from Inventory",
-        body: "Are you sure you want to delete product from inventory?",
-        confirmType: "DELETE_PRODUCT_FROM_INVENTORY",
-        payload: { id },
-      }),
-    );
-  };
 
   useEffect(() => {
     const mockParams: PaginationQuery = {
@@ -162,7 +166,7 @@ function InventoryListPage() {
         </div>
 
         <div className="w-full h-auto flex flex-col items-start justify-start">
-          <div className="w-full h-auto overflow-auto bg-white border-b border-gray-500 max-h-[calc(100vh-315px)]">
+          <div className="w-full h-auto overflow-auto bg-white max-h-[calc(100vh-315px)]">
             <DataTable
               columns={[...baseColumns, ...actionColumn]}
               data={data?.data ?? []}
@@ -173,14 +177,14 @@ function InventoryListPage() {
             />
           </div>
 
-          <div className="w-full h-auto flex items-center justify-end p-4">
-            {data?.meta && (
+          {data?.meta && data.meta.page > 1 && (
+            <div className="w-full h-auto flex items-center justify-end p-4 border-t border-gray-300 shadow-md">
               <ElipsisPagination
                 meta={data?.meta}
                 onPageChange={(newPage) => setPage(newPage)}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import type { ApprovalRequestDto } from "../../infrastructure/dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../../infrastructure/dto/common/InventoryItemDto";
 import BadgeLabel from "./BadgeLabel";
-import DetailItem from "./DetailItem";
 
 interface ApprovalRequestDetailCardProps {
   data: ApprovalRequestDto<InventoryItemDto>;
@@ -9,96 +8,128 @@ interface ApprovalRequestDetailCardProps {
 
 function ApprovalRequestDetailCard({ data }: ApprovalRequestDetailCardProps) {
   return (
-    <div className="w-full h-auto rounded-lg bg-white shadow-md border border-gray-200 overflow-hidden">
-      <div className="flex flex-col gap-2 border-b border-gray-300 p-6 md:flex-row md:items-center md:justify-between">
-        <div className="w-full h-auto flex flex-col items-start justify-start gap-1">
-          <h1 className="text-xl font-semibold text-gray-900">
+    <div className="w-full h-auto flex flex-col items-start justify-start rounded-lg bg-white shadow-md border border-gray-200">
+      <div className="w-full h-auto flex flex-col items-start justify-start gap-4 md:flex-row p-4 border-b border-gray-300">
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            SKU
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
             {data.type === "DELETE"
-              ? data.originalData?.name
-              : data.proposedData?.name}
-          </h1>
-          <p className="text-sm text-gray-500">
-            SKU:{" "}
-            {data.type === "DELETE"
-              ? data.originalData?.sku
-              : data.proposedData?.sku}
+              ? data.originalData?.sku || "-"
+              : data.proposedData?.sku || "-"}
           </p>
         </div>
 
-        <div className="w-auto h-auto flex flex-col items-start justify-start gap-1">
+        <div className="w-full h-auto flex flex-col items-start justify-start gap-1 md:w-auto">
           <BadgeLabel type={data.status} value={data.status} />
           <BadgeLabel type={data.type} value={data.type} />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
-        <DetailItem
-          label="Category"
-          value={
-            data.type === "DELETE"
+      <div className="w-full h-auto flex flex-col items-start justify-start gap-4 md:flex-row p-4 border-b border-gray-300">
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Name
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.type === "DELETE"
+              ? data.originalData?.name || "-"
+              : data.proposedData?.name || "-"}
+          </p>
+        </div>
+
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Category
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.type === "DELETE"
               ? data.originalData?.category || "-"
-              : data.proposedData?.category || "-"
-          }
-        />
-        <DetailItem
-          label="Supplier"
-          value={
-            data.type === "DELETE"
+              : data.proposedData?.category || "-"}
+          </p>
+        </div>
+      </div>
+
+      <div className="w-full h-auto flex flex-col items-start justify-start gap-4 md:flex-row p-4 border-b border-gray-300">
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Price
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.type === "DELETE"
+              ? `Rp ${data.originalData?.price || "-"}`
+              : `Rp ${data.proposedData?.price || "-"}`}
+          </p>
+        </div>
+
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Quantity
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.type === "DELETE"
+              ? data.originalData?.quantity || "-"
+              : data.proposedData?.quantity || "-"}
+          </p>
+        </div>
+      </div>
+
+      <div className="w-full h-auto flex flex-col items-start justify-start gap-4 md:flex-row p-4 border-b border-gray-300">
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Supplier
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.type === "DELETE"
               ? data.originalData?.supplier || "-"
-              : data.proposedData?.supplier || "-"
-          }
-        />
+              : data.proposedData?.supplier || "-"}
+          </p>
+        </div>
 
-        <DetailItem
-          label="Price"
-          value={`Rp ${data.type === "DELETE" ? data.originalData?.price.toLocaleString("id-ID") : data.proposedData?.price.toLocaleString("id-ID")}`}
-        />
-        <DetailItem
-          label="Quantity"
-          value={
-            data.type === "DELETE"
-              ? data.originalData?.quantity.toString() || "-"
-              : data.proposedData?.quantity.toString() || "-"
-          }
-        />
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Created At
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.type === "DELETE"
+              ? data.originalData?.createdAt || "-"
+              : data.proposedData?.createdAt || "-"}
+          </p>
+        </div>
+      </div>
 
-        <DetailItem
-          label="Created At"
-          value={
-            data.type === "DELETE"
-              ? data.originalData?.createdAt
-                ? new Date(data.originalData.createdAt).toLocaleString()
-                : "-"
-              : data.proposedData?.createdAt
-                ? new Date(data.proposedData.createdAt).toLocaleString()
-                : "-"
-          }
-        />
-        <DetailItem
-          label="Updated At"
-          value={
-            data.type === "DELETE"
-              ? data.originalData?.updatedAt
-                ? new Date(data.originalData.updatedAt).toLocaleString()
-                : "-"
-              : data.proposedData?.updatedAt
-                ? new Date(data.proposedData.updatedAt).toLocaleString()
-                : "-"
-          }
-        />
+      <div className="w-full h-auto flex flex-col items-start justify-start gap-4 md:flex-row p-4 border-b border-gray-300">
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Updated At
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.type === "DELETE"
+              ? data.originalData?.updatedAt || "-"
+              : data.proposedData?.updatedAt || "-"}
+          </p>
+        </div>
 
-        <DetailItem
-          label="Deleted At"
-          value={
-            data.type === "DELETE"
-              ? data.originalData?.deletedAt
-                ? new Date(data.originalData.deletedAt).toLocaleString()
-                : "-"
-              : data.proposedData?.deletedAt
-                ? new Date(data.proposedData.deletedAt).toLocaleString()
-                : "-"
-          }
-        />
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Created By
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.createdBy || "-"}
+          </p>
+        </div>
+      </div>
+
+      <div className="w-full h-auto flex flex-col items-start justify-start gap-4 md:flex-row p-4 border-b border-gray-300">
+        <div className="w-full h-auto flex flex-col items-start justify-start">
+          <p className="text-left text-[12px] leading-4 font-semibold text-gray-500">
+            Checked By
+          </p>
+          <p className="text-left text-[16px] leading-6 text-black">
+            {data.checkedBy || "-"}
+          </p>
+        </div>
       </div>
     </div>
   );

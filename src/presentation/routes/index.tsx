@@ -11,6 +11,7 @@ import AddProductInventoryListPage from "../pages/AddProductInventoryListPage";
 import ApprovalRequestDetailPage from "../pages/ApprovalRequestDetailPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import EditInventoryPage from "../pages/EditInventoryPage";
+import InventoryDetailPage from "../pages/InventoryDetailPage";
 
 function AppRoutes() {
   return (
@@ -45,6 +46,13 @@ function AppRoutes() {
             <Route
               path="/inventory-list/add-product"
               element={<AddProductInventoryListPage />}
+            />
+          </Route>
+
+          <Route element={<RoleGuard allowedRoles={["STAFF"]} />}>
+            <Route
+              path="/inventory-list/detail/:id"
+              element={<InventoryDetailPage />}
             />
           </Route>
 

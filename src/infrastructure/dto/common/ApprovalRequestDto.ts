@@ -12,6 +12,7 @@ export interface ApprovalRequestDto<T> {
   proposedData: T | null;
   rejectionReason: string | null;
   createdBy: string;
+  checkedBy: string | null;
   createdAt: string;
   updatedAt: string | null;
   deletedAt: string | null;
