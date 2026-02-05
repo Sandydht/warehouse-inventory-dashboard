@@ -16,6 +16,52 @@ The system allows users to create inventory requests, and officers can approve o
 
 ---
 
+## Demo Accounts
+
+This project includes pre-defined dummy accounts for testing the approval workflow.
+
+### 1. STAFF Account (Maker)
+
+- Role: STAFF
+- Email: staff@email.com
+- Password: password123
+
+Use this account to:
+
+- Create inventory approval requests
+- Submit changes for officer review
+
+### 2. OFFICER Account (Checker)
+
+- Role: OFFICER
+- Email: officer@email.com
+- Password: password123
+
+Use this account to:
+
+- Review pending approval requests
+- Approve or reject inventory changes
+
+---
+
+## Environment Variables
+
+This project uses environment variables to configure API simulation and local persistence settings.
+
+### 1. Create `.env` File
+
+```bash
+cp .env.example .env
+```
+
+### 2. Available Variables
+
+```
+VITE_STORAGE_SECRET
+```
+
+---
+
 ## How to Run the Project
 
 ### 1. Clone Repository
