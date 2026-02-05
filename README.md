@@ -16,6 +16,12 @@ The system allows users to create inventory requests, and officers can approve o
 
 ---
 
+## Live Demo
+
+You can access the deployed application here: [https://warehouse-inventory-dashboard.vercel.app/](https://warehouse-inventory-dashboard.vercel.app/)
+
+---
+
 ## Demo Accounts
 
 This project includes pre-defined dummy accounts for testing the approval workflow.
