@@ -5,6 +5,7 @@ import ApproveRequest from "../../domain/approval/entity/ApproveRequest";
 import DeleteProduct from "../../domain/approval/entity/DeleteProduct";
 import type EditProduct from "../../domain/approval/entity/EditProduct";
 import GetApprovalRequestDetail from "../../domain/approval/entity/GetApprovalRequestDetail";
+import RejectRequest from "../../domain/approval/entity/RejectRequest";
 import type InventoryItem from "../../domain/inventory/entity/InventoryItem";
 import type { ApprovalRequestDto } from "../dto/common/ApprovalRequestDto";
 import type { InventoryItemDto } from "../dto/common/InventoryItemDto";
@@ -104,3 +105,8 @@ export const fromEditProductDomainToCreatedEditApprovalRequestDto = (
 
 export const toDeleteProductDomain = (id: string): DeleteProduct =>
   new DeleteProduct(id);
+
+export const toRejectRequestDomain = (
+  id: string,
+  rejectReason: string,
+): RejectRequest => new RejectRequest(id, rejectReason);

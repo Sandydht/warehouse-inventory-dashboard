@@ -5,6 +5,7 @@ import snackbarReducer from "./snackbar/snackbarSlice";
 import approvalReducer from "./approval/approvalSlice";
 import confirmationModalReducer from "./modal/confirmationModalSlice";
 import inventoryReducer from "./inventory/inventorySlice";
+import rejectApprovalRequestReducer from "./modal/rejectApprovalRequestModalSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     approval: approvalReducer,
     confirmationModal: confirmationModalReducer,
     inventory: inventoryReducer,
+    rejectApprovalRequestModal: rejectApprovalRequestReducer,
   },
 });
 

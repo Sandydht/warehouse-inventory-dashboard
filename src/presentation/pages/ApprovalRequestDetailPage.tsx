@@ -6,7 +6,8 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getApprovalRequestDetail } from "../store/approval/approvalThunk";
 import ApprovalRequestDetailCard from "../components/ApprovalRequestDetailCard";
 import Button from "../components/Button";
-import { openModal } from "../store/modal/confirmationModalSlice";
+import { openModal as openConfirmationModal } from "../store/modal/confirmationModalSlice";
+import { openModal as openRejectModal } from "../store/modal/rejectApprovalRequestModalSlice";
 import { toGetApprovalRequestDetailDomain } from "../../infrastructure/mappers/approvalMapper";
 
 function ApprovalRequestDetailPage() {
@@ -22,12 +23,20 @@ function ApprovalRequestDetailPage() {
     }
   }, [id, dispatch]);
 
-  const handleOpenConfirmationModalApproveRequest = () => {
+  const handleOpenConfirmationModalForApproveRequest = () => {
     dispatch(
-      openModal({
+      openConfirmationModal({
         title: "Approve Request",
         body: "Are you sure you want to approve request?",
         confirmType: "APPROVE_REQUEST",
+        payload: { id },
+      }),
+    );
+  };
+
+  const handleOpenRejectReasonModalForRejectRequest = () => {
+    dispatch(
+      openRejectModal({
         payload: { id },
       }),
     );
@@ -106,7 +115,7 @@ function ApprovalRequestDetailPage() {
           buttonType="button"
           label={"Approve"}
           disabled={data?.status !== "PENDING"}
-          onClick={handleOpenConfirmationModalApproveRequest}
+          onClick={handleOpenConfirmationModalForApproveRequest}
         />
         <Button
           type="danger"
@@ -114,6 +123,7 @@ function ApprovalRequestDetailPage() {
           buttonType="button"
           label={"Reject"}
           disabled={data?.status !== "PENDING"}
+          onClick={handleOpenRejectReasonModalForRejectRequest}
         />
       </div>
     </div>

@@ -8,6 +8,7 @@ import type { ApprovalRequestDto } from "../../dto/common/ApprovalRequestDto";
 import { paginateArray } from "../utils/paginateArray";
 import type { PaginationQuery } from "../../../commons/models/PaginationQuery";
 import type { SortOrder } from "../../../commons/models/types";
+import type { RejectApprovalRequestDto } from "../../dto/request/RejectApprovalRequestDto";
 
 export const approvalApi = [
   http.post("/api/approval/create-approval", async ({ request }) => {
@@ -250,6 +251,58 @@ export const approvalApi = [
     }
 
     return HttpResponse.json(result, { status: 200 });
+  }),
+  http.post("/api/approval/:id/reject", async ({ params, request }) => {
+    const authHeader = request.headers.get("Authorization");
+    if (!authHeader) {
+      return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const user = UserDummyData.find((user) => user.id === token);
+
+    if (!user || user.role !== "OFFICER") {
+      return HttpResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
+    const { id } = params;
+
+    if (!id) {
+      return HttpResponse.json({ message: "Invalid id" }, { status: 400 });
+    }
+
+    const approvalDb = new IndexedDbCrud<ApprovalRequestDto<InventoryItemDto>>(
+      "approval_requests",
+    );
+
+    const approvalRequest = await approvalDb.getById(id as string);
+    if (!approvalRequest) {
+      return HttpResponse.json({ message: "Not Found" }, { status: 404 });
+    }
+
+    if (approvalRequest.status !== "PENDING") {
+      return HttpResponse.json(
+        { message: "Approval already finalized" },
+        { status: 409 },
+      );
+    }
+
+    const payload = (await request.json()) as RejectApprovalRequestDto;
+    const now = new Date().toISOString();
+
+    if (!payload.rejectReason?.trim()) {
+      return HttpResponse.json(
+        { message: "Reject reason is required" },
+        { status: 400 },
+      );
+    }
+
+    approvalRequest.status = "REJECTED";
+    approvalRequest.rejectionReason = payload.rejectReason;
+    approvalRequest.updatedAt = now;
+    await approvalDb.update(approvalRequest);
+
+    return HttpResponse.json(approvalRequest, { status: 200 });
   }),
   http.delete(
     "/api/approval/delete/:inventoryId",
