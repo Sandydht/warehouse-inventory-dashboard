@@ -10,6 +10,7 @@ import type { PaginationQuery } from "../../../commons/models/PaginationQuery";
 import type { SortOrder } from "../../../commons/models/types";
 import type { RejectApprovalRequestDto } from "../../dto/request/RejectApprovalRequestDto";
 import type { CreateEditApprovalRequestDto } from "../../dto/request/CreateEditApprovalRequestDto";
+import type { StockHistoryItemDto } from "../../dto/common/StockHistoryItemDto";
 
 export const approvalApi = [
   http.post("/api/approval/create-approval", async ({ request }) => {
@@ -220,6 +221,9 @@ export const approvalApi = [
       "approval_requests",
     );
     const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
+    const stockHistoryDb = new IndexedDbCrud<StockHistoryItemDto>(
+      "stock_histories",
+    );
     const approvalRequest = await approvalDb.getById(id as string);
     const now = new Date().toISOString();
 
@@ -235,28 +239,76 @@ export const approvalApi = [
     }
 
     switch (approvalRequest.type) {
-      case "CREATE":
+      case "CREATE": {
         if (!approvalRequest.proposedData) {
           return HttpResponse.json(
             { message: "Invalid approval data" },
             { status: 400 },
           );
         }
-        await inventoryDb.create(approvalRequest.proposedData);
-        break;
 
-      case "DELETE":
+        if (approvalRequest.proposedData.quantity < 0) {
+          return HttpResponse.json(
+            { message: "Stock cannot be negative" },
+            { status: 400 },
+          );
+        }
+
+        await inventoryDb.create(approvalRequest.proposedData);
+
+        const newStock = approvalRequest.proposedData.quantity;
+
+        await stockHistoryDb.create({
+          id: uuidv4(),
+          inventoryId: approvalRequest.proposedData.id,
+          inventoryName: approvalRequest.proposedData.name,
+          action: "CREATE",
+          previousStock: 0,
+          newStock,
+          changeStock: newStock,
+          note: "Product created",
+          checkedBy: user.id,
+          createdAt: now,
+        });
+        break;
+      }
+
+      case "DELETE": {
         if (!approvalRequest.originalData) {
           return HttpResponse.json(
             { message: "Invalid approval data" },
             { status: 400 },
           );
         }
+
+        if (approvalRequest.originalData.quantity < 0) {
+          return HttpResponse.json(
+            { message: "Stock cannot be negative" },
+            { status: 400 },
+          );
+        }
+
         approvalRequest.originalData.deletedAt = now;
         await inventoryDb.update(approvalRequest.originalData);
-        break;
 
-      case "UPDATE":
+        const previousStock = approvalRequest.originalData.quantity;
+
+        await stockHistoryDb.create({
+          id: uuidv4(),
+          inventoryId: approvalRequest.originalData.id,
+          inventoryName: approvalRequest.originalData.name,
+          action: "DELETE",
+          previousStock,
+          newStock: 0,
+          changeStock: -previousStock,
+          note: "Product created",
+          checkedBy: user.id,
+          createdAt: now,
+        });
+        break;
+      }
+
+      case "UPDATE": {
         if (!approvalRequest.originalData || !approvalRequest.proposedData) {
           return HttpResponse.json(
             { message: "Invalid approval data" },
@@ -264,8 +316,35 @@ export const approvalApi = [
           );
         }
 
+        if (
+          approvalRequest.originalData.quantity < 0 ||
+          approvalRequest.proposedData.quantity < 0
+        ) {
+          return HttpResponse.json(
+            { message: "Stock cannot be negative" },
+            { status: 400 },
+          );
+        }
+
         await inventoryDb.update(approvalRequest.proposedData);
+
+        const previousStock = approvalRequest.originalData.quantity;
+        const newStock = approvalRequest.proposedData.quantity;
+
+        await stockHistoryDb.create({
+          id: uuidv4(),
+          inventoryId: approvalRequest.proposedData.id,
+          inventoryName: approvalRequest.proposedData.name,
+          action: "UPDATE",
+          previousStock,
+          newStock,
+          changeStock: newStock - previousStock,
+          note: "Stock updated",
+          checkedBy: user.id,
+          createdAt: now,
+        });
         break;
+      }
     }
 
     approvalRequest.status = "APPROVED";

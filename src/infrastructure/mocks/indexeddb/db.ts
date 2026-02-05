@@ -2,6 +2,7 @@ export const DB_NAME = "warehouse-inventory-dashboard-db";
 export const STORES = {
   INVENTORIES: "inventories",
   APPROVAL_REQUESTS: "approval_requests",
+  STOCK_HISTORIES: "stock_histories",
 } as const;
 export const DB_VERSION = 1;
 

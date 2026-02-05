@@ -56,7 +56,7 @@ function MyTaskPage() {
         </p>
       </div>
 
-      <div className="w-full h-auto rounded-lg border-gray-200 border bg-white overflow-hidden shadow-md flex flex-col items-start justify-start gap-2">
+      <div className="w-full h-auto rounded-lg border-gray-200 border bg-white shadow-md flex flex-col items-start justify-start gap-2">
         <div className="w-full h-auto p-4 flex items-center justify-start gap-4">
           <div className="w-full h-auto max-w-125">
             <SearchInput
@@ -91,7 +91,7 @@ function MyTaskPage() {
           </div>
         </div>
 
-        <div className="w-full h-auto flex flex-col items-start justify-start">
+        <div className="w-full h-auto flex flex-col items-start justify-start overflow-hidden rounded-b-lg">
           <div className="w-full h-auto overflow-auto bg-white max-h-[calc(100vh-315px)]">
             <DataTable
               columns={[
