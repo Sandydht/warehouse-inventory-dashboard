@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getInventoryList } from "../store/inventory/inventoryThunk";
 import ElipsisPagination from "../components/ElipsisPagination";
 import { Link } from "react-router-dom";
-// import { openModal } from "../store/modal/confirmationModalSlice";
 
 function InventoryListPage() {
   const dispatch = useAppDispatch();
@@ -24,6 +23,7 @@ function InventoryListPage() {
   const debouncedSearch = useDebounce(search, 500);
 
   const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
   const [sort, setSort] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -80,30 +80,6 @@ function InventoryListPage() {
   const actionColumn: Column<InventoryItemDto>[] =
     userProfileData && userProfileData.role === "STAFF"
       ? [
-          // {
-          //   key: "action",
-          //   header: "Action",
-          //   render: (row: InventoryItemDto) => (
-          //     <div className="flex gap-2">
-          //       <Link
-          //         to={`/inventory-list/${row.id}/edit`}
-          //         className="text-blue-500 hover:underline cursor-pointer"
-          //       >
-          //         Edit
-          //       </Link>
-          //       <button
-          //         type="button"
-          //         className="text-red-500 hover:underline cursor-pointer"
-          //         onClick={() =>
-          //           handleOpenConfirmationModalForDeleteInventory(row.id)
-          //         }
-          //       >
-          //         Delete
-          //       </button>
-          //     </div>
-          //   ),
-          // },
-
           {
             key: "action",
             header: "Action",
@@ -124,14 +100,14 @@ function InventoryListPage() {
   useEffect(() => {
     const mockParams: PaginationQuery = {
       page,
-      limit: 10,
+      limit: size,
       search: debouncedSearch,
       sortBy: sort.key,
       sortOrder: sort.direction,
     };
 
     dispatch(getInventoryList(mockParams));
-  }, [sort, page, debouncedSearch, dispatch]);
+  }, [sort, page, debouncedSearch, dispatch, size]);
 
   return (
     <div className="w-full h-auto flex flex-col items-start justify-start gap-4">
@@ -177,11 +153,12 @@ function InventoryListPage() {
             />
           </div>
 
-          {data?.meta && data.meta.page > 1 && (
+          {data?.meta && (
             <div className="w-full h-auto flex items-center justify-end p-4 border-t border-gray-300 shadow-md">
               <ElipsisPagination
                 meta={data?.meta}
                 onPageChange={(newPage) => setPage(newPage)}
+                onPageSizeChange={setSize}
               />
             </div>
           )}

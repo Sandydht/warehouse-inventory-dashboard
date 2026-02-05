@@ -16,6 +16,8 @@ import MethodAssertionImpl from "./utils/MethodAssertionImpl";
 import SecureStorageImpl from "./utils/SecureStorageImpl";
 import CreateApprovalRequestDeleteUseCase from "../application/usecases/CreateApprovalRequestDeleteUseCase";
 import GetInventoryDetailUseCase from "../application/usecases/GetInventoryDetailUseCase";
+import StockHistoryRepositoryImpl from "./repositories/StockHistoryRepositoryImpl";
+import GetLast30DaysStockHistoryUseCase from "../application/usecases/GetLast30DaysStockHistoryUseCase";
 
 const authenticationRepositoryImpl: AuthRepositoryImpl =
   new AuthRepositoryImpl();
@@ -26,6 +28,8 @@ const approvalRepositoryImpl: ApprovalRepositoryImpl =
   new ApprovalRepositoryImpl();
 const inventoryRepositoryImpl: InventoryRepositoryImpl =
   new InventoryRepositoryImpl();
+const stockHistoryRepositoryImpl: StockHistoryRepositoryImpl =
+  new StockHistoryRepositoryImpl();
 
 export const authDependencies = {
   loginAccountUseCase: new LoginAccountUseCase(
@@ -86,5 +90,12 @@ export const inventoryDependencies = {
   getInventoryDetailUseCase: new GetInventoryDetailUseCase(
     methodAssertionImpl,
     inventoryRepositoryImpl,
+  ),
+};
+
+export const stockHistoryDependencies = {
+  getLast30DaysStockHistoryUseCase: new GetLast30DaysStockHistoryUseCase(
+    methodAssertionImpl,
+    stockHistoryRepositoryImpl,
   ),
 };

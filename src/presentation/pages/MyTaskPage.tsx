@@ -20,6 +20,7 @@ function MyTaskPage() {
   );
 
   const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
 
   const [sort, setSort] = useState<{
     key: string;
@@ -36,7 +37,7 @@ function MyTaskPage() {
   useEffect(() => {
     const mockParams: PaginationQuery = {
       page,
-      limit: 10,
+      limit: size,
       search: debouncedSearch,
       status: statusFilter as ApprovalStatus,
       sortBy: sort.key,
@@ -44,7 +45,7 @@ function MyTaskPage() {
     };
 
     dispatch(getApprovalList(mockParams));
-  }, [dispatch, sort, page, debouncedSearch, statusFilter]);
+  }, [dispatch, sort, page, debouncedSearch, statusFilter, size]);
 
   return (
     <div className="w-full h-auto flex flex-col items-start justify-start gap-4">
@@ -192,11 +193,12 @@ function MyTaskPage() {
             />
           </div>
 
-          {data?.meta && data.meta.page > 1 && (
+          {data?.meta && (
             <div className="w-full h-auto flex items-center justify-end p-4 border-t border-gray-300 shadow-md">
               <ElipsisPagination
                 meta={data?.meta}
                 onPageChange={(newPage) => setPage(newPage)}
+                onPageSizeChange={setSize}
               />
             </div>
           )}

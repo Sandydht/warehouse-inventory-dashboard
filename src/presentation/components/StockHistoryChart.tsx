@@ -1,41 +1,38 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Chart from "react-apexcharts";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { getLast30DaysStockHistory } from "../store/stockHistory/stockHistoryThunk";
 
 type StockHistoryPoint = {
   x: number;
   y: number;
 };
 
-function generateStockHistory30Days(startStock = 100): StockHistoryPoint[] {
-  const data: StockHistoryPoint[] = [];
-  let currentStock = startStock;
-
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-
-    const change = Math.floor(Math.random() * 10) - 5;
-    currentStock = Math.max(0, currentStock + change);
-
-    data.push({
-      x: date.getTime(),
-      y: currentStock,
-    });
-  }
-
-  return data;
-}
-
 function StockHistoryChart() {
-  const series = useMemo(
-    () => [
+  const dispatch = useAppDispatch();
+  const { data } = useAppSelector(
+    (state) => state.stockHistory.getLast30DaysStockHistory,
+  );
+
+  useEffect(() => {
+    dispatch(getLast30DaysStockHistory());
+  }, [dispatch]);
+
+  const series = useMemo(() => {
+    if (!data) return [];
+
+    return [
       {
         name: "Stock",
-        data: generateStockHistory30Days(120),
+        data: data.map(
+          (item): StockHistoryPoint => ({
+            x: new Date(item.createdAt).getTime(),
+            y: item.newStock,
+          }),
+        ),
       },
-    ],
-    [],
-  );
+    ];
+  }, [data]);
 
   const options: ApexCharts.ApexOptions = {
     chart: {
@@ -49,6 +46,9 @@ function StockHistoryChart() {
     },
     xaxis: {
       type: "datetime",
+      labels: {
+        format: "dd MMM",
+      },
       title: {
         text: "Date",
       },

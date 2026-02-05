@@ -60,7 +60,7 @@ function RejectApprovalRequestModalBox() {
       dispatch(
         showSnackbar({
           message: "The request has been rejected successfully.",
-          type: "error",
+          type: "success",
         }),
       );
     } catch (error) {
