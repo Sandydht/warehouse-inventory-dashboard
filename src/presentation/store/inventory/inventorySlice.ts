@@ -6,15 +6,17 @@ import {
   createAsyncState,
   type AsyncState,
 } from "../utils/createAsyncHandlers";
-import { getInventoryList } from "./inventoryThunk";
+import { getInventoryDetail, getInventoryList } from "./inventoryThunk";
 
 interface InventoryState {
   inventoryList: AsyncState<GetInventoryListResponseDto<InventoryItemDto>>;
+  inventoryDetail: AsyncState<InventoryItemDto>;
 }
 
 const initialState: InventoryState = {
   inventoryList:
     createAsyncState<GetInventoryListResponseDto<InventoryItemDto>>(),
+  inventoryDetail: createAsyncState<InventoryItemDto>(),
 };
 
 const inventorySlice = createSlice({
@@ -23,6 +25,7 @@ const inventorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     addAsyncThunkHandlers(builder, getInventoryList, "inventoryList");
+    addAsyncThunkHandlers(builder, getInventoryDetail, "inventoryDetail");
   },
 });
 

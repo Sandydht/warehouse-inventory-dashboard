@@ -3,7 +3,7 @@ import AddProduct from "../../domain/approval/entity/AddProduct";
 import ApprovalRequest from "../../domain/approval/entity/ApprovalRequest";
 import ApproveRequest from "../../domain/approval/entity/ApproveRequest";
 import DeleteProduct from "../../domain/approval/entity/DeleteProduct";
-import type EditProduct from "../../domain/approval/entity/EditProduct";
+import EditProduct from "../../domain/approval/entity/EditProduct";
 import GetApprovalRequestDetail from "../../domain/approval/entity/GetApprovalRequestDetail";
 import RejectRequest from "../../domain/approval/entity/RejectRequest";
 import type InventoryItem from "../../domain/inventory/entity/InventoryItem";
@@ -110,3 +110,17 @@ export const toRejectRequestDomain = (
   id: string,
   rejectReason: string,
 ): RejectRequest => new RejectRequest(id, rejectReason);
+
+export const fromCreateEditApprovalRequestDtoToEditProductDomain = (
+  id: string,
+  dto: CreateEditApprovalRequestDto,
+): EditProduct =>
+  new EditProduct(
+    id,
+    dto.sku,
+    dto.name,
+    dto.category,
+    dto.price,
+    dto.quantity,
+    dto.supplier,
+  );

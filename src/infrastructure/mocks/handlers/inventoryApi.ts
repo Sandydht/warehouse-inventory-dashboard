@@ -100,4 +100,35 @@ export const inventoryApi = [
 
     return HttpResponse.json(result, { status: 200 });
   }),
+  http.get(
+    "/api/inventory/inventory-detail/:id",
+    async ({ params, request }) => {
+      const authHeader = request.headers.get("Authorization");
+      if (!authHeader) {
+        return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+
+      const token = authHeader.replace("Bearer ", "");
+      const user = UserDummyData.find((user) => user.id === token);
+
+      if (!user || user.role === "OFFICER") {
+        return HttpResponse.json({ message: "Forbidden" }, { status: 403 });
+      }
+
+      const { id } = params;
+
+      if (!id) {
+        return HttpResponse.json({ message: "Invalid id" }, { status: 400 });
+      }
+
+      const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
+      const inventory = await inventoryDb.getById(String(id));
+
+      if (!inventory) {
+        return HttpResponse.json({ message: "Not Found" }, { status: 404 });
+      }
+
+      return HttpResponse.json(inventory, { status: 200 });
+    },
+  ),
 ];

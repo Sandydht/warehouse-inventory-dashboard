@@ -9,6 +9,7 @@ import { paginateArray } from "../utils/paginateArray";
 import type { PaginationQuery } from "../../../commons/models/PaginationQuery";
 import type { SortOrder } from "../../../commons/models/types";
 import type { RejectApprovalRequestDto } from "../../dto/request/RejectApprovalRequestDto";
+import type { CreateEditApprovalRequestDto } from "../../dto/request/CreateEditApprovalRequestDto";
 
 export const approvalApi = [
   http.post("/api/approval/create-approval", async ({ request }) => {
@@ -86,13 +87,8 @@ export const approvalApi = [
       approvalList = approvalList.filter((data) => {
         const name = data?.proposedData?.name.toLowerCase() ?? "";
         const sku = data?.proposedData?.sku.toLowerCase() ?? "";
-        const createdBy = data.createdBy.toLowerCase();
 
-        return (
-          name.includes(search) ||
-          sku.includes(search) ||
-          createdBy.includes(search)
-        );
+        return name.includes(search) || sku.includes(search);
       });
     }
 
@@ -183,6 +179,11 @@ export const approvalApi = [
       }
 
       const { id } = params;
+
+      if (!id) {
+        return HttpResponse.json({ message: "Invalid id" }, { status: 400 });
+      }
+
       const approvalDb = new IndexedDbCrud<
         ApprovalRequestDto<InventoryItemDto>
       >("approval_requests");
@@ -372,36 +373,47 @@ export const approvalApi = [
       return HttpResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    const { id } = params;
+    const { inventoryId } = params;
 
-    if (!id) {
+    if (!inventoryId) {
       return HttpResponse.json({ message: "Invalid id" }, { status: 400 });
     }
 
     const inventoryDb = new IndexedDbCrud<InventoryItemDto>("inventories");
-    const result = await inventoryDb.getById(id as string);
+    const result = await inventoryDb.getById(inventoryId as string);
 
     if (!result) {
       return HttpResponse.json({ message: "Not Found" }, { status: 404 });
     }
 
+    const payload = (await request.json()) as CreateEditApprovalRequestDto;
     const now = new Date().toISOString();
-    const inventoryItemDto: InventoryItemDto = {
+    const originalInventoryItemDto: InventoryItemDto = {
       ...result,
-      deletedAt: now,
+    };
+
+    const proposedInventoryItemDto: InventoryItemDto = {
+      ...result,
+      sku: payload.sku,
+      name: payload.name,
+      category: payload.category,
+      price: payload.price,
+      quantity: payload.quantity,
+      supplier: payload.supplier,
+      updatedAt: now,
     };
 
     const approvalRequestDto: ApprovalRequestDto<InventoryItemDto> = {
       id: uuidv4(),
-      type: "DELETE",
+      type: "UPDATE",
       status: "PENDING",
       targetId: result.id,
-      originalData: inventoryItemDto,
-      proposedData: null,
+      originalData: originalInventoryItemDto,
+      proposedData: proposedInventoryItemDto,
       rejectionReason: null,
-      createdBy: user.fullName,
+      createdBy: user.id,
       createdAt: now,
-      updatedAt: now,
+      updatedAt: null,
       deletedAt: null,
     };
 

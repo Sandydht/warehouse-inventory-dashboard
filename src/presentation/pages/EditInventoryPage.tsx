@@ -1,16 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ArrowBack24pxBlack from "../assets/images/svg/arrow_back_24px_black.svg";
 import { useForm } from "react-hook-form";
-import InputField from "../components/InputField";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { showSnackbar } from "../store/snackbar/snackbarSlice";
-import { useNavigate } from "react-router-dom";
-import { createApprovalRequest } from "../store/approval/approvalThunk";
-import { fromCreateApprovalRequestDtoToAddProductDomain } from "../../infrastructure/mappers/approvalMapper";
-import type { CreateApprovalRequestDto } from "../../infrastructure/dto/request/CreateApprovalRequestDto";
+import InputField from "../components/InputField";
 import Button from "../components/Button";
+import { useEffect } from "react";
+import { getInventoryDetail } from "../store/inventory/inventoryThunk";
+import { toGetInventoryDetailDomain } from "../../infrastructure/mappers/inventoryMapper";
+import { createApprovalRequestEdit } from "../store/approval/approvalThunk";
+import { fromCreateEditApprovalRequestDtoToEditProductDomain } from "../../infrastructure/mappers/approvalMapper";
 
-type AddProductToInventoryForm = {
+type EditProductForm = {
   sku: string;
   name: string;
   category: string;
@@ -19,15 +20,19 @@ type AddProductToInventoryForm = {
   supplier: string;
 };
 
-function AddProductInventoryListPage() {
+function EditInventoryPage() {
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<AddProductToInventoryForm>();
+    formState: { errors, isSubmitting, isDirty },
+  } = useForm<EditProductForm>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const { data, loading } = useAppSelector(
+    (state) => state.inventory.inventoryDetail,
+  );
 
   const skuRegister = register("sku", {
     required: "SKU is required",
@@ -65,28 +70,40 @@ function AddProductInventoryListPage() {
     required: "Supplier is required",
   });
 
-  const onSubmit = async (formData: AddProductToInventoryForm) => {
+  const onSubmit = async (formData: EditProductForm) => {
     try {
-      const payload: CreateApprovalRequestDto = {
-        sku: formData.sku,
-        name: formData.name,
-        category: formData.category,
-        price: formData.price,
-        quantity: formData.quantity,
-        supplier: formData.supplier,
-      };
-      await dispatch(
-        createApprovalRequest(
-          fromCreateApprovalRequestDtoToAddProductDomain(payload),
-        ),
-      );
-
-      reset();
-      navigate("/inventory-list");
+      if (id) {
+        await dispatch(
+          createApprovalRequestEdit(
+            fromCreateEditApprovalRequestDtoToEditProductDomain(id, formData),
+          ),
+        ).unwrap();
+        reset();
+        navigate("/inventory-list");
+      }
     } catch (error) {
       dispatch(showSnackbar({ message: error as string, type: "error" }));
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getInventoryDetail(toGetInventoryDetailDomain(id)));
+    }
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (!loading && data) {
+      reset({
+        sku: data.sku,
+        name: data.name,
+        category: data.category,
+        price: data.price,
+        quantity: data.quantity,
+        supplier: data.supplier,
+      });
+    }
+  }, [data, loading, reset]);
 
   return (
     <div className="w-full h-auto flex flex-col items-start justify-start gap-4">
@@ -102,7 +119,7 @@ function AddProductInventoryListPage() {
           />
         </Link>
         <p className="text-left text-[22px] leading-7 font-bold">
-          Add Product to Inventory
+          Edit Product
         </p>
       </div>
 
@@ -173,10 +190,10 @@ function AddProductInventoryListPage() {
         <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
           <Button
             type="secondary"
-            id="addProductToInventorySubmitButton"
+            id="editProductToInventorySubmitButton"
             buttonType="submit"
-            label={isSubmitting ? "Loading..." : "Submit"}
-            disabled={isSubmitting}
+            label={isSubmitting && !isDirty ? "Loading..." : "Submit"}
+            disabled={isSubmitting || !isDirty}
           />
         </div>
       </form>
@@ -184,4 +201,4 @@ function AddProductInventoryListPage() {
   );
 }
 
-export default AddProductInventoryListPage;
+export default EditInventoryPage;

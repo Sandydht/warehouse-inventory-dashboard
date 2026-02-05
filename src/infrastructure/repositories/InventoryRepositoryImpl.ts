@@ -6,7 +6,11 @@ import InventoryRepository from "../../domain/inventory/InventoryRepository";
 import type { InventoryItemDto } from "../dto/common/InventoryItemDto";
 import type { GetInventoryListResponseDto } from "../dto/response/GetInventoryListResponseDto";
 import { privateApi } from "../http/axiosInstance";
-import { fromGetInventoryListResponseDtoToPaginatedResultDomain } from "../mappers/inventoryMapper";
+import {
+  fromGetInventoryListResponseDtoToPaginatedResultDomain,
+  fromInventoryItemDtoToInventoryItemDomain,
+} from "../mappers/inventoryMapper";
+import type GetInventoryDetail from "../../domain/inventory/entity/GetInventoryDetail";
 
 class InventoryRepositoryImpl extends InventoryRepository {
   async getInventoryList(
@@ -18,6 +22,17 @@ class InventoryRepositoryImpl extends InventoryRepository {
     >("/inventory/inventory-list", { params });
 
     return fromGetInventoryListResponseDtoToPaginatedResultDomain(data);
+  }
+
+  async getInventoryDetail(
+    payload: GetInventoryDetail,
+  ): Promise<InventoryItem> {
+    const { data } = await privateApi.get<
+      InventoryItemDto,
+      AxiosResponse<InventoryItemDto>
+    >(`/inventory/inventory-detail/${payload.getId()}`);
+
+    return fromInventoryItemDtoToInventoryItemDomain(data);
   }
 }
 

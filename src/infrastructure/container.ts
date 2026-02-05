@@ -15,6 +15,7 @@ import UserRepositoryImpl from "./repositories/UserRepositoryImpl";
 import MethodAssertionImpl from "./utils/MethodAssertionImpl";
 import SecureStorageImpl from "./utils/SecureStorageImpl";
 import CreateApprovalRequestDeleteUseCase from "../application/usecases/CreateApprovalRequestDeleteUseCase";
+import GetInventoryDetailUseCase from "../application/usecases/GetInventoryDetailUseCase";
 
 const authenticationRepositoryImpl: AuthRepositoryImpl =
   new AuthRepositoryImpl();
@@ -79,6 +80,10 @@ export const approvalDependencies = {
 
 export const inventoryDependencies = {
   getInventoryListUseCase: new GetInventoryListUseCase(
+    methodAssertionImpl,
+    inventoryRepositoryImpl,
+  ),
+  getInventoryDetailUseCase: new GetInventoryDetailUseCase(
     methodAssertionImpl,
     inventoryRepositoryImpl,
   ),

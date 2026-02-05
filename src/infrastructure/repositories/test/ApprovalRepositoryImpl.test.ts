@@ -202,7 +202,7 @@ describe("ApprovalRepositoryImpl", () => {
         );
 
       expect(privateApi.get).toHaveBeenCalledWith(
-        "/approval/approval-request-detail/req-001",
+        `/approval/approval-request-detail/${mockGetApprovalRequestDetail.getId()}`,
       );
 
       expect(result).toStrictEqual(

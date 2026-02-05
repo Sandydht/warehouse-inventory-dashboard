@@ -7,6 +7,8 @@ import type { PaginatedResult } from "../../../commons/models/PaginatedResult";
 import type { PaginationQuery } from "../../../commons/models/PaginationQuery";
 import type { GetInventoryListResponseDto } from "../../dto/response/GetInventoryListResponseDto";
 import InventoryRepositoryImpl from "../InventoryRepositoryImpl";
+import GetInventoryDetail from "../../../domain/inventory/entity/GetInventoryDetail";
+import { fromInventoryItemDtoToInventoryItemDomain } from "../../mappers/inventoryMapper";
 
 vi.mock("../../http/axiosInstance", () => ({
   privateApi: {
@@ -98,6 +100,39 @@ describe("InventoryRepositoryImpl", () => {
       const mockEmptyParams: PaginationQuery = {};
       await expect(
         inventoryRepositoryImpl.getInventoryList(mockEmptyParams),
+      ).rejects.toThrow("Network Error");
+    });
+  });
+
+  describe("getInventoryDetail function", () => {
+    const mockGetInventoryDetail: GetInventoryDetail = new GetInventoryDetail(
+      "inv-001",
+    );
+
+    it("should fetch inventory details and return mapped domain data", async () => {
+      vi.mocked(privateApi.get).mockResolvedValue({
+        data: mockInventoryItemDto,
+      });
+
+      const result: InventoryItem =
+        await inventoryRepositoryImpl.getInventoryDetail(
+          mockGetInventoryDetail,
+        );
+
+      expect(privateApi.get).toHaveBeenCalledWith(
+        `/inventory/inventory-detail/${mockGetInventoryDetail.getId()}`,
+      );
+
+      expect(result).toStrictEqual(
+        fromInventoryItemDtoToInventoryItemDomain(mockInventoryItemDto),
+      );
+    });
+
+    it("should throw an error if the API call fails", async () => {
+      const networkError = new Error("Network Error");
+      vi.mocked(privateApi.get).mockRejectedValue(networkError);
+      await expect(
+        inventoryRepositoryImpl.getInventoryDetail(mockGetInventoryDetail),
       ).rejects.toThrow("Network Error");
     });
   });
