@@ -6,11 +6,7 @@ import { store } from "./presentation/store/index.ts";
 import { BrowserRouter } from "react-router-dom";
 
 async function enableMocking() {
-  if (import.meta.env.MODE !== "development") {
-    return;
-  }
-
-  const { worker } = await import("./infrastructure/mocks/browser.ts");
+  const { worker } = await import("./infrastructure/mocks/browser");
 
   return worker.start({
     onUnhandledRequest: "bypass",
